@@ -24,6 +24,7 @@ public:
 
 protected:
     Scene m_Scene;
+    bool m_bRunning; // True when the window is closed to end the application
 
     void resize(GLuint w, GLuint h);
     void setBackgroundColor(const Color &color);
@@ -61,7 +62,6 @@ private:
     GLfloat m_PressedMouseXPos; // Mouse position - updated only when left button down
     GLfloat m_PressedMouseYPos; // mouse position - updated only when left button down
     int m_MouseScroll; // scroll value (up : ++, down : --)
-    bool m_bRunning; // True when the window is closed to end the application
     bool m_bShowMouse; // True if mouse is seeable
     GLuint m_FrameCount; // Frame counter
     uint64_t m_LastStartTime; // Time updated every 10 frames

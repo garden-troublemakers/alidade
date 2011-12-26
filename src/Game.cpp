@@ -20,3 +20,7 @@ bool Game::save() {
 	// make xml from values
 	return 0; // SUCCESS ?
 }
+
+bool Game::load() {
+	return 0;
+}

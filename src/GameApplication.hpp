@@ -16,16 +16,16 @@
 
 class GameApplication : public stein::Application {
 private :
-	Game * m_game;
-	double * m_volumes;
+	Game m_game;
 	GhostCamera m_ghostCamera;
+	double m_volumes[3];
 	bool m_bInGame;
 	bool m_bGhostMode;
 	bool m_bInPause;
 	
 public :
 	GameApplication(); // create player 
-	~GameApplication();
+	virtual ~GameApplication();
 	void pause(); 	// pause the game
 	void resume(); 	// resume the game
 	void startGame();

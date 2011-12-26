@@ -7,42 +7,35 @@ static inline float frand() {
     return float(rand()) / RAND_MAX;
 }
 
-GameApplication::GameApplication() : Application(800, 600), m_ghostCamera() {
-	m_bInGame = false;
-	m_bGhostMode = false;
-	m_bInPause = false;
-	m_volumes = new double[3]();
+GameApplication::GameApplication() :
+	Application(800, 600), m_game(), m_ghostCamera(), m_volumes(), m_bInGame(false), m_bGhostMode(false), m_bInPause(false) {
 	// Init volumes at 80 percents each
 	for(size_t i = 0; i < 3 ; ++i)
 		m_volumes[i] = 0.8;
-	
-    cout << "fu : " << m_volumes[0] << endl;
     
     // @TODO : build menu in sdl.
-    // @TODO : load player
     
 	// Default game
     startGame(); // for test purpose only, make a game by default
 }
 
 GameApplication::~GameApplication() {
-	delete [] m_volumes;
-	delete [] m_game;
+	//delete [] m_volumes;
 }
 
 //
 void GameApplication::startGame() {
 	// init level configuration
-	if(m_game == NULL) {
-		m_game = new Game();
-	}
+	/*
+	m_game.init / m_game.load ...
+	*/
 	
 	// init camera and shaders
 	
     //const float size = .06;
     // @TODO : Don't forget to init player's camera
     // We set the actual camera to be the player's one (fps mode)
-    //m_Scene.camera = &(m_game->player.camera);
+    //m_Scene.camera = &(m_game.player.camera);
     /* ... like that
     setPerspectiveProjection(-size, size, -size, size, .1, 100);
     m_Scene.camera.setPosition(Vector3f(0, 0, 55));
@@ -72,7 +65,7 @@ void GameApplication::animate() {
 	if(m_bInGame) {
 		if(!m_bInPause) {
 			if(!m_bGhostMode)
-				m_game->player.move();
+				m_game.player.move();
 			else
 				m_ghostCamera.move();
 			/*
@@ -81,8 +74,8 @@ void GameApplication::animate() {
 			switch(levelStatus) {
 				case LEVEL_FINISHED :
 					m_bInGame = false;
-					if(m_game->player.level != LEVEL_MAX) {
-						++(m_game->player.level);
+					if(m_game.player.level != LEVEL_MAX) {
+						++(m_game.player.level);
 					} else {
 						// GAME OVER ! // EXIT APP
 					}
@@ -93,12 +86,12 @@ void GameApplication::animate() {
 				break;
 				default :
 					// @TODO : write end level conditions
-					if(m_game->player.getLife() == 0)
+					if(m_game.player.getLife() == 0)
 						return LEVEL_FAILED;
-					//else if(m_game->player.pos == m_conf.endPos) // something like that
+					//else if(m_game.player.pos == m_conf.endPos) // something like that
 					//	return LEVEL_FINISHED;
 					// else
-					m_game->player.move();
+					m_game.player.move();
 					return LEVEL_PLAYING;
 					// You see what i did there ?
 				break;
@@ -122,6 +115,7 @@ void GameApplication::animate() {
 // For example : cout when b key is pressed
 // down is true when the key is pressed, false when released
 void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
+	// @FIXME : Maybe we should call the parent's function (then privatize Application::m_bRunning again, and redefine correctly the initialisation's order in constructor Application::Application() ). Then we don't have to rewrite the whole switch. Maybe this is what causes awkwardly slow treatment when a key is pushed. Don't know how.
     if (down) {
         switch (keysym.sym) {
             case SDLK_ESCAPE:
@@ -129,6 +123,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
             		m_bInPause = !m_bInPause;
             	else*/
                 //	m_bRunning = false;
+                m_bRunning = false;
                 break;
             case SDLK_p :
             	if(m_bInGame)
@@ -140,8 +135,8 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
             case SDLK_g:
             	/*m_bGhostMode = !m_bGhostMode;
             	if(m_bGhostMode)
-            		m_ghostCamera = m_game->player.camera;
-            	m_scene.camera = (m_bGhostMode) ? m_ghostCamera : m_game->player.camera;*/
+            		m_ghostCamera = m_game.player.camera;
+            	m_scene.camera = (m_bGhostMode) ? m_ghostCamera : m_game.player.camera;*/
             case SDLK_z :
             case SDLK_q :
             case SDLK_s :
@@ -153,7 +148,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
    							setMovement appliquée à player, camera : update des variables de déplacements
    							appelées à chaque update de l'affichage d'un objet (dans animate ?)
    							*/
-            				//m_game->player.setMovement(keysym.sym);
+            				//m_game.player.setMovement(keysym.sym);
             				// move player
             			} else {
             				// move ghost Camera

@@ -14,6 +14,7 @@ struct Game {
 	Game(std::string);
 	~Game();
 	bool save();
+	bool load();
 };
 
 #endif // _GAME_HPP_
