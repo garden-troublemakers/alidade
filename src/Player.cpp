@@ -1,18 +1,22 @@
 #include "Player.hpp"
 
-Player::Player() : camera(), Vector3f m_Movement() {
-	
+Player::Player() : m_movement(), camera() {
+	m_life = 100;
 }
 
 Player::~Player() {
 
 }
 
-Player::move() {
+void Player::move() {
 	// cf code FPS
 	// update camera
 }
 
-Player::shootPortal(unsigned int type) {
+bool Player::shootPortal(unsigned int type) {
+	return true;
+}
 
+unsigned int Player::getLife() {
+	return m_life;
 }

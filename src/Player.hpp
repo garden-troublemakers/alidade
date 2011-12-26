@@ -2,18 +2,21 @@
 #define _PLAYER_H_
 
 #include <stein/math/Vector3f.hpp>
-#include "Camera.hpp"
+#include <stein/Camera.hpp>
 
 
 class Player {
 private :
-	Vector3f m_Movement;
+	stein::Vector3f m_movement;
+	unsigned int m_life;
 public :
-	Camera camera;
+	stein::Camera camera;
 	//@TODO : Player Constructor
 	Player();
 	~Player();
-	move();
+	void move();
+	bool shootPortal(unsigned int type);
+	unsigned int getLife();
 };
 
 #endif // _PLAYER_H_

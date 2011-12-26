@@ -1,10 +1,8 @@
 #include "Game.hpp"
 
-// forward declaration
-class Player;
+using namespace std;
 
-Game::Game() {
-	player = new Player(...);
+Game::Game(): player() {
 	
 }
 
@@ -15,14 +13,10 @@ Game::Game(string path) {
 }
 
 Game::~Game() {
-	delete [] player;
+	//delete [] player;
 }
 
 bool Game::save() {
 	// make xml from values
 	return 0; // SUCCESS ?
 }
-
-
-
-#endif // _GAME_HPP_

@@ -1,10 +1,9 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 
-#include <cstring>
-
-// forward declaration
-class Player;
+#include "Player.hpp"
+#include <iostream>
+#include <string>
 
 struct Game {
 	Player player;
@@ -12,7 +11,7 @@ struct Game {
 	// score, time, bonus ...
 	
 	Game();
-	Game(string path);
+	Game(std::string);
 	~Game();
 	bool save();
 };

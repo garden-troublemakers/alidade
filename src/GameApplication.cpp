@@ -7,11 +7,16 @@ static inline float frand() {
     return float(rand()) / RAND_MAX;
 }
 
-GameApplication::GameApplication() : Application(800, 600) {
-	m_bInGame = FALSE;
-	m_bGhostMode = FALSE;
-	m_bInPause = FALSE;
-    m_volumes[3] = {1.,1.,1.};
+GameApplication::GameApplication() : Application(800, 600), m_ghostCamera() {
+	m_bInGame = false;
+	m_bGhostMode = false;
+	m_bInPause = false;
+	m_volumes = new double[3]();
+	// Init volumes at 80 percents each
+	for(size_t i = 0; i < 3 ; ++i)
+		m_volumes[i] = 0.8;
+	
+    cout << "fu : " << m_volumes[0] << endl;
     
     // @TODO : build menu in sdl.
     // @TODO : load player
@@ -22,19 +27,22 @@ GameApplication::GameApplication() : Application(800, 600) {
 
 GameApplication::~GameApplication() {
 	delete [] m_volumes;
-	delete [] m_level;
+	delete [] m_game;
 }
 
 //
 void GameApplication::startGame() {
 	// init level configuration
-	if(m_game != NULL) {
+	if(m_game == NULL) {
 		m_game = new Game();
 	}
+	
 	// init camera and shaders
-    const float size = .06;
+	
+    //const float size = .06;
     // @TODO : Don't forget to init player's camera
-    m_Scene.camera = &m_game.player.camera;
+    // We set the actual camera to be the player's one (fps mode)
+    //m_Scene.camera = &(m_game->player.camera);
     /* ... like that
     setPerspectiveProjection(-size, size, -size, size, .1, 100);
     m_Scene.camera.setPosition(Vector3f(0, 0, 55));
@@ -52,48 +60,49 @@ void GameApplication::startGame() {
         m_Scene.addObjectToDraw(object.id);
         m_Scene.setDrawnObjectColor(i, Color(frand(), frand(), frand()));
     }*/
-	m_bInGame = TRUE; // go
+	m_bInGame = true; // go
 }
 
 // @TODO :
 void GameApplication::exitGame() {
-	m_bInGame = FALSE;
+	m_bInGame = false;
 }
 
 void GameApplication::animate() {
 	if(m_bInGame) {
 		if(!m_bInPause) {
 			if(!m_bGhostMode)
-				m_game.player.move();
+				m_game->player.move();
 			else
-				ghostCamera.move();
-			 // @TODO check this out, need a move() on Ghost Cam ?
+				m_ghostCamera.move();
+			/*
+			// @TODO check this out, need a move() on Ghost Cam ?
 			// @FIXME : Check this harder (no levelStatus)
 			switch(levelStatus) {
 				case LEVEL_FINISHED :
-					b_inGame = FALSE;
-					if(m_player->level != LEVEL_MAX) {
-						++(m_player->level);
+					m_bInGame = false;
+					if(m_game->player.level != LEVEL_MAX) {
+						++(m_game->player.level);
 					} else {
 						// GAME OVER ! // EXIT APP
 					}
 				break;
 				case LEVEL_FAILED :
 					// Reinit da player in the beginning
-					m_level->initPlayer(m_player);
+					//m_level->initPlayer(m_player);
 				break;
 				default :
 					// @TODO : write end level conditions
-					if(m_game.player.getLife == 0)
+					if(m_game->player.getLife() == 0)
 						return LEVEL_FAILED;
-					else if(m_player.pos == m_conf.endPos) // something like that
-						return LEVEL_FINISHED;
+					//else if(m_game->player.pos == m_conf.endPos) // something like that
+					//	return LEVEL_FINISHED;
 					// else
-					m_player.move();
+					m_game->player.move();
 					return LEVEL_PLAYING;
 					// You see what i did there ?
 				break;
-			}
+			}*/
 		}
 		else {
 			// in game in pause
@@ -119,7 +128,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
             	/*if(m_bInGame)
             		m_bInPause = !m_bInPause;
             	else*/
-                	m_bRunning = false;
+                //	m_bRunning = false;
                 break;
             case SDLK_p :
             	if(m_bInGame)
@@ -129,10 +138,10 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
                 Application::printFPS();
                 break;
             case SDLK_g:
-            	m_bGhostMode = !m_bGhostMode;
+            	/*m_bGhostMode = !m_bGhostMode;
             	if(m_bGhostMode)
-            		m_ghostCamera = m_game.player.camera;
-            	m_scene.camera = (m_bGhostMode) ? m_ghostCamera : m_game.player.camera;
+            		m_ghostCamera = m_game->player.camera;
+            	m_scene.camera = (m_bGhostMode) ? m_ghostCamera : m_game->player.camera;*/
             case SDLK_z :
             case SDLK_q :
             case SDLK_s :
@@ -144,7 +153,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
    							setMovement appliquée à player, camera : update des variables de déplacements
    							appelées à chaque update de l'affichage d'un objet (dans animate ?)
    							*/
-            				m_game.player.setMovement(keysym.sym);
+            				//m_game->player.setMovement(keysym.sym);
             				// move player
             			} else {
             				// move ghost Camera
@@ -162,7 +171,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 }
 
 
-void GameApplication::setVolume(unsigned int type = VOLUME_SOUND, double volume) {
+void GameApplication::setVolume(unsigned int type, double volume) {
 	m_volumes[type] = volume;
 }
 

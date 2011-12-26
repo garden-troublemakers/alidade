@@ -2,7 +2,7 @@
 // Template for OpenGL 3.*
 // N. Dommanget dommange@univ-mlv.fr
 
-#include "BoidsApplication.h"
+#include "GameApplication.hpp"
 
 #include <stein/math/StreamUtils.h>
 
@@ -12,8 +12,8 @@ using namespace std;
 
 int main(int argc, char **argv) {
     try {
-        BoidsApplication app;
-        app.loop();
+        GameApplication alidade;
+        alidade.loop();
         return EXIT_SUCCESS;
     } catch (exception &e) {
         cerr << e.what() << endl;

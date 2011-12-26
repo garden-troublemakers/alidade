@@ -3,20 +3,22 @@
 
 #include "consts.h"
 #include "Game.hpp"
-#include <stein/Application.hpp>
-#include <stein/Object.hpp>
-#include <stein/Tools.hpp>
-#include <stein/Builders.hpp>
-#include <stein/math/StreamUtils.h>
+#include "GhostCamera.hpp"
+#include <cstdlib>
 #include <iostream>
-#include <vector>
+#include <stein/Application.hpp>
+//#include <stein/Object.hpp>
+#include <stein/Tools.hpp>
+//#include <stein/Builders.hpp>
+//#include <stein/math/StreamUtils.h>
+//#include <vector>
 
 
 class GameApplication : public stein::Application {
 private :
 	Game * m_game;
-	unsigned char * m_volumes;
-	Camera ghostCamera;
+	double * m_volumes;
+	GhostCamera m_ghostCamera;
 	bool m_bInGame;
 	bool m_bGhostMode;
 	bool m_bInPause;
@@ -26,8 +28,8 @@ public :
 	~GameApplication();
 	void pause(); 	// pause the game
 	void resume(); 	// resume the game
-	void init(); 	// start the game from the beginning
-	void startLevel(unsigned int level = LEVEL_TEST);
+	void startGame();
+	void exitGame();
 	// At each frame
 	virtual void animate();
 	// On event
@@ -36,13 +38,9 @@ public :
 	// Menu
 	void displayHighscore();
 	void displayOptions();
-	void setVolume(unsigned int type = VOLUME_SOUND, unsigned char volume);
+	void setVolume(unsigned int type = VOLUME_SOUND, double volume = .5);
 	void displayCredits();
 	void displayControls();
-	
-	// @TODO : 
-	void save(); 	// save the player
-	void load(); 	// load a previous player
 };
 
 #endif // _GAME_APPLICATION_HPP_
