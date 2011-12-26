@@ -53,7 +53,7 @@ void GameApplication::startGame() {
         m_Scene.addObjectToDraw(object.id);
         m_Scene.setDrawnObjectColor(i, Color(frand(), frand(), frand()));
     }*/
-	m_bInGame = true; // go
+	// m_bInGame = true; // go
 }
 
 // @TODO :
@@ -64,12 +64,13 @@ void GameApplication::exitGame() {
 void GameApplication::animate() {
 	if(m_bInGame) {
 		if(!m_bInPause) {
-			if(!m_bGhostMode)
-				m_game.player.move();
-			else
-				m_ghostCamera.move();
+			// Should be use for moving nothing, the player or the ghostCamera with the same function.
+			// @TODO : Init with the correct pointer (or reference !)
+			// CF : animate()
+			IMoveable* moveable = NULL;
+			if(!!moveable)
+				moveable->move();
 			/*
-			// @TODO check this out, need a move() on Ghost Cam ?
 			// @FIXME : Check this harder (no levelStatus)
 			switch(levelStatus) {
 				case LEVEL_FINISHED :
@@ -116,52 +117,45 @@ void GameApplication::animate() {
 // down is true when the key is pressed, false when released
 void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 	// @FIXME : Maybe we should call the parent's function (then privatize Application::m_bRunning again, and redefine correctly the initialisation's order in constructor Application::Application() ). Then we don't have to rewrite the whole switch. Maybe this is what causes awkwardly slow treatment when a key is pushed. Don't know how.
-    if (down) {
-        switch (keysym.sym) {
-            case SDLK_ESCAPE:
-            	/*if(m_bInGame)
-            		m_bInPause = !m_bInPause;
-            	else*/
-                //	m_bRunning = false;
-                m_bRunning = false;
-                break;
-            case SDLK_p :
-            	if(m_bInGame)
-            		m_bInPause = !m_bInPause;
-            		
-            case SDLK_f:
-                Application::printFPS();
-                break;
-            case SDLK_g:
-            	/*m_bGhostMode = !m_bGhostMode;
-            	if(m_bGhostMode)
-            		m_ghostCamera = m_game.player.camera;
-            	m_scene.camera = (m_bGhostMode) ? m_ghostCamera : m_game.player.camera;*/
-            case SDLK_z :
-            case SDLK_q :
-            case SDLK_s :
-            case SDLK_d :
-            	if(m_bInGame) {
-            		if(!m_bInPause) {
-            			if(!m_bGhostMode) {
-            				/* @TODO :
-   							setMovement appliquée à player, camera : update des variables de déplacements
-   							appelées à chaque update de l'affichage d'un objet (dans animate ?)
-   							*/
-            				//m_game.player.setMovement(keysym.sym);
-            				// move player
-            			} else {
-            				// move ghost Camera
-            			}
-            		}
-            		else {
-            			// move in pause menu
-            		}
-            	}
-            default:
-                break;
-        }
-    }
+	if (down) {
+		// Should be use for moving nothing, the player or the ghostCamera with the same function.
+		// @TODO : Init with the correct pointer (or reference !)
+		// CF : animate()
+		IMoveable* moveable = NULL;
+		if(m_bInGame) {
+			if(keysym.sym == SDLK_ESCAPE) {
+				if(m_bInPause) {
+					// pause();
+				} else {
+					// resume();
+				}
+			}
+			else if(keysym.sym == SDLK_p)
+				m_bInPause = !m_bInPause;
+			else if(!!moveable) { // @TODO : check if "!!" is correct for "isset?"
+				unsigned int to = NOWHERE;
+				switch(keysym.sym) {
+					case SDLK_z :
+					case SDLK_UP :
+						to = UP; 	break;
+					case SDLK_s :
+					case SDLK_DOWN :
+						to = DOWN; 	break;
+					case SDLK_q :
+					case SDLK_LEFT :
+						to = LEFT; 	break;
+					case SDLK_d :
+					case SDLK_RIGHT :
+						to = RIGHT;	break;
+					default : break;
+				}
+				if(to != NOWHERE)
+					moveable->setMovement(to);
+			}
+		}
+		else
+			Application::handleKeyEvent(keysym, down);
+	}
 	// @TODO : Add handler for key up (else)
 }
 

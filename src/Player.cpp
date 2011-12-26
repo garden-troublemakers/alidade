@@ -13,6 +13,10 @@ void Player::move() {
 	// update camera
 }
 
+void Player::setMovement(unsigned int to) {
+	
+}
+
 bool Player::shootPortal(unsigned int type) {
 	return true;
 }

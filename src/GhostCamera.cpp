@@ -7,5 +7,7 @@ GhostCamera::~GhostCamera() {
 }
 
 void GhostCamera::move() {
+}
 
+void GhostCamera::setMovement(unsigned int to) {
 }
