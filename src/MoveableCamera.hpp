@@ -1,17 +1,34 @@
 #ifndef _GHOST_CAMERA_HPP_
 #define _GHOST_CAMERA_HPP_
 
-#include "IMoveable.hpp"
 #include <stein/Camera.hpp>
+#include <stein/math/Vector3f.hpp>
+#include <stein/Application.hpp>
+#include <cstdlib>
 
-class MoveableCamera : public stein::Camera, public IMoveable {
+enum Direction {
+	FORWARD = 0, RIGHT = 1, UP = 2, BACKWARD = 3, LEFT = 4, DOWN = 5
+};
+
+
+class MoveableCamera : public stein::Camera {
+private:
+	stein::Vector3f m_nextMove;
+	
 protected :
-	Camera camera;
-
+	stein::Application * m_pApplication;
+	GLfloat xMousePosition;
+	GLfloat yMousePosition;
+	 
 public :
-	MoveableCamera(Position);
+	const static GLfloat MOVE_STEP = 0.1;
+
+	MoveableCamera();
 	virtual ~MoveableCamera();
-	virtual void move();
+	void setMovement(size_t, bool);
+	void move();
+	virtual void translation();
+	virtual void rotation();
 };
 
 #endif // _GHOST_CAMERA_HPP_

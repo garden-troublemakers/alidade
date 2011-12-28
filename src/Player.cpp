@@ -9,12 +9,7 @@ Player::~Player() {
 }
 
 void Player::move() {
-	// cf code FPS
-	// update camera
-}
-
-void Player::setMovement(unsigned int to) {
-	
+	MoveableCamera::move();
 }
 
 bool Player::shootPortal(unsigned int type) {

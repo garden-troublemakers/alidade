@@ -11,6 +11,7 @@
 
 // Windowing system SDL
 #include <SDL/SDL.h>
+#include <cstdlib>
 
 namespace stein {
 
@@ -21,12 +22,14 @@ public:
     virtual ~Application();
 
     void loop();
+    size_t m_width() const;
+    size_t m_height() const;
 
 protected:
     Scene m_Scene;
     bool m_bRunning; // True when the window is closed to end the application
 
-    void resize(GLuint w, GLuint h);
+    void resize(size_t w, size_t h);
     void setBackgroundColor(const Color &color);
     void printFPS();
 
@@ -52,8 +55,8 @@ private:
     size_t windowedHeight; // Window dimensions when not fullscreen - vertical axis
     size_t fullScreenWidth; // Screen dimensions - horizontal axis
     size_t fullScreenHeight; // Screen dimensions - vertical axis
-    size_t width; // Window actual dimensions - horizontal axis
-    size_t height; // Window actual dimensions - vertical axis
+    size_t m_width; // Window actual dimensions - horizontal axis
+    size_t m_height; // Window actual dimensions - vertical axis
 
     const uint32_t videoModeFlags;
 

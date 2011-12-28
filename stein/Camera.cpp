@@ -1,7 +1,3 @@
-// Camera.cpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #include "Camera.hpp"
 #include "Tools.hpp"
 

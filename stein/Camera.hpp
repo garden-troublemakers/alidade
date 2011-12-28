@@ -1,7 +1,3 @@
-// Camera.hpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #ifndef __CAMERA_HPP__
 #define __CAMERA_HPP__
 

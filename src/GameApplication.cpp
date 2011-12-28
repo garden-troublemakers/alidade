@@ -8,7 +8,7 @@ static inline float frand() {
 }
 
 GameApplication::GameApplication() :
-	Application(800, 600), m_game(), m_ghostCamera(), m_volumes(), m_bInGame(false), m_bGhostMode(false), m_bInPause(false) {
+	Application(800, 600), m_game(), m_ghostCamera(GHOST_CAMERA_HEIGHT), m_volumes(), m_bInGame(false), m_bGhostMode(false), m_bInPause(false) {
 	// Init volumes at 80 percents each
 	for(size_t i = 0; i < 3 ; ++i)
 		m_volumes[i] = 0.8;
@@ -67,9 +67,8 @@ void GameApplication::animate() {
 			// Should be use for moving nothing, the player or the ghostCamera with the same function.
 			// @TODO : Init with the correct pointer (or reference !)
 			// CF : animate()
-			/*IMoveable* moveable = NULL;
-			if(!!moveable)
-				moveable->move();*/
+			MoveableCamera* moveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
+			moveable->move();
 			/*
 			// @FIXME : Check this harder (no levelStatus)
 			switch(levelStatus) {
