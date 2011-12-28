@@ -4,12 +4,14 @@
 #include "IMoveable.hpp"
 #include <stein/Camera.hpp>
 
-class GhostCamera : public stein::Camera, public IMoveable {
+class MoveableCamera : public stein::Camera, public IMoveable {
+protected :
+	Camera camera;
+
 public :
-	GhostCamera();
-	virtual ~GhostCamera();
+	MoveableCamera(Position);
+	virtual ~MoveableCamera();
 	virtual void move();
-	virtual void setMovement(unsigned int);
 };
 
 #endif // _GHOST_CAMERA_HPP_
