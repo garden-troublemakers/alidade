@@ -67,9 +67,9 @@ void GameApplication::animate() {
 			// Should be use for moving nothing, the player or the ghostCamera with the same function.
 			// @TODO : Init with the correct pointer (or reference !)
 			// CF : animate()
-			IMoveable* moveable = NULL;
+			/*IMoveable* moveable = NULL;
 			if(!!moveable)
-				moveable->move();
+				moveable->move();*/
 			/*
 			// @FIXME : Check this harder (no levelStatus)
 			switch(levelStatus) {
