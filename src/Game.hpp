@@ -2,16 +2,17 @@
 #define _GAME_HPP_
 
 #include "Player.hpp"
+#include <stein/Application.hpp>
 #include <iostream>
 #include <string>
+
 
 struct Game {
 	Player player;
 	unsigned int level;
 	// score, time, bonus ...
 	
-	Game();
-	Game(std::string);
+	Game(const stein::Application * const application);
 	~Game();
 	bool save();
 	bool load();

@@ -51,11 +51,11 @@ Application::~Application() {
     SDL_Quit();
 }
 
-size_t width() const {
+const size_t Application::width() const {
 	return m_width;
 }
 
-size_t height() const {
+const size_t Application::height() const {
 	return m_height;
 }
 
@@ -93,7 +93,7 @@ void Application::initSDLOpenGL() {
     m_width = windowedWidth;
     m_height = windowedHeight;
     // Specifies the size and other options about the window and OpenGL context
-    m_pDrawContext = SDL_SetVideoMode(width, height, 0, videoModeFlags);
+    m_pDrawContext = SDL_SetVideoMode(m_width, m_height, 0, videoModeFlags);
 }
 
 // Customize a few OPenGL states to fit the application's needs
@@ -116,7 +116,7 @@ void Application::customizeStates() {
     // WarpMouse changes the mouse position and
     // generates motion events which we need to ignore.
     SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
-    SDL_WarpMouse(width / 2, height / 2);
+    SDL_WarpMouse(m_width / 2, m_height / 2);
     // After, we can reactivate the m_bShowMouse motion events
     // But we instead choose to check directly the position
     // ourselves when we need it (in the camera update)
@@ -157,10 +157,10 @@ void Application::resize(size_t w, size_t h) {
     //cout<<SDL_GetError()<<endl;
     //customizeStates();
 #else
-    m_pDrawContext = SDL_SetVideoMode(width, height, 0, videoModeFlags);
+    m_pDrawContext = SDL_SetVideoMode(m_width, m_height, 0, videoModeFlags);
 #endif
     // Viewport transformation update to fit initial window size
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, m_width, m_height);
 }
 
 // Sets the background color

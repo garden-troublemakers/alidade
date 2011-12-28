@@ -24,7 +24,7 @@ private :
 	bool m_bInPause;
 	
 public :
-	const static GLfloat GHOST_CAMERA_HEIGHT;
+	const static GLfloat GHOST_CAMERA_HEIGHT = 0.1;
 
 	GameApplication(); // create player 
 	virtual ~GameApplication();

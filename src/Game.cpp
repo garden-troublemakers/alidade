@@ -2,14 +2,8 @@
 
 using namespace std;
 
-Game::Game(): player() {
+Game::Game(const stein::Application * const application): player(application) {
 	
-}
-
-Game::Game(string path) {
-	// xml = loadFromXML(path);
-	//player = new Player(...);
-	//level = xml.level_id
 }
 
 Game::~Game() {

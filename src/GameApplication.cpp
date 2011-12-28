@@ -8,7 +8,7 @@ static inline float frand() {
 }
 
 GameApplication::GameApplication() :
-	Application(800, 600), m_game(), m_ghostCamera(GHOST_CAMERA_HEIGHT), m_volumes(), m_bInGame(false), m_bGhostMode(false), m_bInPause(false) {
+	Application(800, 600), m_game(this), m_ghostCamera(GHOST_CAMERA_HEIGHT, this), m_volumes(), m_bInGame(false), m_bGhostMode(false), m_bInPause(false) {
 	// Init volumes at 80 percents each
 	for(size_t i = 0; i < 3 ; ++i)
 		m_volumes[i] = 0.8;
@@ -116,12 +116,12 @@ void GameApplication::animate() {
 // down is true when the key is pressed, false when released
 void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 	// @FIXME : Maybe we should call the parent's function (then privatize Application::m_bRunning again, and redefine correctly the initialisation's order in constructor Application::Application() ). Then we don't have to rewrite the whole switch. Maybe this is what causes awkwardly slow treatment when a key is pushed. Don't know how.
+	Direction to = NOWHERE;
 	if (down) {
-		// Should be use for moving nothing, the player or the ghostCamera with the same function.
-		// @TODO : Init with the correct pointer (or reference !)
 		// CF : animate()
-		IMoveable* moveable = NULL;
 		if(m_bInGame) {
+			// Should be use for moving nothing, the player or the ghostCamera with the same function.
+			MoveableCamera* pMoveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
 			if(keysym.sym == SDLK_ESCAPE) {
 				if(m_bInPause) {
 					// pause();
@@ -131,8 +131,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 			}
 			else if(keysym.sym == SDLK_p)
 				m_bInPause = !m_bInPause;
-			else if(!!moveable) { // @TODO : check if "!!" is correct for "isset?"
-				unsigned int to = NOWHERE;
+			else if(!!pMoveable) {
 				switch(keysym.sym) {
 					case SDLK_z :
 					case SDLK_UP :
@@ -149,17 +148,40 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 					default : break;
 				}
 				if(to != NOWHERE)
-					moveable->setMovement(to);
+					pMoveable->setMovement(to, true);
 			}
 		}
 		else
 			Application::handleKeyEvent(keysym, down);
 	}
+	// on key release
+	else if(m_bInGame && !m_bInPause) {
+		MoveableCamera* pMoveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
+		if(!!pMoveable) {
+			switch(keysym.sym) {
+				case SDLK_z :
+				case SDLK_UP :
+					to = UP; 	break;
+				case SDLK_s :
+				case SDLK_DOWN :
+					to = DOWN; 	break;
+				case SDLK_q :
+				case SDLK_LEFT :
+					to = LEFT; 	break;
+				case SDLK_d :
+				case SDLK_RIGHT :
+					to = RIGHT;	break;
+				default : break;
+			}
+			if(to != NOWHERE)
+				pMoveable->setMovement(to, false);
+		}
+	}
 	// @TODO : Add handler for key up (else)
 }
 
 
-void GameApplication::setVolume(unsigned int type, double volume) {
+void GameApplication::setVolume(size_t type, double volume) {
 	m_volumes[type] = volume;
 }
 

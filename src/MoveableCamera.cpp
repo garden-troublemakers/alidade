@@ -4,7 +4,7 @@ using namespace stein;
 using namespace std;
 
 MoveableCamera::MoveableCamera(GLfloat height, const Application * const pApplication) :
-	Camera(), m_nextMove(), m_pApplication(pApplication), xMousePosition(), yMousePosition();
+	Camera(), m_nextMove(), m_pApplication(pApplication), m_xMousePosition(), m_yMousePosition()
 {	
 	setPosition(Vector3f(0.,height,1.));
 }
@@ -13,21 +13,23 @@ MoveableCamera::~MoveableCamera() {
 }
 
 // will be called when a key is pushed (add = true) and When the key is released (add = false)
-virtual void setMovement(size_t to, bool add) {
-	size_t axis;
-	if(to == Direction.FORWARD || to == Direction.BACKWARD)
-		axis = Direction.FORWARD;
-	else if (to == Direction.RIGHT || to == Direction.LEFT)
-		axis = Direction.RIGHT;
+void MoveableCamera::setMovement(Direction to, bool add) {
+	Direction axis;
+	if(to == FORWARD || to == BACKWARD)
+		axis = FORWARD;
+	else if (to == RIGHT || to == LEFT)
+		axis = RIGHT;
 	else
-		axis = Direction.UP;
+		axis = UP;
 
-	int moveValue = (to == axis) ? 1 : -1;
-	if(add)
-		m_nextMove[axis] = moveValue;
+	GLfloat moveValue = (to == axis) ? 1. : -1.0;
+	
+	//@TODO add operator override 
+	/*if(add)
+		m_nextMove[axis] = moveValue; 
 	else
 		if(m_nextMove[axis] == moveValue)
-			m_nextMove[axis] = 0;
+			m_nextMove[axis] = 0;*/
 }
 
 void MoveableCamera::move() {
@@ -51,8 +53,8 @@ void MoveableCamera::rotate() {
 	m_yMousePosition += -2.0*mouseRelY/(GLfloat)m_pApplication->height();
 	// std::cout<<m_xMousePosition<< " " << m_yMousePosition<<std::endl;
 
-	GLfloat angleLong = xMousePosition * M_PI;
-	GLfloat angleLat = yMousePosition * M_PI/2.;
+	GLfloat angleLong = m_xMousePosition * M_PI;
+	GLfloat angleLat = m_yMousePosition * M_PI/2.;
 	std::cout<<angleLong<< " " << angleLat<<std::endl;
 	
 	/*

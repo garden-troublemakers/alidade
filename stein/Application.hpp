@@ -22,8 +22,8 @@ public:
     virtual ~Application();
 
     void loop();
-    size_t m_width() const;
-    size_t m_height() const;
+    const size_t width() const;
+    const size_t height() const;
 
 protected:
     Scene m_Scene;
