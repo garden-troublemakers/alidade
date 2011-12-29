@@ -14,7 +14,6 @@
 //#include <stein/math/StreamUtils.h>
 //#include <vector>
 
-
 class GameApplication : public stein::Application {
 private :
 	Game m_game;
