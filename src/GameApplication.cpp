@@ -8,7 +8,7 @@ static inline float frand() {
 }
 
 GameApplication::GameApplication() :
-	Application(800, 600), m_game(), m_ghostCamera(), m_volumes(), m_bInGame(false), m_bGhostMode(false), m_bInPause(false) {
+	Application(800, 600), m_game(this), m_ghostCamera(GHOST_CAMERA_HEIGHT, this), m_volumes(), m_bInGame(false), m_bGhostMode(false), m_bInPause(false) {
 	// Init volumes at 80 percents each
 	for(size_t i = 0; i < 3 ; ++i)
 		m_volumes[i] = 0.8;
@@ -35,7 +35,7 @@ void GameApplication::startGame() {
     //const float size = .06;
     // @TODO : Don't forget to init player's camera
     // We set the actual camera to be the player's one (fps mode)
-    //m_Scene.camera = &(m_game.player.camera);
+    m_Scene.pCamera = & m_game.player;
     /* ... like that
     setPerspectiveProjection(-size, size, -size, size, .1, 100);
     m_Scene.camera.setPosition(Vector3f(0, 0, 55));
@@ -46,14 +46,12 @@ void GameApplication::startGame() {
 	// prepare level using xml.
 	// build objects from xml
 	// add 'em to the scene
-	/* ... like that
+	// ... like that
 	Object &object = m_Scene.createObject(GL_TRIANGLES);
     buildSquare(object);
-    for (size_t i = 0; i < m_Simulation.boids().size(); ++i) {
-        m_Scene.addObjectToDraw(object.id);
-        m_Scene.setDrawnObjectColor(i, Color(frand(), frand(), frand()));
-    }*/
-	// m_bInGame = true; // go
+    m_Scene.addObjectToDraw(object.id);
+    m_Scene.setDrawnObjectColor(0, Color(frand(), frand(), frand()));
+	m_bInGame = true; // go
 }
 
 // @TODO :
@@ -64,12 +62,8 @@ void GameApplication::exitGame() {
 void GameApplication::animate() {
 	if(m_bInGame) {
 		if(!m_bInPause) {
-			// Should be use for moving nothing, the player or the ghostCamera with the same function.
-			// @TODO : Init with the correct pointer (or reference !)
-			// CF : animate()
-			IMoveable* moveable = NULL;
-			if(!!moveable)
-				moveable->move();
+			((MoveableCamera*) m_Scene.pCamera)->move();
+			
 			/*
 			// @FIXME : Check this harder (no levelStatus)
 			switch(levelStatus) {
@@ -116,51 +110,47 @@ void GameApplication::animate() {
 // For example : cout when b key is pressed
 // down is true when the key is pressed, false when released
 void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
-	// @FIXME : Maybe we should call the parent's function (then privatize Application::m_bRunning again, and redefine correctly the initialisation's order in constructor Application::Application() ). Then we don't have to rewrite the whole switch. Maybe this is what causes awkwardly slow treatment when a key is pushed. Don't know how.
-	if (down) {
-		// Should be use for moving nothing, the player or the ghostCamera with the same function.
-		// @TODO : Init with the correct pointer (or reference !)
-		// CF : animate()
-		IMoveable* moveable = NULL;
-		if(m_bInGame) {
-			if(keysym.sym == SDLK_ESCAPE) {
-				if(m_bInPause) {
-					// pause();
-				} else {
-					// resume();
-				}
+	Direction to = NOWHERE;
+	if(keysym.sym == SDLK_ESCAPE && down) {
+		Application::handleKeyEvent(keysym, down);
+		/*if(m_bInGame) {
+			// pause();
+		} else {
+			// resume();
+		}*/
+	}
+	if(m_bInGame) {
+		if(keysym.sym == SDLK_g && down) {
+			m_bGhostMode = !m_bGhostMode;
+			m_Scene.pCamera = m_bGhostMode ? & m_ghostCamera : & m_game.player;
+		} else if(keysym.sym == SDLK_p && down)
+			m_bInPause = !m_bInPause;
+		else if(!m_bInPause) {
+			switch(keysym.sym) {
+				case SDLK_z :
+				case SDLK_UP :
+					to = FORWARD; break;
+				case SDLK_s :
+				case SDLK_DOWN :
+					to = BACKWARD; break;
+				case SDLK_q :
+				case SDLK_LEFT :
+					to = LEFT; 	break;
+				case SDLK_d :
+				case SDLK_RIGHT :
+					to = RIGHT;	break;
+				default : break;
 			}
-			else if(keysym.sym == SDLK_p)
-				m_bInPause = !m_bInPause;
-			else if(!!moveable) { // @TODO : check if "!!" is correct for "isset?"
-				unsigned int to = NOWHERE;
-				switch(keysym.sym) {
-					case SDLK_z :
-					case SDLK_UP :
-						to = UP; 	break;
-					case SDLK_s :
-					case SDLK_DOWN :
-						to = DOWN; 	break;
-					case SDLK_q :
-					case SDLK_LEFT :
-						to = LEFT; 	break;
-					case SDLK_d :
-					case SDLK_RIGHT :
-						to = RIGHT;	break;
-					default : break;
-				}
-				if(to != NOWHERE)
-					moveable->setMovement(to);
-			}
+			if(to != NOWHERE)
+				((MoveableCamera*) m_Scene.pCamera)->setMovement(to, down);
 		}
 		else
 			Application::handleKeyEvent(keysym, down);
 	}
-	// @TODO : Add handler for key up (else)
 }
 
 
-void GameApplication::setVolume(unsigned int type, double volume) {
+void GameApplication::setVolume(size_t type, double volume) {
 	m_volumes[type] = volume;
 }
 
