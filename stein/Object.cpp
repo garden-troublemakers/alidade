@@ -1,7 +1,3 @@
-// Object.cpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #include "Object.hpp"
 #include <iostream>
 

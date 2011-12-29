@@ -1,17 +1,9 @@
-/*
- * Point3D.hpp
- *
- *  Created on: Dec 8, 2011
- *      Author: Guillaume Chatelet
- */
-
 #ifndef MATRIX4F_HPP_
 #define MATRIX4F_HPP_
 
 #include <cassert>
 #include <cmath>
 #include <algorithm>
-#include <cassert>
 
 namespace stein {
 

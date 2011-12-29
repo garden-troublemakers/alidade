@@ -2,11 +2,7 @@
 #define _MENUS_HPP_
 
 // Should help somewhere.
-#define MENU_PAUSE	 0
-#define MENU_SPLASH	 1
-#define MENU_START	 2
-#define MENU_CREDITS 3
-#define NO_MENU		 4
+enum MenuType {MENU_PAUSE, MENU_SPLASH, MENU_START, MENU_CREDITS, NO_MENU};
 
 // SDL needed import #include
 

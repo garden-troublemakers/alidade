@@ -1,10 +1,3 @@
-/*
- * MeshBuilder.h
- *
- *  Created on: Dec 11, 2011
- *      Author: Guillaume Chatelet
- */
-
 #ifndef MESHBUILDER_H_
 #define MESHBUILDER_H_
 

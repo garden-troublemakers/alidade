@@ -1,7 +1,3 @@
-// Builders.cpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #include "Builders.hpp"
 #include "Color.hpp"
 #include "Object.hpp"

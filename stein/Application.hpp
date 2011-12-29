@@ -1,7 +1,3 @@
-// Application.hpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #ifndef __APPLICATION_HPP__
 #define __APPLICATION_HPP__
 

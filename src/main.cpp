@@ -1,7 +1,3 @@
-// main.c
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #include "GameApplication.hpp"
 
 #include <stein/math/StreamUtils.h>
