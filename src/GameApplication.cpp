@@ -35,7 +35,7 @@ void GameApplication::startGame() {
     //const float size = .06;
     // @TODO : Don't forget to init player's camera
     // We set the actual camera to be the player's one (fps mode)
-    //m_Scene.camera = &(m_game.player.camera);
+    m_Scene.pCamera = & m_game.player;
     /* ... like that
     setPerspectiveProjection(-size, size, -size, size, .1, 100);
     m_Scene.camera.setPosition(Vector3f(0, 0, 55));
@@ -46,14 +46,12 @@ void GameApplication::startGame() {
 	// prepare level using xml.
 	// build objects from xml
 	// add 'em to the scene
-	/* ... like that
+	// ... like that
 	Object &object = m_Scene.createObject(GL_TRIANGLES);
     buildSquare(object);
-    for (size_t i = 0; i < m_Simulation.boids().size(); ++i) {
-        m_Scene.addObjectToDraw(object.id);
-        m_Scene.setDrawnObjectColor(i, Color(frand(), frand(), frand()));
-    }*/
-	// m_bInGame = true; // go
+    m_Scene.addObjectToDraw(object.id);
+    m_Scene.setDrawnObjectColor(0, Color(frand(), frand(), frand()));
+	m_bInGame = true; // go
 }
 
 // @TODO :
@@ -67,8 +65,8 @@ void GameApplication::animate() {
 			// Should be use for moving nothing, the player or the ghostCamera with the same function.
 			// @TODO : Init with the correct pointer (or reference !)
 			// CF : animate()
-			MoveableCamera* moveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
-			moveable->move();
+			//MoveableCamera* moveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
+			((MoveableCamera*) m_Scene.pCamera)->move();
 			/*
 			// @FIXME : Check this harder (no levelStatus)
 			switch(levelStatus) {
@@ -121,24 +119,28 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 		// CF : animate()
 		if(m_bInGame) {
 			// Should be use for moving nothing, the player or the ghostCamera with the same function.
-			MoveableCamera* pMoveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
+			//MoveableCamera* pMoveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
 			if(keysym.sym == SDLK_ESCAPE) {
+				Application::handleKeyEvent(keysym, down);
 				if(m_bInPause) {
 					// pause();
 				} else {
 					// resume();
 				}
 			}
-			else if(keysym.sym == SDLK_p)
+			else if(keysym.sym == SDLK_g) {
+				m_bGhostMode = !m_bGhostMode;
+				m_Scene.pCamera = m_bGhostMode ? & m_ghostCamera : & m_game.player;
+			} else if(keysym.sym == SDLK_p)
 				m_bInPause = !m_bInPause;
-			else if(!!pMoveable) {
+			else /*if(!!pMoveable)*/{
 				switch(keysym.sym) {
 					case SDLK_z :
 					case SDLK_UP :
-						to = UP; 	break;
+						to = FORWARD; break;
 					case SDLK_s :
 					case SDLK_DOWN :
-						to = DOWN; 	break;
+						to = BACKWARD; break;
 					case SDLK_q :
 					case SDLK_LEFT :
 						to = LEFT; 	break;
@@ -148,7 +150,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 					default : break;
 				}
 				if(to != NOWHERE)
-					pMoveable->setMovement(to, true);
+					((MoveableCamera*) m_Scene.pCamera)->setMovement(to, true);
 			}
 		}
 		else
@@ -156,15 +158,15 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 	}
 	// on key release
 	else if(m_bInGame && !m_bInPause) {
-		MoveableCamera* pMoveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
-		if(!!pMoveable) {
+		/*MoveableCamera* pMoveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
+		if(!!pMoveable) {*/
 			switch(keysym.sym) {
 				case SDLK_z :
 				case SDLK_UP :
-					to = UP; 	break;
+					to = FORWARD; 	break;
 				case SDLK_s :
 				case SDLK_DOWN :
-					to = DOWN; 	break;
+					to = BACKWARD; 	break;
 				case SDLK_q :
 				case SDLK_LEFT :
 					to = LEFT; 	break;
@@ -174,8 +176,9 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 				default : break;
 			}
 			if(to != NOWHERE)
-				pMoveable->setMovement(to, false);
-		}
+				//pMoveable->setMovement(to, false);
+				((MoveableCamera*) m_Scene.pCamera)->setMovement(to, false);
+		//}
 	}
 	// @TODO : Add handler for key up (else)
 }

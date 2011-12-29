@@ -8,8 +8,8 @@
 #include <iostream>
 #include <stein/Application.hpp>
 #include <stein/Tools.hpp>
-//#include <stein/Object.hpp>
-//#include <stein/Builders.hpp>
+#include <stein/Object.hpp>
+#include <stein/Builders.hpp>
 //#include <stein/math/StreamUtils.h>
 //#include <vector>
 

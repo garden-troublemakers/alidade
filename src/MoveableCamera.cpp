@@ -14,7 +14,7 @@ MoveableCamera::~MoveableCamera() {
 
 // will be called when a key is pushed (add = true) and When the key is released (add = false)
 void MoveableCamera::setMovement(Direction to, bool add) {
-	Direction axis;
+	size_t axis;
 	if(to == FORWARD || to == BACKWARD)
 		axis = FORWARD;
 	else if (to == RIGHT || to == LEFT)
@@ -22,14 +22,14 @@ void MoveableCamera::setMovement(Direction to, bool add) {
 	else
 		axis = UP;
 
-	GLfloat moveValue = (to == axis) ? 1. : -1.0;
+	float moveValue = (to == axis) ? 1. : -1.;
 	
 	//@TODO add operator override 
-	/*if(add)
+	if(add)
 		m_nextMove[axis] = moveValue; 
 	else
 		if(m_nextMove[axis] == moveValue)
-			m_nextMove[axis] = 0;*/
+			m_nextMove[axis] = 0.;
 }
 
 void MoveableCamera::move() {
@@ -55,7 +55,7 @@ void MoveableCamera::rotate() {
 
 	GLfloat angleLong = m_xMousePosition * M_PI;
 	GLfloat angleLat = m_yMousePosition * M_PI/2.;
-	std::cout<<angleLong<< " " << angleLat<<std::endl;
+	//std::cout<<angleLong<< " " << angleLat<<std::endl;
 	
 	/*
 	// Method with rotates
@@ -86,8 +86,9 @@ void MoveableCamera::rotate() {
 
 void MoveableCamera::translate() {
 	Vector3f nextGlobalMove(m_nextMove);
+	nextGlobalMove[FORWARD] *= -1; // Inverse the forward axis
 	nextGlobalMove.normalize();
 	// @TODO : Switch from local coordinates to global coordinates then :
 	
-	this->setPosition(this->getPosition() + nextGlobalMove * MOVE_STEP);
+	setPosition(getPosition() + nextGlobalMove * MOVE_STEP);
 }

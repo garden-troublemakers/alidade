@@ -11,7 +11,7 @@ using namespace stein;
 using namespace std;
 
 enum Direction {
-	FORWARD = 0, RIGHT = 1, UP = 2, BACKWARD = 3, LEFT = 4, DOWN = 5, NOWHERE = 6
+	RIGHT = 0, UP = 1, FORWARD = 2, LEFT = 3, DOWN = 4, BACKWARD = 5, NOWHERE = 6
 };
 
 class MoveableCamera : public stein::Camera {

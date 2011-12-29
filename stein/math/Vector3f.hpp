@@ -96,6 +96,11 @@ struct Vector3f {
     operator const float*() const {
         return &x;
     }
+    
+	float& operator[] (const int i)
+	{
+		return (i == 0) ? x : (i == 1) ? y : z;
+	}
 };
 
 } // namespace stein

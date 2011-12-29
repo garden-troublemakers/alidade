@@ -1,7 +1,3 @@
-// Scene.hpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #ifndef __SCENE_HPP__
 #define __SCENE_HPP__
 
@@ -44,7 +40,7 @@ public:
     Scene();
     ~Scene();
 
-    Camera camera; // Camera used to watch the scene
+    Camera* pCamera; // Camera used to watch the scene
 
     Object& createObject(GLenum primitiveType);
     GLuint addObjectToDraw(GLuint indexStoredObject);
