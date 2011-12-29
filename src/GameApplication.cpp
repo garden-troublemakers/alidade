@@ -9,9 +9,6 @@ static inline float frand() {
 
 GameApplication::GameApplication() :
 	Application(800, 600), m_game(this), m_ghostCamera(GHOST_CAMERA_HEIGHT, this), m_volumes(), m_bInGame(false), m_bGhostMode(false), m_bInPause(false) {
-    const float size = .06;
-    m_ghostCamera.setPerspectiveProjection(-size, size, -size, size, .1, 100);
-    m_ghostCamera.setPosition(Vector3f(0, 0, 55));
 	// Init volumes at 80 percents each
 	for(size_t i = 0; i < 3 ; ++i)
 		m_volumes[i] = 0.8;
@@ -35,10 +32,14 @@ void GameApplication::startGame() {
 	
 	// init camera and shaders
 	
+    //const float size = .06;
     // @TODO : Don't forget to init player's camera
     // We set the actual camera to be the player's one (fps mode)
-    m_Scene.camera = m_game.player;
-
+    //m_Scene.camera = &(m_game.player.camera);
+    /* ... like that
+    setPerspectiveProjection(-size, size, -size, size, .1, 100);
+    m_Scene.camera.setPosition(Vector3f(0, 0, 55));
+    */
     // Shader
     m_Scene.setDefaultShaderID(loadProgram("../shaders/simpleShader.glsl"));
     
@@ -128,8 +129,6 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 					// resume();
 				}
 			}
-			else if(keysym.sym == SDLK_g)
-				m_bGhostMode = !m_bGhostMode;
 			else if(keysym.sym == SDLK_p)
 				m_bInPause = !m_bInPause;
 			else if(!!pMoveable) {
