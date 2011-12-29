@@ -62,11 +62,8 @@ void GameApplication::exitGame() {
 void GameApplication::animate() {
 	if(m_bInGame) {
 		if(!m_bInPause) {
-			// Should be use for moving nothing, the player or the ghostCamera with the same function.
-			// @TODO : Init with the correct pointer (or reference !)
-			// CF : animate()
-			//MoveableCamera* moveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
 			((MoveableCamera*) m_Scene.pCamera)->move();
+			
 			/*
 			// @FIXME : Check this harder (no levelStatus)
 			switch(levelStatus) {
@@ -113,60 +110,29 @@ void GameApplication::animate() {
 // For example : cout when b key is pressed
 // down is true when the key is pressed, false when released
 void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
-	// @FIXME : Maybe we should call the parent's function (then privatize Application::m_bRunning again, and redefine correctly the initialisation's order in constructor Application::Application() ). Then we don't have to rewrite the whole switch. Maybe this is what causes awkwardly slow treatment when a key is pushed. Don't know how.
 	Direction to = NOWHERE;
-	if (down) {
-		// CF : animate()
-		if(m_bInGame) {
-			// Should be use for moving nothing, the player or the ghostCamera with the same function.
-			//MoveableCamera* pMoveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
-			if(keysym.sym == SDLK_ESCAPE) {
-				Application::handleKeyEvent(keysym, down);
-				if(m_bInPause) {
-					// pause();
-				} else {
-					// resume();
-				}
-			}
-			else if(keysym.sym == SDLK_g) {
-				m_bGhostMode = !m_bGhostMode;
-				m_Scene.pCamera = m_bGhostMode ? & m_ghostCamera : & m_game.player;
-			} else if(keysym.sym == SDLK_p)
-				m_bInPause = !m_bInPause;
-			else /*if(!!pMoveable)*/{
-				switch(keysym.sym) {
-					case SDLK_z :
-					case SDLK_UP :
-						to = FORWARD; break;
-					case SDLK_s :
-					case SDLK_DOWN :
-						to = BACKWARD; break;
-					case SDLK_q :
-					case SDLK_LEFT :
-						to = LEFT; 	break;
-					case SDLK_d :
-					case SDLK_RIGHT :
-						to = RIGHT;	break;
-					default : break;
-				}
-				if(to != NOWHERE)
-					((MoveableCamera*) m_Scene.pCamera)->setMovement(to, true);
-			}
-		}
-		else
-			Application::handleKeyEvent(keysym, down);
+	if(keysym.sym == SDLK_ESCAPE && down) {
+		Application::handleKeyEvent(keysym, down);
+		/*if(m_bInGame) {
+			// pause();
+		} else {
+			// resume();
+		}*/
 	}
-	// on key release
-	else if(m_bInGame && !m_bInPause) {
-		/*MoveableCamera* pMoveable = m_bGhostMode ? &m_ghostCamera : &(m_game.player);
-		if(!!pMoveable) {*/
+	if(m_bInGame) {
+		if(keysym.sym == SDLK_g && down) {
+			m_bGhostMode = !m_bGhostMode;
+			m_Scene.pCamera = m_bGhostMode ? & m_ghostCamera : & m_game.player;
+		} else if(keysym.sym == SDLK_p && down)
+			m_bInPause = !m_bInPause;
+		else if(!m_bInPause) {
 			switch(keysym.sym) {
 				case SDLK_z :
 				case SDLK_UP :
-					to = FORWARD; 	break;
+					to = FORWARD; break;
 				case SDLK_s :
 				case SDLK_DOWN :
-					to = BACKWARD; 	break;
+					to = BACKWARD; break;
 				case SDLK_q :
 				case SDLK_LEFT :
 					to = LEFT; 	break;
@@ -176,11 +142,11 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 				default : break;
 			}
 			if(to != NOWHERE)
-				//pMoveable->setMovement(to, false);
-				((MoveableCamera*) m_Scene.pCamera)->setMovement(to, false);
-		//}
+				((MoveableCamera*) m_Scene.pCamera)->setMovement(to, down);
+		}
+		else
+			Application::handleKeyEvent(keysym, down);
 	}
-	// @TODO : Add handler for key up (else)
 }
 
 
