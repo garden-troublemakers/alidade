@@ -6,13 +6,15 @@
 #include "MoveableCamera.hpp"
 #include <cstdlib>
 #include <iostream>
+#include <string>
+#include <tinyxml/tinyxml.h>
+#include <tinyxml/tinystr.h>
 #include <stein/Application.hpp>
 #include <stein/Tools.hpp>
 #include <stein/Object.hpp>
 #include <stein/Builders.hpp>
 //#include <stein/math/StreamUtils.h>
 //#include <vector>
-
 
 class GameApplication : public stein::Application {
 private :
@@ -26,12 +28,15 @@ private :
 public :
 	const static GLfloat GHOST_CAMERA_HEIGHT = 0.1;
 
-	GameApplication(); // create player 
+	GameApplication();
 	virtual ~GameApplication();
 	void pause(); 	// pause the game
 	void resume(); 	// resume the game
+	/* Move in Game:
 	void startGame();
+	void loadLevel(Game & game);
 	void exitGame();
+	*/
 	// At each frame
 	virtual void animate();
 	// On event

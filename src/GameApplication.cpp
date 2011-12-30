@@ -23,7 +23,7 @@ GameApplication::~GameApplication() {
 	//delete [] m_volumes;
 }
 
-//
+// @TODO : del
 void GameApplication::startGame() {
 	// init level configuration
 	/*
@@ -43,20 +43,14 @@ void GameApplication::startGame() {
     // Shader
     m_Scene.setDefaultShaderID(loadProgram("../shaders/simpleShader.glsl"));
     
-	// prepare level using xml.
-	// build objects from xml
-	// add 'em to the scene
-	// ... like that
-	Object &object = m_Scene.createObject(GL_TRIANGLES);
-    buildSquare(object);
-    m_Scene.addObjectToDraw(object.id);
-    m_Scene.setDrawnObjectColor(0, Color(frand(), frand(), frand()));
+	loadLevel(m_game);
+	
 	m_bInGame = true; // go
 }
 
 // @TODO :
 void GameApplication::exitGame() {
-	m_bInGame = false;
+	game.exit();
 }
 
 void GameApplication::animate() {
