@@ -12,6 +12,9 @@ GameApplication::GameApplication() :
 	// Init volumes at 80 percents each
 	for(size_t i = 0; i < 3 ; ++i)
 		m_volumes[i] = 0.8;
+
+	SDL_ShowCursor(SDL_DISABLE); // Hide cursor
+	SDL_WM_GrabInput(SDL_GRAB_ON); // Restrict cursor to the window
     
     // @TODO : build menu in sdl.
     
@@ -50,6 +53,18 @@ void GameApplication::startGame() {
 	Object &object = m_Scene.createObject(GL_TRIANGLES);
     buildSquare(object);
     m_Scene.addObjectToDraw(object.id);
+
+    Object &object2 = m_Scene.createObject(GL_TRIANGLES);
+       buildSquare(object2);
+       m_Scene.addObjectToDraw(object2.id);
+
+       Vector3f tr(0, 0, 1);
+       Vector3f rt(0, 1, 0);
+
+       m_Scene.setDrawnObjectModel(object2.id, translation(tr) * rotation(90, rt));
+
+       m_Scene.setDrawnObjectColor(1, Color(frand(), frand(), frand()));
+
     m_Scene.setDrawnObjectColor(0, Color(frand(), frand(), frand()));
 	m_bInGame = true; // go
 }
