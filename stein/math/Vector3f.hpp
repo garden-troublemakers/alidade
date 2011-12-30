@@ -96,6 +96,11 @@ struct Vector3f {
     operator const float*() const {
         return &x;
     }
+    
+    float scalarTriple(const Vector3f &first, const Vecotr3f &second) const {
+    	// Returns the scalar triple product between a, b and c
+	    return dotP(first.crossP(second));
+    }
 };
 
 } // namespace stein
