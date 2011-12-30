@@ -18,12 +18,12 @@ struct Camera {
     const Vector3f& getPosition() const;
     const Matrix4f& getView() const;
     const Matrix4f& getProjection() const;
-private:
+protected:
     void updateView();
 
-    const Vector3f xAxis; // Camera axis x : right side
-    const Vector3f yAxis; // Camera axis y : up
-    const Vector3f zAxis; // Camera axis z : backward
+    Vector3f xAxis; // Camera axis x : right side
+    Vector3f yAxis; // Camera axis y : up
+    Vector3f zAxis; // Camera axis z : backward
 
     Vector3f position; // Camera position
     Matrix4f view; // View matrix
