@@ -10,30 +10,8 @@ namespace stein {
 Camera::Camera() :
     xAxis(1, 0, 0), yAxis(0, 1, 0), zAxis(0, 0, 1), position(0, 0, 1) {
     updateView();
-    setPerspectiveProjection(-1, 1, -1, 1, .1, 100);
+    setPerspectiveProjection(-1, 1, -1, 1, 1.1, 35);
 }
-
-/*void Camera::lookAt(Vector3f *aim){
-
-	this->aim = aim;
-
-
-	this->up[0]=up[0];  this->up[1]=up[1]; this->up[2]=up[2];
-
-
-	this->z[0]=(c[0]-aim[0]);
-	this->z[1]=(c[1]-aim[1]);
-	this->z[2]=(c[2]-aim[2]);
-	normalize(this->z); // z est le vecteur de mm direction que celui qui passe par c et aim
-
-	vectorProduct(up, this->z, this->x);	// x est le resultat du produit vectoriel de z et up
-	normalize(this->x);
-
-	vectorProduct(this->z, this->x, this->y);	// y est le resultat du produit vectoriel de z et x
-	normalize(this->y);
-
-	updateView();
-}*/
 
 // Updates view
 void Camera::updateView() {

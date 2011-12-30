@@ -24,8 +24,6 @@ private:
     const Vector3f yAxis; // Camera axis y : up
     const Vector3f zAxis; // Camera axis z : backward
 
-    Vector3f aim;
-
     Vector3f position; // Camera position
     Matrix4f view; // View matrix
     Matrix4f projection; // Projection matrix
