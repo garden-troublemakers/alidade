@@ -22,7 +22,7 @@ void Camera::updateView() {
     Matrix4f TcInv(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -position.x, -position.y, -position.z, 1);
 
     // Initializes
-    view = RcInv * TcInv;
+    view = RcInv * rotation * TcInv;
 }
 
 void Camera::setPerspectiveProjection(float left, float right, float bottom, float top, float near, float far) {
