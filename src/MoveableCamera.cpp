@@ -55,6 +55,7 @@ void MoveableCamera::rotate() {
 
 	GLfloat angleLong = m_xMousePosition * M_PI;
 	GLfloat angleLat = m_yMousePosition * M_PI/2.;
+	setRotation(yRotation(angleLong));
 	//std::cout<<angleLong<< " " << angleLat<<std::endl;
 	
 	/*
