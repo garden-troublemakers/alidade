@@ -11,6 +11,7 @@ struct Camera {
     Camera();
 
     void setPosition(const Vector3f&);
+    void setRotation(const Matrix4f&);
     void setPerspectiveProjection(float left, float right, float bottom, float top, float near, float far);
     void setOrthoProjection(float left, float right, float bottom, float top, float near, float far);
 
@@ -26,6 +27,7 @@ private:
 
     Vector3f position; // Camera position
     Matrix4f view; // View matrix
+    Matrix4f rotation; // View matrix
     Matrix4f projection; // Projection matrix
 };
 

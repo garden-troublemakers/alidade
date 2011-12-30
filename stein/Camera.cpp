@@ -46,6 +46,11 @@ void Camera::setPosition(const Vector3f&p) {
     updateView();
 }
 
+void Camera::setRotation(const Matrix4f&r) {
+	rotation = r;
+	updateView();
+}
+
 const Vector3f& Camera::getPosition() const {
     return position;
 }

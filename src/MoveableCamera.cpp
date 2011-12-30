@@ -1,5 +1,5 @@
 #include "MoveableCamera.hpp"
-
+#include <stein/Tools.hpp>
 using namespace stein;
 using namespace std;
 
