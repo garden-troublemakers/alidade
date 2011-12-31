@@ -150,10 +150,10 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 					to = BACKWARD; break;
 				case SDLK_q :
 				case SDLK_LEFT :
-					to = LEFT; 	break;
+					to = RIGHT; break;
 				case SDLK_d :
 				case SDLK_RIGHT :
-					to = RIGHT;	break;
+					to = LEFT;	break;
 				default : break;
 			}
 			if(to != NOWHERE)
