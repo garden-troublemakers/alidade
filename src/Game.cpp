@@ -2,8 +2,9 @@
 
 using namespace std;
 
-Game::Game(const stein::Application * const application): m_player(application), m_portals(), m_bRunning(false) {
-	
+Game::Game(const stein::Application * const application):
+	m_player(application), m_portals(), m_bRunning(false)
+{	
 }
 
 Game::~Game() {
@@ -66,7 +67,8 @@ const std::list<const stein::Object> objectsList() const {
 	return m_lObjects;
 }
 
-void Game::checkClick(Mouse.clicType) {
+// @FIXME
+void Game::checkClick(Mouse.clickType) {
 	// Check syntax with Mouse event
 	Color color = (clicType == LEFT) ? BLUE : RED;
 	Intersection * pIntersection = NULL;

@@ -1,10 +1,3 @@
-/*
- * StreamUtils.cpp
- *
- *  Created on: Dec 10, 2011
- *      Author: Guillaume Chatelet
- */
-
 #include "StreamUtils.h"
 
 using namespace std;

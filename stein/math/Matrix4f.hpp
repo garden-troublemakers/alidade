@@ -1,17 +1,10 @@
-/*
- * Point3D.hpp
- *
- *  Created on: Dec 8, 2011
- *      Author: Guillaume Chatelet
- */
-
 #ifndef MATRIX4F_HPP_
 #define MATRIX4F_HPP_
 
 #include <cassert>
 #include <cmath>
 #include <algorithm>
-#include <cassert>
+#include <iostream>
 
 namespace stein {
 
@@ -52,6 +45,16 @@ struct Matrix4f {
         assert(col<4);
         assert(row<4);
         return m_Data[index(col, row)];
+    }
+
+    friend std::ostream& operator<<(std::ostream& stream, Matrix4f& print) {
+    	for (size_t row = 0; row < 4; ++row) {
+			for (size_t col = 0; col < 4; ++col) {
+				stream << print(col, row) << " ";
+			}
+			stream << std::endl;
+    	}
+    	return stream;
     }
 
     const float& operator()(size_t col, size_t row) const {

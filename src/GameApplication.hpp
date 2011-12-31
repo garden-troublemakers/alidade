@@ -21,13 +21,14 @@ private :
 	Game m_game;
 	MoveableCamera m_ghostCamera;
 	double m_volumes[3];
+	// Need to be in Game
 	bool m_bInGame;
 	bool m_bGhostMode;
 	bool m_bInPause;
 	
 public :
 	const static GLfloat GHOST_CAMERA_HEIGHT = 0.1;
-
+	
 	GameApplication();
 	virtual ~GameApplication();
 	void pause(); 	// pause the game

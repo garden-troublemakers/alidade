@@ -1,4 +1,3 @@
-
 #define CAMERA_GHOST 	0
 #define CAMERA_PLAYER 	1
 #define VOLUME_SOUND 	0

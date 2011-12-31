@@ -1,9 +1,3 @@
-/*
- * Color.cpp
- *
- *  Created on: Dec 10, 2011
- *      Author: Guillaume Chatelet
- */
 #include "Color.hpp"
 
 namespace stein {

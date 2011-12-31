@@ -1,20 +1,14 @@
 #include "Player.hpp"
 
-Player::Player() : m_movement(), camera() {
+using namespace std;
+using namespace stein;
+
+Player::Player(const Application * const application) : MoveableCamera(PLAYER_HEIGHT, application), m_movement() {
 	m_life = 100;
 }
 
 Player::~Player() {
 
-}
-
-void Player::move() {
-	// cf code FPS
-	// update camera
-}
-
-void Player::setMovement(unsigned int to) {
-	// @FIXME : Need MERGE
 }
 
 bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects) {
@@ -33,6 +27,7 @@ bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects
 				intersection = currentIntersection;
 		}
 	}
+	/*
 	if(((Obj*)intersection.triangle.pObject)->type == PORTALABLE_ZONE) {
 	
 		if(portal
@@ -42,7 +37,7 @@ bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects
 				portals[type].setPortal(surface, collisionPoint);
 				// change position
 			if(!isMirror)
-				portals[1-type].setPortal()/*setMirror(false)*/;
+				portals[1-type].setPortal() // setMirror(false);
 				
 		if(!!game.portals.redPortal) {
 			if(game.portals.redPortal.getPosition() - intersection.point) {
@@ -63,9 +58,6 @@ bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects
 		}
 		game.portals.setPortal();
 	}
-	return true;
-}
-
-unsigned int Player::getLife() {
-	return m_life;
+=======
+	MoveableCamera::move();*/
 }
