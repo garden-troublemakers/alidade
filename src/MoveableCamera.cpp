@@ -1,5 +1,6 @@
 #include "MoveableCamera.hpp"
-#include <stein/Tools.hpp>
+#include "GameApplication.hpp"
+
 using namespace stein;
 using namespace std;
 
@@ -60,14 +61,14 @@ void MoveableCamera::move() {
 	}
 	
 	float angleForWindowWidth=M_PI;
-	float angleForWindowHeight=M_PI/2.0;
+	//float angleForWindowHeight=M_PI/2.0;
 	float angleLong = m_xMousePosition*angleForWindowWidth;
-	float angleLat = m_yMousePosition*angleForWindowHeight;
+	//float angleLat = m_yMousePosition*angleForWindowHeight;
 	//std::cout<<angleLong<< " " << angleLat<<std::endl;
 
 	//Method with rotates
 
-	Matrix4f rotateAroundX = xRotation(angleLat);
+	//Matrix4f rotateAroundX = xRotation(angleLat);
 	Matrix4f rotateAroundY = yRotation(angleLong);
 	Matrix4f translate = translation(cameraNewPos);
 

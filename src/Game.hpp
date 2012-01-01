@@ -20,9 +20,6 @@ enum Level {
 	EASY, HARD
 };
 
-// forward declaration
-class MoveableCamera;
-
 class Game {
 private :
 	stein::Scene* m_pScene;

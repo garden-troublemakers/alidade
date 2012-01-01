@@ -1,13 +1,10 @@
 #ifndef _GAME_APPLICATION_HPP_
 #define _GAME_APPLICATION_HPP_
 
+// @TODO : rm !
 #include "consts.h"
 #include "Game.hpp"
 #include <stein/Application.hpp>
-
-// @TODO : rm !
-// forward declaration
-//class Game;
 
 class GameApplication : public stein::Application {
 private :

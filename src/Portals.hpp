@@ -3,7 +3,6 @@
 
 #include "Mirror.hpp"
 #include "Geometry.hpp"
-#include <stein/Camera.hpp>
 #include <stein/Color.hpp>
 
 struct Portals {

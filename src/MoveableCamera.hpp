@@ -1,12 +1,16 @@
 #ifndef _MOVEABLE_CAMERA_HPP_
 #define _MOVEABLE_CAMERA_HPP_
 
-#include "GameApplication.hpp"
+//#include "GameApplication.hpp"
 #include <SDL/SDL.h>
 #include <stein/Camera.hpp>
 #include <stein/math/Vector3f.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <stein/Tools.hpp>
+
+// forward declaration
+class GameApplication;
 
 enum Direction {
 	RIGHT = 0, UP = 1, FORWARD = 2, LEFT = 3, DOWN = 4, BACKWARD = 5, NOWHERE = 6

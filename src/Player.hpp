@@ -10,9 +10,6 @@
 #include <stein/Application.hpp>
 #include <list>
 
-// forward declaration
-class MoveableCamera;
-
 class Player : public MoveableCamera {
 private :
 	//stein::Vector3f m_movement;
