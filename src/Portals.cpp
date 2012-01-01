@@ -1,36 +1,27 @@
 #include "Portals.hpp"
 
 Portals::Portals() : pBluePortal(NULL), pRedPortal(NULL)
-{
-}
+{}
 
 Portals::~Portals() {
-	delete bluePortal;
-	delete redPortal;
+	delete pBluePortal;
+	delete pBluePortal;
 }
 
 // called at each frame
 void Portals::update() {
 	// Change texture depending on camera.
-	if(m_bMirror) {
+	bool bMirror = (!pBluePortal || !pRedPortal);
+	if(bMirror) {
 		// orientate to ourself
 	} else {
 		// orientate using another portal camera
 	}
 }
 
-void Portals::draw() const {
-	// add 3d object here, depending on attributes
-}
-
-- 1 créer un portal BLUE ou RED
-- 2 supprimer un portal BLUE ou RED
-- 3 mettre à jour un portal BLUE ou RED
-
-
+/*
 void Portals::setPortal(Color color, Intersection intersection) {
-
-	/*	// @TODO : move
+		// @TODO : move
 			// We are attempting to create a portal on a non-PortalSurface so we delete it.
 		if(surfaceIsPortalSurface) {
 			if(!portals[type])
@@ -39,7 +30,7 @@ void Portals::setPortal(Color color, Intersection intersection) {
 				portals[type].setPortal(surface, collisionPoint);
 				// change position
 			if(!isMirror)
-				portals[1-type].setPortal()/*setMirror(false)*//*;
+				portals[1-type].setPortal()//setMirror(false);
 		}
 	pPortal
 	if(portal.color == BLUE) {
@@ -54,7 +45,6 @@ void Portals::setPortal(Color color, Intersection intersection) {
 			delete redPortal;
 		}
 		redPortal = &portal;
-	}*/
+	}
 	
-}
-
+}*/

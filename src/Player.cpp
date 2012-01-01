@@ -3,7 +3,7 @@
 using namespace std;
 using namespace stein;
 
-Player::Player(const Application * const application) : MoveableCamera(PLAYER_HEIGHT, application), m_movement() {
+Player::Player() : MoveableCamera(PLAYER_HEIGHT) {
 	m_life = 100;
 }
 
@@ -11,12 +11,13 @@ Player::~Player() {
 
 }
 
-bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects) {
+bool Player::shootPortal(Color color, std::list<Obj> lObjects) {
 	// dir = Vector "forward" normalized
-	Ray ray(getPosition, dir);
+	/*Ray ray(getPosition, dir);
 	Intersection intersection;
 	
-	std::list<Obj>::iterator i;
+	list<Obj>::iterator i;
+	
 	for(i = lObjects.begin(); i!= lObjects.end(); ++i){
 		// foreach triangle
 		Triangle triangle(a, b, c, &i);
@@ -27,7 +28,7 @@ bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects
 				intersection = currentIntersection;
 		}
 	}
-	/*
+	------------------------------------
 	if(((Obj*)intersection.triangle.pObject)->type == PORTALABLE_ZONE) {
 	
 		if(portal
@@ -60,4 +61,5 @@ bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects
 	}
 =======
 	MoveableCamera::move();*/
+	return 0;
 }

@@ -27,7 +27,8 @@ static inline Uint32 genericTimer(Uint32 interval, void* param) {
 
 // Default constructor
 Application::Application(size_t width, size_t height) :
-    m_bRunning(true), m_pDrawContext(NULL), windowedWidth(width), windowedHeight(height), videoModeFlags(SDL_OPENGL | SDL_RESIZABLE), m_bShowMouse(true), m_FrameCount(0) {
+    m_pDrawContext(NULL), windowedWidth(width), windowedHeight(height), videoModeFlags(SDL_OPENGL | SDL_RESIZABLE), 
+    m_bRunning(true), m_bShowMouse(true), m_FrameCount(0) {
     
     // Mouse position, pressed position and scroll data initilaization
     // Positions : floats, origin in center, sides at +/-1 or more

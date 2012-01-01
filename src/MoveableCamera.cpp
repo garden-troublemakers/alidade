@@ -3,8 +3,8 @@
 using namespace stein;
 using namespace std;
 
-MoveableCamera::MoveableCamera(GLfloat height, const Application * const pApplication) :
-	Camera(), m_nextMove(), m_pApplication(pApplication), m_xMousePosition(), m_yMousePosition()
+MoveableCamera::MoveableCamera(float height) :
+	Camera(), m_nextMove(), m_xMousePosition(), m_yMousePosition()
 {	
 	setPosition(Vector3f(0.,height,-1.));
 }
@@ -41,16 +41,16 @@ void MoveableCamera::move() {
 		SDL_GetRelativeMouseState(&mouseRelX, &mouseRelY);
 	#endif
 
-	this->m_xMousePosition += 2.0*mouseRelX/(GLfloat)m_pApplication->width();
-	this->m_yMousePosition += -2.0*mouseRelY/(GLfloat)m_pApplication->height();
+	m_xMousePosition += 2. * mouseRelX / (GLfloat)GameApplication::WIDTH;
+	m_yMousePosition += -2. * mouseRelY / (GLfloat)GameApplication::HEIGHT;
 
-	GLfloat moveStep=0.1;
+	float moveStep=0.1;
 	Vector3f cameraNewPos;
 
-	GLfloat moveOnX = this->m_nextMove[0] * moveStep;
-	GLfloat moveOnY = this->m_nextMove[1] * moveStep;
-	GLfloat moveOnZ = this->m_nextMove[2] * moveStep;
-	for(GLuint iCoord=0; iCoord<3; iCoord++)
+	float moveOnX = m_nextMove[0] * moveStep;
+	float moveOnY = m_nextMove[1] * moveStep;
+	float moveOnZ = m_nextMove[2] * moveStep;
+	for(size_t iCoord=0; iCoord<3; ++iCoord)
 	{
 		cameraNewPos[iCoord]=position[iCoord]
 			+xAxis[iCoord]*moveOnX
@@ -59,10 +59,10 @@ void MoveableCamera::move() {
 
 	}
 	
-	GLfloat angleForWindowWidth=M_PI;
-	GLfloat angleForWindowHeight=M_PI/2.0;
-	GLfloat angleLong = this->m_xMousePosition*angleForWindowWidth;
-	GLfloat angleLat = this->m_yMousePosition*angleForWindowHeight;
+	float angleForWindowWidth=M_PI;
+	float angleForWindowHeight=M_PI/2.0;
+	float angleLong = m_xMousePosition*angleForWindowWidth;
+	float angleLat = m_yMousePosition*angleForWindowHeight;
 	//std::cout<<angleLong<< " " << angleLat<<std::endl;
 
 	//Method with rotates
@@ -74,7 +74,7 @@ void MoveableCamera::move() {
 	view.setIdentity();
 	view = view * rotateAroundY * translate;
 
-	for(GLuint iCoord=0; iCoord<3; iCoord++)
+	for(size_t iCoord=0; iCoord<3; ++iCoord)
 	{
 		//Updates the axis with values in view
 		xAxis[iCoord]=view(iCoord, 0);
@@ -97,12 +97,12 @@ void MoveableCamera::rotate() {
 		SDL_GetRelativeMouseState(&mouseRelX, &mouseRelY);
 	#endif
 
-	m_xMousePosition += 2.0*mouseRelX/(GLfloat)m_pApplication->width();
-	m_yMousePosition += -2.0*mouseRelY/(GLfloat)m_pApplication->height();
+	m_xMousePosition += 2.0*mouseRelX/(GLfloat)GameApplication::WIDTH;
+	m_yMousePosition += -2.0*mouseRelY/(GLfloat)GameApplication::HEIGHT;
 	// std::cout<<m_m_xMousePosition<< " " << m_yMousePosition<<std::endl;
 
-	GLfloat angleLong = m_xMousePosition * M_PI;
-	GLfloat angleLat = m_yMousePosition * M_PI/2.;
+	float angleLong = m_xMousePosition * M_PI;
+	//float angleLat = m_yMousePosition * M_PI/2.;
 	setRotation(yRotation(angleLong));
 	//std::cout<<angleLong<< " " << angleLat<<std::endl;
 	
@@ -135,9 +135,9 @@ void MoveableCamera::rotate() {
 
 void MoveableCamera::translate() {
 	Vector3f nextGlobalMove(m_nextMove);
-	nextGlobalMove[FORWARD] *= -1; // Inverse the forward axis
-	nextGlobalMove[RIGHT] *= -1; // Inverse the right axis
-	nextGlobalMove[TOP] *= -1; // Inverse the right axis
+	nextGlobalMove[FORWARD] *= -1; // Inverse the forward/backward axis
+	nextGlobalMove[RIGHT] *= -1; // Inverse the right/left axis
+	nextGlobalMove[UP] *= -1; // Inverse the up/down axis
 	nextGlobalMove.normalize();
 	// @TODO : Switch from local coordinates to global coordinates then :
 	

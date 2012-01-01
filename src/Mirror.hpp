@@ -1,11 +1,11 @@
 #ifndef _MIRROR_HPP_
 #define _MIRROR_HPP_
 
+#include <stein/Object.hpp>
 #include <stein/Builders.hpp>
 #include <stein/Camera.hpp>
-#include <stein/Color.hpp>
 #include <stein/Scene.hpp>
-#include <cstdlib>
+#include <stein/Color.hpp>
 
 
 struct Mirror : public stein::Camera {
@@ -18,8 +18,8 @@ struct Mirror : public stein::Camera {
 		buildSquare(surface);
 		pScene->addObjectToDraw(frame.id);
 		pScene->addObjectToDraw(surface.id);
-		pScene->setDrawnObjectColor(frame.id, stein::Color(WHITE));
-		pScene->setDrawnObjectColor(surface.id, stein::Color(GRAY));
+		pScene->setDrawnObjectColor(frame.id, stein::Color::WHITE);
+		pScene->setDrawnObjectColor(surface.id, stein::Color::GRAY);
 	}
 	virtual ~Mirror();
 	// called at each frame
@@ -30,9 +30,11 @@ struct Mirror : public stein::Camera {
 
 struct Portal : public Mirror {
 	stein::Color color;
-	Portal(stein::Scene* pScene, Color col) : Mirror(pScene), color(col) {}
+	stein::Camera* pTextureCamera;
+	Portal(stein::Scene* pScene, stein::Color col, stein::Camera * pCamera) : Mirror(pScene), color(col), pTextureCamera(pCamera) {}
 	virtual ~Portal() {}
-	virtual void update(const Portal & otherPortal) {
+	// Not the same signature, former parameter : const Portal & otherPortal
+	virtual void update() {
 		// show otherPortal's view
 	}
 };

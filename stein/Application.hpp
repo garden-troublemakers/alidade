@@ -23,7 +23,6 @@ public:
 
 protected:
     Scene m_Scene;
-    bool m_bRunning; // True when the window is closed to end the application
 
     void resize(size_t w, size_t h);
     void setBackgroundColor(const Color &color);
@@ -55,6 +54,7 @@ private:
     size_t m_height; // Window actual dimensions - vertical axis
 
     const uint32_t videoModeFlags;
+    bool m_bRunning; // True when the window is closed to end the application
 
     GLfloat m_MouseXPos; // Mouse position - horizontal axis (-1 to 1)
     GLfloat m_MouseYPos; // mouse position - vertical axis (-1 to 1)
