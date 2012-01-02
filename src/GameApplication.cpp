@@ -46,6 +46,22 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 	Application::handleKeyEvent(keysym, down);
 }
 
+void GameApplication::handleEvent(const SDL_Event& event) {
+    switch (event.type) {
+        // User events
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONUP:
+			handleMouseEvent(event.button);
+            break;
+        default:
+			Application::handleEvent(event);
+            break;
+    }
+}
+
+void GameApplication::handleMouseEvent(const SDL_MouseButtonEvent & mEvent) {
+	m_game.handleMouseEvent(mEvent);
+}
 
 void GameApplication::setVolume(size_t type, double volume) {
 	m_volumes[type] = volume;
