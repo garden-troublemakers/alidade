@@ -9,9 +9,10 @@ struct Triangle {
 	stein::Vector3f a;
 	stein::Vector3f b;
 	stein::Vector3f c;
+	stein::Vector3f normal;
 	stein::Object * pObject;
-	Triangle(stein::Vector3f & aSource, stein::Vector3f & bSource, stein::Vector3f & cSource, stein::Object * pObjectSource) :
-		a(aSource), b(bSource), c(cSource), pObject(pObjectSource)
+	Triangle(stein::Vector3f & aSource, stein::Vector3f & bSource, stein::Vector3f & cSource, stein::Vector3f & normalSource, stein::Object * pObjectSource) :
+		a(aSource), b(bSource), c(cSource), normal(normalSource), pObject(pObjectSource)
 	{}
 	~Triangle() {}
 };
@@ -37,12 +38,10 @@ struct Intersection {
 		return (point - camera.getPosition()).norm();
 	}
 	bool checkIntersection(const Ray & ray, const Triangle & triangle, stein::Vector3f & result) {
-		/*
-		// @FIXME : 
-		GLfloat t = (normal.dotP(triangle.a) - normal.dotP(ray.pos)) / normal.dotP(ray.dir);
-		if (t<0.0) return false;
-		*/
 
+		GLfloat t = (triangle.normal.dotP(triangle.a) - triangle.normal.dotP(ray.pos)) / triangle.normal.dotP(ray.dir);
+		if (t<0.0) return false;
+	
 		stein::Vector3f pa(triangle.a.x - ray.pos.x, triangle.a.y - ray.pos.y, triangle.a.z - ray.pos.z);
 		stein::Vector3f pb(triangle.b.x - ray.pos.x, triangle.b.y - ray.pos.y, triangle.b.z - ray.pos.z);
 		stein::Vector3f pc(triangle.c.x - ray.pos.x, triangle.c.y - ray.pos.y, triangle.c.z - ray.pos.z);

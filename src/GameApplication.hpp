@@ -19,7 +19,9 @@ public :
 	GameApplication();
 	virtual ~GameApplication();
 	virtual void animate();	// At each frame
-	virtual void handleKeyEvent(const SDL_keysym& keysym, bool down);	// On event
+	virtual void handleKeyEvent(const SDL_keysym& keysym, bool down);	// On key event
+	virtual void handleEvent(const SDL_Event& event); // on event
+	virtual void handleMouseEvent(const SDL_MouseButtonEvent& mEvent); // on mouse event
 	
 	// Menus
 	void displayHighscore();

@@ -47,7 +47,7 @@ public :
 	void update();
 	
 	void handleKeyEvent(const SDL_keysym& keysym, bool down);
-	void handleClickEvent();
+	void handleMouseEvent(const SDL_MouseButtonEvent& mEvent);
 	
 	inline const bool isRunning() const {
 		return m_bRunning;

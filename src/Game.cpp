@@ -151,23 +151,41 @@ void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 	}
 }
 
-void Game::handleClickEvent() {
-	if(m_bRunning) {
-		//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
-		m_player.shootPortal(Color::BLUE);
-		// Build intersection here.
-		//m_portals.setPortal(color, intersection, &m_player, m_pScene);
+void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
+	if(m_bRunning && mEvent.type == SDL_MOUSEBUTTONDOWN  && mEvent.state == SDL_PRESSED) {
+		if(!m_bPause){
+			// Add delay between launches and getter for color ?
+			//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
+			if(mEvent.button == SDL_BUTTON_LEFT) {
+				m_player.shootPortal(Color::BLUE);
+				cout << " click gauche " << endl;
+				//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
+			}
+			else if(mEvent.button == SDL_BUTTON_RIGHT) {
+				m_player.shootPortal(Color::RED);
+				cout << " click droit " << endl;
+			}
+			if(mEvent.button == SDL_BUTTON_LEFT || mEvent.button == SDL_BUTTON_LEFT) {
+					//Intersection intersection(); // compute this
+					// if intersection.obj.type == PORTALABLE ...
+						//m_portals.setPortal(color, intersection, &m_player, m_pScene);
+			}
+			// Build intersection here.
+			//m_portals.setPortal(color, intersection, &m_player, m_pScene);
+		}
 	}
 }
 
 void Game::switchGhostMode() {
 	m_bGhostMode = !m_bGhostMode;
+	// @TODO : reset nextMove of camera
 	m_pScene->pCamera = m_bGhostMode ? &m_ghostCamera : &m_player;
 	cout << (m_bGhostMode ? "GhostMode on" : "GhostMode off") << endl;
 }
 
 void Game::switchPause() {
 	m_bPause = !m_bPause;
+	// @TODO : reset nextMove of camera if pause on
 	m_pScene->pCamera = &m_player;
 	cout << (m_bPause ? "Pause on" : "Pause off") << endl;
 }
