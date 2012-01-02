@@ -1,6 +1,10 @@
 #include "Player.hpp"
+#include "GameApplication.hpp"
 
-Player::Player() : m_movement(), camera() {
+using namespace std;
+using namespace stein;
+
+Player::Player() : MoveableCamera(PLAYER_HEIGHT) {
 	m_life = 100;
 }
 
@@ -8,21 +12,13 @@ Player::~Player() {
 
 }
 
-void Player::move() {
-	// cf code FPS
-	// update camera
-}
-
-void Player::setMovement(unsigned int to) {
-	// @FIXME : Need MERGE
-}
-
-bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects) {
+bool Player::shootPortal(Color color) {
 	// dir = Vector "forward" normalized
-	Ray ray(getPosition, dir);
+	/*Ray ray(getPosition, dir);
 	Intersection intersection;
 	
-	std::list<Obj>::iterator i;
+	list<Obj>::iterator i;
+	
 	for(i = lObjects.begin(); i!= lObjects.end(); ++i){
 		// foreach triangle
 		Triangle triangle(a, b, c, &i);
@@ -33,6 +29,7 @@ bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects
 				intersection = currentIntersection;
 		}
 	}
+	------------------------------------
 	if(((Obj*)intersection.triangle.pObject)->type == PORTALABLE_ZONE) {
 	
 		if(portal
@@ -42,7 +39,7 @@ bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects
 				portals[type].setPortal(surface, collisionPoint);
 				// change position
 			if(!isMirror)
-				portals[1-type].setPortal()/*setMirror(false)*/;
+				portals[1-type].setPortal() // setMirror(false);
 				
 		if(!!game.portals.redPortal) {
 			if(game.portals.redPortal.getPosition() - intersection.point) {
@@ -63,9 +60,61 @@ bool Player::shootPortal(Color color, const Game & game, std::list<Obj> lObjects
 		}
 		game.portals.setPortal();
 	}
-	return true;
+=======
+	MoveableCamera::move();*/
+	return 0;
 }
 
-unsigned int Player::getLife() {
-	return m_life;
+void Player::move() {
+	SDL_PumpEvents();
+	int mouseRelX, mouseRelY;
+	#ifdef __APPLE__
+	int mystery = 0;
+	SDL_GetRelativeMouseState(mystery, &mouseRelX, &mouseRelY);
+	#else
+		SDL_GetRelativeMouseState(&mouseRelX, &mouseRelY);
+	#endif
+
+	m_xMousePosition += 2. * mouseRelX / (GLfloat)GameApplication::WIDTH;
+	m_yMousePosition += -2. * mouseRelY / (GLfloat)GameApplication::HEIGHT;
+
+	float moveStep=0.1;
+	Vector3f cameraNewPos;
+
+	float moveOnX = - m_nextMove[0] * moveStep;
+	float moveOnY = m_nextMove[1] * moveStep;
+	float moveOnZ = m_nextMove[2] * moveStep;
+	for(size_t iCoord=0; iCoord<3; ++iCoord)
+	{
+		cameraNewPos[iCoord]=position[iCoord]
+			+xAxis[iCoord]*moveOnX
+			+yAxis[iCoord]*moveOnY
+			+zAxis[iCoord]*moveOnZ;
+
+	}
+	
+	float angleForWindowWidth=M_PI;
+	//float angleForWindowHeight=M_PI/2.0;
+	float angleLong = m_xMousePosition*angleForWindowWidth;
+	//float angleLat = m_yMousePosition*angleForWindowHeight;
+	//std::cout<<angleLong<< " " << angleLat<<std::endl;
+
+	//Method with rotates
+
+	//Matrix4f rotateAroundX = xRotation(angleLat);
+	Matrix4f rotateAroundY = yRotation(angleLong);
+	Matrix4f translate = translation(cameraNewPos);
+
+	view.setIdentity();
+	view = view * rotateAroundY * translate;
+
+	for(size_t iCoord=0; iCoord<3; ++iCoord)
+	{
+		//Updates the axis with values in view
+		xAxis[iCoord]=view(iCoord, 0);
+		yAxis[iCoord]=view(iCoord, 1);
+		zAxis[iCoord]=view(iCoord, 2);
+		//Updates the position of the camera c
+		position[iCoord] = cameraNewPos[iCoord];
+	}
 }

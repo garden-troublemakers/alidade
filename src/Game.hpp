@@ -1,47 +1,72 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 
+#include "consts.h"
+#include "Mirror.hpp"
+#include "Obj.hpp"
+#include "MoveableCamera.hpp"
 #include "Player.hpp"
-#include "Geometry.hpp"
-#include <stein/Application.hpp>
+#include "Portals.hpp"
+#include <SDL/SDL.h>
+#include <stein/Scene.hpp>
+#include <stein/Color.hpp>
+#include <stein/Tools.hpp>
 #include <tinyxml/tinyxml.h>
 #include <tinyxml/tinystr.h>
+#include <list>
 #include <iostream>
 #include <string>
 
-enum ObjectType {
-	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR
-};
-
-struct Obj : public stein::Object {
-	string path;
-	int block;
-	ObjectType type;
-	double posX, posY, posZ;
+enum Level {
+	EASY, HARD
 };
 
 class Game {
 private :
-	bool m_bRunning;
-	Player m_player;
-	GameApplication * m_pGameApplication;
-	unsigned int m_level;
-	std::vector<Mirror> m_mirrors;
-	std::list<stein::Object> m_lObjects;
+	stein::Scene* m_pScene;
+	MoveableCamera m_ghostCamera;
 	Portals m_portals;
+	Player m_player;
+	Level m_level;
+	std::vector<Mirror> m_mirrors;
+	std::list<Obj> m_lObjects;
+
+	// boolean
+	bool m_bRunning;
+	bool m_bPause;
+	bool m_bGhostMode;
 	
-	// score, time, bonus ...
 public :
-	Game(const stein::Application * const application);
+	Game(stein::Scene* pScene);
 	~Game();
-	const std::list<stein::Object> objectsList() const;
 	void loadLevel();
-	bool save();
-	bool load();
-	bool isRunning();
-	void handleClick(/*mousebutton ...*/);
+	bool load(); // @TODO
+	bool save(); // @TODO
 	void start();
 	void exit();
+	void update();
+	
+	void handleKeyEvent(const SDL_keysym& keysym, bool down);
+	void handleClickEvent();
+	
+	inline const bool isRunning() const {
+		return m_bRunning;
+	}
+	
+	inline const bool inGhostMode() const {
+		return m_bGhostMode;
+	}
+	
+	inline const bool inPause() const {
+		return m_bPause;
+	}
+	
+	inline const std::list<Obj> objectsList() const {
+		return m_lObjects;
+	}
+	
+	void switchGhostMode();
+	void switchPause();
 };
 
 #endif // _GAME_HPP_

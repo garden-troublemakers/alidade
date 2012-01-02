@@ -1,11 +1,5 @@
-// GLHeaders.hpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
-
 #ifndef __GLHEADERS_HPP__
 #define __GLHEADERS_HPP__
-
 
 // Windows
 #ifdef WIN32

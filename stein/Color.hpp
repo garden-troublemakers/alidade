@@ -1,10 +1,3 @@
-/*
- * Point3D.hpp
- *
- *  Created on: Dec 8, 2011
- *      Author: Guillaume Chatelet
- */
-
 #ifndef COLOR_HPP_
 #define COLOR_HPP_
 

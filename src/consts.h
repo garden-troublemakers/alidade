@@ -1,3 +1,5 @@
+#ifndef _CONSTS_HPP_
+#define _CONSTS_HPP_
 
 #define CAMERA_GHOST 	0
 #define CAMERA_PLAYER 	1
@@ -11,3 +13,10 @@
 #define LEVEL_PLAYING	0
 #define LEVEL_FINISHED  1
 #define LEVEL_FAILED 	2
+
+#include <cstdlib>
+static inline float frand() {
+    return float(rand()) / RAND_MAX;
+}
+
+#endif // _CONSTS_HPP_

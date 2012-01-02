@@ -1,7 +1,3 @@
-// Scene.cpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #include "Scene.hpp"
 #include "Tools.hpp"
 #include "Camera.hpp"
@@ -14,7 +10,7 @@ namespace stein {
 
 // Default constructor
 Scene::Scene() :
-    defaultColor(Color::WHITE), defaultTransformation(Matrix4f::identity()), defaultShaderID(1) {
+    defaultColor(Color::WHITE), defaultTransformation(Matrix4f::identity()), defaultShaderID(1), pCamera(NULL) {
     // Light creation
     GLfloat lightPosition[] = { 0.0, 5.0, 0.0, 1.0 };
     GLfloat lightPower = 1.0;
@@ -97,7 +93,7 @@ void Scene::setAppearance(const ObjectInstance &instance) {
     glUseProgram(shaderId); // From now on, this shader will be used.
 
     // We use the specific values of model per object
-    setMatricesInShader(shaderId, instance.transformation, camera.getView(), camera.getPosition(), camera.getProjection());
+    setMatricesInShader(shaderId, instance.transformation, pCamera->getView(), pCamera->getPosition(), pCamera->getProjection());
     glUniform4fv(glGetUniformLocation(shaderId, "color"), 1, instance.color);
 
     // Specifies which VBO were filled

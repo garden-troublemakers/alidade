@@ -1,15 +1,11 @@
-/*
- * Point3D.hpp
- *
- *  Created on: Dec 8, 2011
- *      Author: Guillaume Chatelet
- */
-
 #ifndef VECTOR3F_HPP_
 #define VECTOR3F_HPP_
 
 #include <cassert>
 #include <cmath>
+#include <cstring>
+#include <stdexcept>
+
 
 namespace stein {
 
@@ -21,6 +17,10 @@ struct Vector3f {
     }
     Vector3f(float x, float y, float z) :
         x(x), y(y), z(z) {
+    }
+
+    Vector3f(const Vector3f &other) :
+		x(other.x), y(other.y), z(other.z) {
     }
 
     Vector3f operator+(const Vector3f &other) const {
@@ -97,10 +97,14 @@ struct Vector3f {
         return &x;
     }
     
-    float scalarTriple(const Vector3f &first, const Vecotr3f &second) const {
+    float scalarTriple(const Vector3f &first, const Vector3f &second) const {
     	// Returns the scalar triple product between a, b and c
 	    return dotP(first.crossP(second));
     }
+
+	float& operator[] (const int i) {
+		return (i == 0) ? x : (i == 1) ? y : z;
+	}
 };
 
 } // namespace stein

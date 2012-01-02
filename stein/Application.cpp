@@ -1,7 +1,3 @@
-// Application.cpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #include "Application.hpp"
 #include "Scene.hpp"
 #include "Tools.hpp"
@@ -31,7 +27,8 @@ static inline Uint32 genericTimer(Uint32 interval, void* param) {
 
 // Default constructor
 Application::Application(size_t width, size_t height) :
-    m_bRunning(true), m_pDrawContext(NULL), windowedWidth(width), windowedHeight(height), videoModeFlags(SDL_OPENGL | SDL_RESIZABLE), m_bShowMouse(true), m_FrameCount(0) {
+    m_pDrawContext(NULL), windowedWidth(width), windowedHeight(height), videoModeFlags(SDL_OPENGL | SDL_RESIZABLE), 
+    m_bRunning(true), m_bShowMouse(true), m_FrameCount(0) {
     
     // Mouse position, pressed position and scroll data initilaization
     // Positions : floats, origin in center, sides at +/-1 or more
@@ -53,6 +50,14 @@ Application::Application(size_t width, size_t height) :
 Application::~Application() {
     SDL_RemoveTimer(animateTimer);
     SDL_Quit();
+}
+
+const size_t Application::width() const {
+	return m_width;
+}
+
+const size_t Application::height() const {
+	return m_height;
 }
 
 // Inits SDL and OpenGL context, sets a few states
@@ -86,10 +91,10 @@ void Application::initSDLOpenGL() {
     // Creation of the openGL draw context
 
     // Window size
-    width = windowedWidth;
-    height = windowedHeight;
+    m_width = windowedWidth;
+    m_height = windowedHeight;
     // Specifies the size and other options about the window and OpenGL context
-    m_pDrawContext = SDL_SetVideoMode(width, height, 0, videoModeFlags);
+    m_pDrawContext = SDL_SetVideoMode(m_width, m_height, 0, videoModeFlags);
 }
 
 // Customize a few OPenGL states to fit the application's needs
@@ -112,7 +117,7 @@ void Application::customizeStates() {
     // WarpMouse changes the mouse position and
     // generates motion events which we need to ignore.
     SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
-    SDL_WarpMouse(width / 2, height / 2);
+    SDL_WarpMouse(m_width / 2, m_height / 2);
     // After, we can reactivate the m_bShowMouse motion events
     // But we instead choose to check directly the position
     // ourselves when we need it (in the camera update)
@@ -140,11 +145,11 @@ void Application::initTimers() {
 
 // Adapts the drawing to the new size of the window
 // resize doesn't work on Mac os (Windows ?)
-void Application::resize(GLuint w, GLuint h) {
+void Application::resize(size_t w, size_t h) {
     cout << "Window resize  : [" << w << "," << h << "]" << endl;
 
-    width = w;
-    height = h;
+    m_width = w;
+    m_height = h;
     
     //SDL_VideoMode update (restart the OpenGL context on windows, does not work on mac os...)
 #if defined( __APPLE__ ) || defined(WIN32)
@@ -153,10 +158,10 @@ void Application::resize(GLuint w, GLuint h) {
     //cout<<SDL_GetError()<<endl;
     //customizeStates();
 #else
-    m_pDrawContext = SDL_SetVideoMode(width, height, 0, videoModeFlags);
+    m_pDrawContext = SDL_SetVideoMode(m_width, m_height, 0, videoModeFlags);
 #endif
     // Viewport transformation update to fit initial window size
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, m_width, m_height);
 }
 
 // Sets the background color

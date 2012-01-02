@@ -1,10 +1,3 @@
-/*
- * MeshBuilder.cpp
- *
- *  Created on: Dec 11, 2011
- *      Author: Guillaume Chatelet
- */
-
 #include "MeshBuilder.h"
 #include <stdexcept>
 #include <cfloat>

@@ -1,7 +1,3 @@
-// Tools.cpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #include "Tools.hpp"
 
 #include <iostream>
@@ -183,7 +179,7 @@ GLuint loadProgram(const vector<string> &files) {
     GLint n = files.size();
     string **strs = new string*[n];
     const char** lines = new const char*[n + 1];
-    cout << "      Loading program " << files[n - 1] << "..." << endl;
+    //cout << "      Loading program " << files[n - 1] << "..." << endl;
     
     bool geo = false;
     for (int i = 0; i < n; ++i) /// For every file :

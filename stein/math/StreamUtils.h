@@ -1,10 +1,3 @@
-/*
- * StreamUtils.h
- *
- *  Created on: Dec 10, 2011
- *      Author: Guillaume Chatelet
- */
-
 #ifndef STREAMUTILS_H_
 #define STREAMUTILS_H_
 

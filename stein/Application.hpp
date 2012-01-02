@@ -1,7 +1,3 @@
-// Application.hpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #ifndef __APPLICATION_HPP__
 #define __APPLICATION_HPP__
 
@@ -11,6 +7,7 @@
 
 // Windowing system SDL
 #include <SDL/SDL.h>
+#include <cstdlib>
 
 namespace stein {
 
@@ -21,12 +18,13 @@ public:
     virtual ~Application();
 
     void loop();
+    const size_t width() const;
+    const size_t height() const;
 
 protected:
     Scene m_Scene;
-    bool m_bRunning; // True when the window is closed to end the application
 
-    void resize(GLuint w, GLuint h);
+    void resize(size_t w, size_t h);
     void setBackgroundColor(const Color &color);
     void printFPS();
 
@@ -52,10 +50,11 @@ private:
     size_t windowedHeight; // Window dimensions when not fullscreen - vertical axis
     size_t fullScreenWidth; // Screen dimensions - horizontal axis
     size_t fullScreenHeight; // Screen dimensions - vertical axis
-    size_t width; // Window actual dimensions - horizontal axis
-    size_t height; // Window actual dimensions - vertical axis
+    size_t m_width; // Window actual dimensions - horizontal axis
+    size_t m_height; // Window actual dimensions - vertical axis
 
     const uint32_t videoModeFlags;
+    bool m_bRunning; // True when the window is closed to end the application
 
     GLfloat m_MouseXPos; // Mouse position - horizontal axis (-1 to 1)
     GLfloat m_MouseYPos; // mouse position - vertical axis (-1 to 1)

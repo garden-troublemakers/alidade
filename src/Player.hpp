@@ -1,24 +1,25 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
-#include "IMoveable.hpp"
+#include "MoveableCamera.hpp"
 #include "Geometry.hpp"
+#include "Obj.hpp"
+#include <stein/Color.hpp>
 #include <stein/math/Vector3f.hpp>
 #include <stein/Camera.hpp>
+#include <stein/Application.hpp>
+#include <list>
 
 class Player : public MoveableCamera {
 private :
-	stein::Vector3f m_movement;
-	unsigned int m_life;
+	//stein::Vector3f m_movement;
+	size_t m_life;
 public :
-	stein::Camera camera;
-	//@TODO : Player Constructor
+	const static float PLAYER_HEIGHT = 0.8;
 	Player();
 	virtual ~Player();
+	bool shootPortal(stein::Color color);
 	virtual void move();
-	virtual void setMovement(unsigned int);
-	bool shootPortal(Color color, list<Obj> listObjects);
-	unsigned int getLife();
 };
 
 #endif // _PLAYER_H_

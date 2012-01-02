@@ -1,36 +1,54 @@
 #include "Portals.hpp"
 
 Portals::Portals() : pBluePortal(NULL), pRedPortal(NULL)
-{
-}
+{}
 
 Portals::~Portals() {
-	delete bluePortal;
-	delete redPortal;
+	delete pBluePortal;
+	delete pRedPortal;
 }
 
 // called at each frame
 void Portals::update() {
-	// Change texture depending on camera.
-	if(m_bMirror) {
-		// orientate to ourself
-	} else {
-		// orientate using another portal camera
+	if(pBluePortal)
+		pBluePortal->update();
+	if(pRedPortal)
+		pRedPortal->update();
+}
+
+void Portals::setPortal(stein::Color & color, Intersection & intersection, const Player* pPlayer, stein::Scene* pScene) {
+	// Find the nearest portal from intersection
+	// Create the portal with the color corresponding to the type
+	// Make it a portal or not.
+	if(color != stein::Color::RED && color != stein::Color::BLUE) {
+		throw "Invalid Portal color";
+		exit(1);
+	}
+	Portal* pCurrentPortal = (color == stein::Color::BLUE) ? pBluePortal : pRedPortal;
+	Portal* pOtherPortal = (color == stein::Color::RED) ? pBluePortal : pRedPortal;
+	
+	if(!!pCurrentPortal) {
+		delete pRedPortal;
+		if(!!pOtherPortal)
+			pOtherPortal->setOtherPortal(NULL);
+	}
+	// @TODO : IF intersection OK
+	if(true) {
+		// if Intersection ok
+		pCurrentPortal = new Portal(pScene, color, pPlayer);
+		if(!!pOtherPortal) {
+			pCurrentPortal->setOtherPortal(pOtherPortal);
+			pOtherPortal->setOtherPortal(pCurrentPortal);
+		}
 	}
 }
 
-void Portals::draw() const {
-	// add 3d object here, depending on attributes
-}
+/*void Portals::setBluePortal(Color color, Intersection intersection) {
+}*/
 
-- 1 créer un portal BLUE ou RED
-- 2 supprimer un portal BLUE ou RED
-- 3 mettre à jour un portal BLUE ou RED
-
-
+/*
 void Portals::setPortal(Color color, Intersection intersection) {
-
-	/*	// @TODO : move
+		// @TODO : move
 			// We are attempting to create a portal on a non-PortalSurface so we delete it.
 		if(surfaceIsPortalSurface) {
 			if(!portals[type])
@@ -39,7 +57,7 @@ void Portals::setPortal(Color color, Intersection intersection) {
 				portals[type].setPortal(surface, collisionPoint);
 				// change position
 			if(!isMirror)
-				portals[1-type].setPortal()/*setMirror(false)*//*;
+				portals[1-type].setPortal()//setMirror(false);
 		}
 	pPortal
 	if(portal.color == BLUE) {
@@ -54,7 +72,6 @@ void Portals::setPortal(Color color, Intersection intersection) {
 			delete redPortal;
 		}
 		redPortal = &portal;
-	}*/
+	}
 	
-}
-
+}*/

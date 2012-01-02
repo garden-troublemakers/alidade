@@ -1,7 +1,3 @@
-// Camera.cpp
-// Template for OpenGL 3.*
-// N. Dommanget dommange@univ-mlv.fr
-
 #include "Camera.hpp"
 #include "Tools.hpp"
 
@@ -14,7 +10,7 @@ namespace stein {
 Camera::Camera() :
     xAxis(1, 0, 0), yAxis(0, 1, 0), zAxis(0, 0, 1), position(0, 0, 1) {
     updateView();
-    setPerspectiveProjection(-1, 1, -1, 1, .1, 100);
+    setPerspectiveProjection(-1, 1, -1, 1, 1.1, 35);
 }
 
 // Updates view
@@ -26,7 +22,7 @@ void Camera::updateView() {
     Matrix4f TcInv(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -position.x, -position.y, -position.z, 1);
 
     // Initializes
-    view = RcInv * TcInv;
+    view = RcInv * rotation * TcInv;
 }
 
 void Camera::setPerspectiveProjection(float left, float right, float bottom, float top, float near, float far) {
@@ -47,7 +43,12 @@ void Camera::setOrthoProjection(float left, float right, float bottom, float top
 
 void Camera::setPosition(const Vector3f&p) {
     position = p;
-    updateView();
+    //updateView();
+}
+
+void Camera::setRotation(const Matrix4f&r) {
+	rotation = r;
+	//updateView();
 }
 
 const Vector3f& Camera::getPosition() const {
