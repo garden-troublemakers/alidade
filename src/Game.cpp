@@ -5,8 +5,8 @@ using namespace std;
 using namespace stein;
 
 Game::Game(Scene* pScene):
-	m_pScene(pScene), m_ghostCamera(), m_player(),
-	m_level(EASY), m_portals(), m_mirrors(), m_lObjects(),
+	m_pScene(pScene), m_ghostCamera(), m_portals(), m_player(),
+	m_level(EASY), m_mirrors(), m_lObjects(),
 	m_bRunning(false), m_bPause(false), m_bGhostMode(false)
 {}
 
@@ -54,17 +54,6 @@ void Game::loadLevel() {
 	}
 }
 
-// @FIXME
-/*void Game::handleClick(Mouse.clickType) {
-	// Check syntax with Mouse event
-	Color color = (clickType == LEFT) ? BLUE : RED;
-	Intersection * pIntersection = NULL;
-	bool effectiveShoot = player.shoot(pIntersection, color);
-	if(effectiveShoot) {
-		portals.setPortal(color, pIntersection);
-	}
-}*/
-
 bool Game::save() {
 	// make xml from values
 	return 0; // SUCCESS ?
@@ -103,9 +92,11 @@ void Game::exit() {
 }
 
 void Game::update() {
-	if(!m_bPause)
+	if(!m_bPause) {
 		((MoveableCamera*)m_pScene->pCamera)->move();
-		
+
+		m_portals.update();
+
 	/*
 	// @FIXME : Check this harder (no levelStatus but getPosition())
 	switch(levelStatus) {
@@ -130,6 +121,7 @@ void Game::update() {
 			// You see what i did there ?
 		break;
 	}*/
+	}
 }
 
 void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
@@ -156,6 +148,15 @@ void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 		}
 		if(to != NOWHERE)
 			((MoveableCamera*)m_pScene->pCamera)->setMovement(to, down);
+	}
+}
+
+void Game::handleClickEvent() {
+	if(m_bRunning) {
+		//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
+		m_player.shootPortal(Color::BLUE);
+		// Build intersection here.
+		//m_portals.setPortal(color, intersection, &m_player, m_pScene);
 	}
 }
 

@@ -9,6 +9,7 @@
 #include "Portals.hpp"
 #include <SDL/SDL.h>
 #include <stein/Scene.hpp>
+#include <stein/Color.hpp>
 #include <stein/Tools.hpp>
 #include <tinyxml/tinyxml.h>
 #include <tinyxml/tinystr.h>
@@ -24,9 +25,9 @@ class Game {
 private :
 	stein::Scene* m_pScene;
 	MoveableCamera m_ghostCamera;
+	Portals m_portals;
 	Player m_player;
 	Level m_level;
-	Portals m_portals;
 	std::vector<Mirror> m_mirrors;
 	std::list<Obj*> m_lObjects;
 
@@ -46,6 +47,7 @@ public :
 	void update();
 	
 	void handleKeyEvent(const SDL_keysym& keysym, bool down);
+	void handleClickEvent();
 	
 	inline const bool isRunning() const {
 		return m_bRunning;

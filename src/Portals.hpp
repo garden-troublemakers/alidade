@@ -3,6 +3,7 @@
 
 #include "Mirror.hpp"
 #include "Geometry.hpp"
+#include "Player.hpp"
 #include <stein/Color.hpp>
 
 struct Portals {
@@ -13,6 +14,7 @@ struct Portals {
 	~Portals();
 	
 	void update();
+	void setPortal(stein::Color & color, Intersection & intersection, const Player* pPlayer, stein::Scene* pScene);
 	/*
 	void Portals::setPortal(const Portal & portal);
 	

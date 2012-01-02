@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "GameApplication.hpp"
 
 using namespace std;
 using namespace stein;
@@ -11,7 +12,7 @@ Player::~Player() {
 
 }
 
-bool Player::shootPortal(Color color, std::list<Obj> lObjects) {
+bool Player::shootPortal(Color color) {
 	// dir = Vector "forward" normalized
 	/*Ray ray(getPosition, dir);
 	Intersection intersection;
@@ -62,4 +63,58 @@ bool Player::shootPortal(Color color, std::list<Obj> lObjects) {
 =======
 	MoveableCamera::move();*/
 	return 0;
+}
+
+void Player::move() {
+	SDL_PumpEvents();
+	int mouseRelX, mouseRelY;
+	#ifdef __APPLE__
+	int mystery = 0;
+	SDL_GetRelativeMouseState(mystery, &mouseRelX, &mouseRelY);
+	#else
+		SDL_GetRelativeMouseState(&mouseRelX, &mouseRelY);
+	#endif
+
+	m_xMousePosition += 2. * mouseRelX / (GLfloat)GameApplication::WIDTH;
+	m_yMousePosition += -2. * mouseRelY / (GLfloat)GameApplication::HEIGHT;
+
+	float moveStep=0.1;
+	Vector3f cameraNewPos;
+
+	float moveOnX = - m_nextMove[0] * moveStep;
+	float moveOnY = m_nextMove[1] * moveStep;
+	float moveOnZ = m_nextMove[2] * moveStep;
+	for(size_t iCoord=0; iCoord<3; ++iCoord)
+	{
+		cameraNewPos[iCoord]=position[iCoord]
+			+xAxis[iCoord]*moveOnX
+			+yAxis[iCoord]*moveOnY
+			+zAxis[iCoord]*moveOnZ;
+
+	}
+	
+	float angleForWindowWidth=M_PI;
+	//float angleForWindowHeight=M_PI/2.0;
+	float angleLong = m_xMousePosition*angleForWindowWidth;
+	//float angleLat = m_yMousePosition*angleForWindowHeight;
+	//std::cout<<angleLong<< " " << angleLat<<std::endl;
+
+	//Method with rotates
+
+	//Matrix4f rotateAroundX = xRotation(angleLat);
+	Matrix4f rotateAroundY = yRotation(angleLong);
+	Matrix4f translate = translation(cameraNewPos);
+
+	view.setIdentity();
+	view = view * rotateAroundY * translate;
+
+	for(size_t iCoord=0; iCoord<3; ++iCoord)
+	{
+		//Updates the axis with values in view
+		xAxis[iCoord]=view(iCoord, 0);
+		yAxis[iCoord]=view(iCoord, 1);
+		zAxis[iCoord]=view(iCoord, 2);
+		//Updates the position of the camera c
+		position[iCoord] = cameraNewPos[iCoord];
+	}
 }

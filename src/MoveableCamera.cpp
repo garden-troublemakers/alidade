@@ -31,7 +31,6 @@ void MoveableCamera::setMovement(Direction to, bool add) {
 			m_nextMove[axis] = 0.;
 }
 
-// @TODO : Optimize this function
 void MoveableCamera::move() {
 	SDL_PumpEvents();
 	int mouseRelX, mouseRelY;
@@ -61,19 +60,19 @@ void MoveableCamera::move() {
 	}
 	
 	float angleForWindowWidth=M_PI;
-	//float angleForWindowHeight=M_PI/2.0;
+	float angleForWindowHeight=M_PI/2.0;
 	float angleLong = m_xMousePosition*angleForWindowWidth;
-	//float angleLat = m_yMousePosition*angleForWindowHeight;
+	float angleLat = m_yMousePosition*angleForWindowHeight;
 	//std::cout<<angleLong<< " " << angleLat<<std::endl;
 
 	//Method with rotates
 
-	//Matrix4f rotateAroundX = xRotation(angleLat);
+	Matrix4f rotateAroundX = xRotation(-angleLat);
 	Matrix4f rotateAroundY = yRotation(angleLong);
 	Matrix4f translate = translation(cameraNewPos);
 
 	view.setIdentity();
-	view = view * rotateAroundY * translate;
+	view = view * rotateAroundX * rotateAroundY * translate	;
 
 	for(size_t iCoord=0; iCoord<3; ++iCoord)
 	{
@@ -86,6 +85,8 @@ void MoveableCamera::move() {
 	}
 }
 
+/*
+@TODO : Should replace move() when corrected
 void MoveableCamera::rotate() {
 	//Motion motion information retrieval
 	//Comment if mouse motion events are enabled
@@ -107,7 +108,7 @@ void MoveableCamera::rotate() {
 	setRotation(yRotation(angleLong));
 	//std::cout<<angleLong<< " " << angleLat<<std::endl;
 	
-	/*
+
 	// Method with rotates
 
 	GLfloat xAxis[]={1.0,0.0,0.0};
@@ -131,7 +132,7 @@ void MoveableCamera::rotate() {
 		this->scene->camera->c[iCoord]=cameraNewPos[iCoord];
 
 	}
-	*/
+	
 }
 
 void MoveableCamera::translate() {
@@ -144,3 +145,4 @@ void MoveableCamera::translate() {
 	
 	setPosition(getPosition() + nextGlobalMove * MOVE_STEP);
 }
+*/
