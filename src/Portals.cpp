@@ -16,7 +16,7 @@ void Portals::update() {
 		pRedPortal->update();
 }
 
-void Portals::setPortal(stein::Color & color, Intersection & intersection, const Player* pPlayer, stein::Scene* pScene) {
+void Portals::setPortal(stein::Color & color, Intersection & intersection, Player* pPlayer, stein::Scene* pScene) {
 	// Find the nearest portal from intersection
 	// Create the portal with the color corresponding to the type
 	// Make it a portal or not.

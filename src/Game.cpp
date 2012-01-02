@@ -105,7 +105,18 @@ void Game::exit() {
 
 void Game::update() {
 	if(!m_bPause) {
-		((MoveableCamera*)m_pScene->pCamera)->move();
+		if(m_bGhostMode) {
+			((MoveableCamera*)m_pScene->pCamera)->move();
+		} else {
+			/*Portal* newPortal;
+			if(!!m_player.checkCollisionPortals(m_portals, newPortal)) { // const Portal* Portals::checkCollisionPortal(const Portals & portals) const;
+				// teleport player depending on newPortal
+				
+			}
+			if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
+				((MoveableCamera*)m_pScene->pCamera)->move();
+			}*/
+		}
 		m_portals.update();
 		
 	}
