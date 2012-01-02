@@ -1,3 +1,4 @@
+#include "Obj.hpp"
 #include "Game.hpp"
 
 using namespace std;
@@ -11,6 +12,7 @@ Game::Game(Scene* pScene):
 
 Game::~Game() {
 	//delete [] player;
+	/*list delete m_lObjects;*/
 }
 
 void Game::loadLevel() {
@@ -37,24 +39,17 @@ void Game::loadLevel() {
 			cerr << "node to reach doesn't exist" << endl;
 		else
 			while (elem){
-				Obj obj(m_pScene, elem->Attribute("src"));
-				elem->QueryIntAttribute("block", &obj.block);
-				elem->QueryDoubleAttribute("posX", &obj.posX);
-				elem->QueryDoubleAttribute("posY", &obj.posY);
-				elem->QueryDoubleAttribute("posZ", &obj.posZ);
+				cout << "Load object from XML" << endl;
+				int tmpType;
+				elem->QueryIntAttribute("type", &tmpType);
+				Obj* obj = new Obj(m_pScene, elem->Attribute("src"), tmpType);
+				elem->QueryIntAttribute("block", &(obj->block));
+				elem->QueryDoubleAttribute("posX", &(obj->posX));
+				elem->QueryDoubleAttribute("posY", &(obj->posY));
+				elem->QueryDoubleAttribute("posZ", &(obj->posZ));
+				
 				m_lObjects.push_back(obj);
 				elem = elem->NextSiblingElement();
-				m_pScene->addObjectToDraw(obj.object.id);
-				
-				//Extracting values from the xml object list to the corresponding place to build the level
-				list<Obj>::iterator i;
-				/*for(i=m_lObjects.begin(); i!= m_lObjects.end(); ++i){
-					Object & object = new Object(GL_TRIANGLES);
-					GLuint storedObjectTriangleID = m_Scene->storeObject(objectTriangle);
-					buildObjectGeometryFromOBJ(objectTriangle, i->path, true);
-					m_Scene.addObjectToDraw(object.id);
-					m_Scene.setDrawnObjectColor(0, Color(frand(), frand(), frand()));
-				}*/
 			}
 	}
 }
@@ -90,22 +85,16 @@ void Game::start() {	// init level configuration
 	// build objects from xml
 	// add 'em to the scene
 	// ... like that
-	Object &object = m_pScene->createObject(GL_TRIANGLES);
-	buildSquare(object);
-	m_pScene->addObjectToDraw(object.id);
 
-	Object &object2 = m_pScene->createObject(GL_TRIANGLES);
-	buildSquare(object2);
-	m_pScene->addObjectToDraw(object2.id);
+	loadLevel();
 
-	Vector3f tr(0, 0, 1);
-	Vector3f rt(0, 1, 0);
+	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
+		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false);
+		m_pScene->addObjectToDraw((*i)->object.id);
+		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
+		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
+	}
 
-	m_pScene->setDrawnObjectModel(object2.id, translation(tr) * rotation(90, rt));
-
-	m_pScene->setDrawnObjectColor(1, Color(frand(), frand(), frand()));
-	m_pScene->setDrawnObjectColor(0, Color(frand(), frand(), frand()));
-	
 	m_bRunning = true;
 }
 
@@ -116,6 +105,7 @@ void Game::exit() {
 void Game::update() {
 	if(!m_bPause)
 		((MoveableCamera*)m_pScene->pCamera)->move();
+		
 	/*
 	// @FIXME : Check this harder (no levelStatus but getPosition())
 	switch(levelStatus) {

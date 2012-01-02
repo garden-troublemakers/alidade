@@ -5,19 +5,26 @@
 #include <stein/Scene.hpp>
 #include <string>
 
-struct Obj {
 	enum ObjectType {
 		PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR
 	};
-	stein::Object object;
+	
+struct Obj {
+
+	stein::Object &object;
+	std::string path;
 	ObjectType type;
 	int block;
-	std::string path;
 	double posX, posY, posZ;
-	Obj(stein::Scene * pScene, const std::string & p) :
-		object(pScene->createObject(GL_TRIANGLES)), path(p)
+	Obj(stein::Scene * pScene, const std::string & p, ObjectType &t) :
+		object(pScene->createObject(GL_TRIANGLES)), path(p), type(t)
 	{
-		pScene->addObjectToDraw(object.id);
+		//pScene->addObjectToDraw(object.id);
+	}
+	Obj(stein::Scene * pScene, const std::string & p, int &t) :
+		object(pScene->createObject(GL_TRIANGLES)), path(p), type((ObjectType)t)
+	{
+		//pScene->addObjectToDraw(object.id);
 	}
 };
 

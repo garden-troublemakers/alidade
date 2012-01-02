@@ -4,7 +4,7 @@
 	<object src="../objs/maps/tuto/visibleWalls2.obj" type="VisibleWall" block="1" posX="0" posY="0" posZ="0" />
 	<object src="../objs/mirrors/greyMirror.obj" type="Mirror" block="1" posX="10" posY="0" posZ="0" />
 	<object src="../objs/lamp.obj" type="Decor" block="1" posX="0" posY="10" posZ="0" />-->
-	<object src="../res/objs/maps/tuto/visibleWalls1.obj" type="1" block="1" posX="0" posY="0" posZ="0" />	
+	<object src="../objs/maps/tuto/visibleWalls1.obj" type="1" block="1" posX="0" posY="0" posZ="0" />	
 	<object src="../res/objs/maps/tuto/invisibleWalls.obj" type="1" block="1" posX="0" posY="0" posZ="0" />
 	<object src="../res/objs/maps/tuto/portalableZones.obj" type="1" block="1" posX="0" posY="0" posZ="0" />
 	<object src="../res/objs/maps/tuto/actionZones.obj" type="1" block="1" posX="0" posY="0" posZ="0" />
