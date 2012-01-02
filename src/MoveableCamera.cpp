@@ -67,12 +67,12 @@ void MoveableCamera::move() {
 
 	//Method with rotates
 
-	Matrix4f rotateAroundX = xRotation(angleLat);
+	Matrix4f rotateAroundX = xRotation(-angleLat);
 	Matrix4f rotateAroundY = yRotation(angleLong);
 	Matrix4f translate = translation(cameraNewPos);
 
 	view.setIdentity();
-	view = view * rotateAroundY * translate * rotateAroundX	;
+	view = view * rotateAroundX * rotateAroundY * translate	;
 
 	for(size_t iCoord=0; iCoord<3; ++iCoord)
 	{

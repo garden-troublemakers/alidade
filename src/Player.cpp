@@ -12,7 +12,7 @@ Player::~Player() {
 
 }
 
-bool Player::shootPortal(Color color, std::list<Obj> lObjects) {
+bool Player::shootPortal(Color color) {
 	// dir = Vector "forward" normalized
 	/*Ray ray(getPosition, dir);
 	Intersection intersection;

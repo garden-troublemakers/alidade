@@ -18,7 +18,7 @@ public :
 	const static float PLAYER_HEIGHT = 0.8;
 	Player();
 	virtual ~Player();
-	bool shootPortal(stein::Color color, std::list<Obj> lObjects);
+	bool shootPortal(stein::Color color);
 	virtual void move();
 };
 
