@@ -99,7 +99,8 @@ void Game::update() {
 			/*Portal* newPortal;
 			if(!!m_player.checkCollisionPortals(m_portals, newPortal)) { // const Portal* Portals::checkCollisionPortal(const Portals & portals) const;
 				// teleport player depending on newPortal
-				
+				// m_player->setPosition( new position )
+				// m_player.nextMove( ... ) // Inverse the vector for rotating camera when the player crosses a portal
 			}
 			if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
 				((MoveableCamera*)m_pScene->pCamera)->move();

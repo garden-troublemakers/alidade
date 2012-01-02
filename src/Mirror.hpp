@@ -9,7 +9,6 @@
 #include <stein/Color.hpp>
 #include <stein/math/Vector3f.hpp>
 
-
 struct Mirror : public stein::Camera {
 	stein::Scene* pScene;
 	Player* pPlayer;
@@ -41,32 +40,6 @@ struct Mirror : public stein::Camera {
 		// show own view
 		// orient toward player->getPosition(), inversed in camera view matrix
 		// lookat new fictive position
-	}
-};
-
-struct Portal : public Mirror {
-	stein::Color color;
-	Portal* pSecondPortal; 
-	Portal(stein::Scene* pScene, stein::Color col, Player* pPlayr) :
-		Mirror(pScene, pPlayr), color(col), pSecondPortal(NULL)
-	{}
-	virtual ~Portal() {}
-	
-	virtual void update() {
-		// update camera fixed on mirror.
-		if(!pSecondPortal)
-			Mirror::update();
-		else {
-			stein::Vector3f sourcePos(pSecondPortal->getPosition() + (pPlayer->getPosition() - getPosition()));
-			pSecondPortal->mirrorView(sourcePos);
-			//pSecondPortal->update();
-			//pSecondPortal // ?
-			// show second portal view
-		}
-	}
-	
-	inline void setOtherPortal(Portal * pOtherPortal) {
-		pSecondPortal = pOtherPortal;
 	}
 };
 

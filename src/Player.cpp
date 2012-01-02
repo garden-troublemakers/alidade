@@ -65,6 +65,12 @@ bool Player::shootPortal(Color color) {
 	return 0;
 }
 
+void Player::mirror(Portal& p) {
+	// Calculate the angle for getting out of a mirror
+	// Update m_nextMove in Camera
+}
+
+
 void Player::move() {
 	SDL_PumpEvents();
 	int mouseRelX, mouseRelY;
@@ -118,6 +124,23 @@ void Player::move() {
 		position[iCoord] = cameraNewPos[iCoord];
 	}
 }
+
+bool Player::checkCollisionPortals(const Portals& portals, const Portal& newP) {
+	return false;
+}
+	/*Portal* checkPlayerCollisionPortal(const Portals & portals) const {
+		if(_checkCollisionWithPortal(pPlayer->getPosition(), pBluePortal)) {
+			return pRedPortal;
+		}
+		if(_checkCollisionWithPortal(pPlayer->getPosition(), pBluePortal)) {
+			return pBluePortal;
+		}
+		return NULL;
+	}
+	
+	bool _checkCollisionWithPortal(stein::Vector3f position, Portal* pPortal) const {
+		return true;
+	}*/
 
 /*Obj* Player::checkCollisionWithObj(list<Obj*> lObjs) {
 	// Here

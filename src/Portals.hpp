@@ -1,10 +1,10 @@
 #ifndef _PORTALS_HPP_
 #define _PORTALS_HPP_
 
-#include "Mirror.hpp"
 #include "Geometry.hpp"
-#include "Player.hpp"
+#include "Portal.hpp"
 #include <stein/Color.hpp>
+#include <stein/Scene.hpp>
 
 struct Portals {
 	Portal * pBluePortal;
@@ -15,19 +15,6 @@ struct Portals {
 	
 	void update();
 	void setPortal(stein::Color & color, Intersection & intersection, const Player* pPlayer, stein::Scene* pScene);
-	Portal* checkPlayerCollisionPortal(const Portals & portals) const {
-		if(_checkCollisionWithPortal(pPlayer->getPosition(), pBluePortal) {
-			return pRedPortal;
-		}
-		if(_checkCollisionWithPortal(pPlayer->getPosition(), pBluePortal) {
-			return pBluePortal;
-		}
-		return (Portal*)NULL;
-	}
-	
-	bool _checkCollisionWithPortal(stein::Vector3f position, Portal* pPortal) const {
-		return /* Position on portal ? */ true;
-	}
 };
 
-#endif // _PORTAL_HPP_
+#endif // _PORTALS_HPP_
