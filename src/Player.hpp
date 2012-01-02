@@ -20,6 +20,7 @@ public :
 	virtual ~Player();
 	bool shootPortal(stein::Color color);
 	virtual void move();
+	//Obj* checkCollisionWithObj(list<Obj*> lObjs, mirrors?);
 };
 
 #endif // _PLAYER_H_
