@@ -48,7 +48,7 @@ void MoveableCamera::move() {
 	float moveStep=0.1;
 	Vector3f cameraNewPos;
 
-	float moveOnX = m_nextMove[0] * moveStep;
+	float moveOnX = - m_nextMove[0] * moveStep;
 	float moveOnY = m_nextMove[1] * moveStep;
 	float moveOnZ = m_nextMove[2] * moveStep;
 	for(size_t iCoord=0; iCoord<3; ++iCoord)
@@ -137,8 +137,8 @@ void MoveableCamera::rotate() {
 void MoveableCamera::translate() {
 	Vector3f nextGlobalMove(m_nextMove);
 	nextGlobalMove[FORWARD] *= -1; // Inverse the forward/backward axis
-	nextGlobalMove[RIGHT] *= -1; // Inverse the right/left axis
-	nextGlobalMove[UP] *= -1; // Inverse the up/down axis
+	//nextGlobalMove[RIGHT] *= -1; // Inverse the right/left axis
+	//nextGlobalMove[UP] *= -1; // Inverse the up/down axis
 	nextGlobalMove.normalize();
 	// @TODO : Switch from local coordinates to global coordinates then :
 	

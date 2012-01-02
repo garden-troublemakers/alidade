@@ -15,7 +15,6 @@ Camera::Camera() :
 
 // Updates view
 void Camera::updateView() {
-	std::cout << "updateView" << std::endl;
     // Rotation to be aligned with correct camera axis
     Matrix4f RcInv(xAxis.x, yAxis.x, zAxis.x, 0, xAxis.y, yAxis.y, zAxis.y, 0, xAxis.z, yAxis.z, zAxis.z, 0, 0, 0, 0, 1);
 

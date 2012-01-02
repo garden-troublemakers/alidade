@@ -114,7 +114,8 @@ void Game::exit() {
 }
 
 void Game::update() {
-	((MoveableCamera*)m_pScene->pCamera)->move();
+	if(!m_bPause)
+		((MoveableCamera*)m_pScene->pCamera)->move();
 	/*
 	// @FIXME : Check this harder (no levelStatus but getPosition())
 	switch(levelStatus) {
@@ -143,7 +144,7 @@ void Game::update() {
 
 void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 	if(keysym.sym == SDLK_p && down)
-		switchGhostMode();
+		switchPause();
 	else if(keysym.sym == SDLK_g && down && !m_bPause)
 		switchGhostMode();
 	else if(!m_bPause) {
@@ -176,6 +177,6 @@ void Game::switchGhostMode() {
 
 void Game::switchPause() {
 	m_bPause = !m_bPause;
-	m_pScene->pCamera = m_bPause ? NULL : &m_player;
+	m_pScene->pCamera = &m_player;
 	cout << (m_bPause ? "Pause on" : "Pause off") << endl;
 }
