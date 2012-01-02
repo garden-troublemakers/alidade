@@ -36,6 +36,25 @@ Object::Object(size_t id, GLenum primitivesType) :
     glGenBuffers(1, &indicesVboId);
 }
 
+/*Object::Object(Object &obj) :
+    id(obj.id), nbIndices(0), primitivesType(obj.primitivesType), m_bPrimitives(GL_FALSE), m_bNormals(GL_FALSE), m_bUvs(GL_FALSE), m_bColors(GL_FALSE) {
+    // Creation of ids for the buffers on GPU.
+    // We store them in the structure for clarity
+    // Creates a VAO id to handle the vao for objectTr
+    glGenVertexArrays(1, &(vaoId));
+    // Creates a VBO id for a VBO to store the vertices
+    glGenBuffers(1, &(verticesVboId));
+    // Creates a VBO id for a VBO to store the normals
+    glGenBuffers(1, &(normalsVboId));
+    // Creates a VBO id for a VBO to store the uv coordinates (for textures)
+    glGenBuffers(1, &(uvsVboId));
+    // Creates a VBO id for a VBO to store the colors
+    glGenBuffers(1, &(colorsVboId));
+    // Creates a VBO id for a VBO to store the indices of the vertices
+    glGenBuffers(1, &(indicesVboId));
+		
+}*/
+
 // Cleans memory for Object
 Object::~Object() {
     // Cleans by deleting the buffers

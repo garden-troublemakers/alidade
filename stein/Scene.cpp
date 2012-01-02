@@ -25,7 +25,8 @@ Scene::~Scene() {
 // Adds the object in the Objects library array, 
 // after the last added object, and only if the array is not full, returns the index
 Object& Scene::createObject(GLenum primitiveType) {
-    const size_t size = storedObjects.size();
+    std::cout << "Create object in Scene" << std::endl;
+	const size_t size = storedObjects.size();
     if (size >= maxStoredObjects)
         throw std::runtime_error("maximum number of stored objects reached");
     storedObjects.push_back(new Object(size, primitiveType));
