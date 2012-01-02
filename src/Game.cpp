@@ -37,7 +37,8 @@ void Game::loadLevel() {
 			cerr << "node to reach doesn't exist" << endl;
 		else
 			while (elem){
-				Obj obj(m_pScene, elem->Attribute("src"));
+				Obj::ObjectType type = Obj::VISIBLE_WALL;
+				Obj obj(m_pScene, elem->Attribute("src"), type);
 				elem->QueryIntAttribute("block", &obj.block);
 				elem->QueryDoubleAttribute("posX", &obj.posX);
 				elem->QueryDoubleAttribute("posY", &obj.posY);
@@ -48,13 +49,13 @@ void Game::loadLevel() {
 				
 				//Extracting values from the xml object list to the corresponding place to build the level
 				list<Obj>::iterator i;
-				/*for(i=m_lObjects.begin(); i!= m_lObjects.end(); ++i){
-					Object & object = new Object(GL_TRIANGLES);
-					GLuint storedObjectTriangleID = m_Scene->storeObject(objectTriangle);
+				for(i=m_lObjects.begin(); i!= m_lObjects.end(); ++i){
+					/*Object & object = new Object(GL_TRIANGLES);
+					GLuint storedObjectTriangleID = m_pScene->storeObject(objectTriangle);
 					buildObjectGeometryFromOBJ(objectTriangle, i->path, true);
-					m_Scene.addObjectToDraw(object.id);
-					m_Scene.setDrawnObjectColor(0, Color(frand(), frand(), frand()));
-				}*/
+					m_pScene->addObjectToDraw(object.id);
+					m_pScene->setDrawnObjectColor(0, Color(frand(), frand(), frand()));*/
+				}
 			}
 	}
 }
@@ -114,8 +115,9 @@ void Game::exit() {
 }
 
 void Game::update() {
-	if(!m_bPause)
-		((MoveableCamera*)m_pScene->pCamera)->move();
+	if(!m_bPause) {
+		((MoveableCamera*)m_pScene->pCamera)->move();	
+	}
 	/*
 	// @FIXME : Check this harder (no levelStatus but getPosition())
 	switch(levelStatus) {

@@ -10,14 +10,21 @@ Portals::~Portals() {
 
 // called at each frame
 void Portals::update() {
-	// Change texture depending on camera.
-	bool bMirror = (!pBluePortal || !pRedPortal);
-	if(bMirror) {
-		// orientate to ourself
-	} else {
-		// orientate using another portal camera
-	}
+	if(pBluePortal)
+		pBluePortal->update();
+	if(pRedPortal)
+		pRedPortal->update();
 }
+
+void Portals::setPortal(stein::Color color, Intersection intersection) {
+	// Find the nearest portal from intersection
+	// Create the portal with the color corresponding to the type
+	// Make it a portal or not.
+	// stein::Scene* pScene, stein::Color col
+}
+
+/*void Portals::setBluePortal(Color color, Intersection intersection) {
+}*/
 
 /*
 void Portals::setPortal(Color color, Intersection intersection) {

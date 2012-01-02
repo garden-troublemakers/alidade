@@ -28,9 +28,11 @@ public :
 	MoveableCamera(float height = 0.8);
 	virtual ~MoveableCamera();
 	void setMovement(Direction to, bool add);
-	void move();
+	virtual void move();
+	/*
 	virtual void translate();
 	virtual void rotate();
+	*/
 };
 
 #endif // _MOVEABLE_CAMERA_HPP_

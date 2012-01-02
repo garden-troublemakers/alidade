@@ -21,7 +21,7 @@ struct Mirror : public stein::Camera {
 		pScene->setDrawnObjectColor(frame.id, stein::Color::WHITE);
 		pScene->setDrawnObjectColor(surface.id, stein::Color::GRAY);
 	}
-	virtual ~Mirror();
+	virtual ~Mirror() {}
 	// called at each frame
 	virtual void update() {
 		// show own view
@@ -30,12 +30,25 @@ struct Mirror : public stein::Camera {
 
 struct Portal : public Mirror {
 	stein::Color color;
-	stein::Camera* pTextureCamera;
-	Portal(stein::Scene* pScene, stein::Color col, stein::Camera * pCamera) : Mirror(pScene), color(col), pTextureCamera(pCamera) {}
+	Portal* pSecondPortal;
+	Portal(stein::Scene* pScene, stein::Color col) :
+		Mirror(pScene), color(col), pSecondPortal(NULL)
+	{
+	
+	}
 	virtual ~Portal() {}
 	// Not the same signature, former parameter : const Portal & otherPortal
 	virtual void update() {
-		// show otherPortal's view
+		if(!pSecondPortal)
+			Mirror::update();
+		else {
+			pSecondPortal->update(); // ?
+			// show second portal view
+		}
+	}
+	
+	inline void setOtherPortal(Portal * pOtherPortal) {
+		pSecondPortal = pOtherPortal;
 	}
 };
 

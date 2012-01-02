@@ -13,6 +13,7 @@ struct Portals {
 	~Portals();
 	
 	void update();
+	void setPortal(stein::Color color, Intersection intersection);
 	/*
 	void Portals::setPortal(const Portal & portal);
 	
