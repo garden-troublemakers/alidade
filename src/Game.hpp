@@ -29,7 +29,7 @@ private :
 	Player m_player;
 	Level m_level;
 	std::vector<Mirror> m_mirrors;
-	std::list<Obj> m_lObjects;
+	std::list<Obj*> m_lObjects;
 
 	// boolean
 	bool m_bRunning;
@@ -61,7 +61,7 @@ public :
 		return m_bPause;
 	}
 	
-	inline const std::list<Obj> objectsList() const {
+	inline const std::list<Obj*> objectsList() const {
 		return m_lObjects;
 	}
 	

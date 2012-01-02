@@ -15,11 +15,12 @@ private :
 	//stein::Vector3f m_movement;
 	size_t m_life;
 public :
-	const static float PLAYER_HEIGHT = 0.8;
+	const static float PLAYER_HEIGHT = 0;
 	Player();
 	virtual ~Player();
 	bool shootPortal(stein::Color color);
 	virtual void move();
+	//Obj* checkCollisionWithObj(list<Obj*> lObjs, mirrors?);
 };
 
 #endif // _PLAYER_H_

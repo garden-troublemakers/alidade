@@ -12,10 +12,10 @@
 
 struct Mirror : public stein::Camera {
 	stein::Scene* pScene;
-	const Player* pPlayer;
+	Player* pPlayer;
 	stein::Object frame;
 	stein::Object surface;
-	Mirror(stein::Scene* pS, const Player* pP) : 
+	Mirror(stein::Scene* pS, Player* pP) : 
 		stein::Camera(), pScene(pS), pPlayer(pP),
 		frame(pScene->createObject(GL_TRIANGLES)), surface(pScene->createObject(GL_TRIANGLES))
 	{
@@ -47,7 +47,7 @@ struct Mirror : public stein::Camera {
 struct Portal : public Mirror {
 	stein::Color color;
 	Portal* pSecondPortal; 
-	Portal(stein::Scene* pScene, stein::Color col, const Player* pPlayr) :
+	Portal(stein::Scene* pScene, stein::Color col, Player* pPlayr) :
 		Mirror(pScene, pPlayr), color(col), pSecondPortal(NULL)
 	{}
 	virtual ~Portal() {}

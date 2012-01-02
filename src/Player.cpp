@@ -118,3 +118,7 @@ void Player::move() {
 		position[iCoord] = cameraNewPos[iCoord];
 	}
 }
+
+/*Obj* Player::checkCollisionWithObj(list<Obj*> lObjs) {
+	// Here
+}*/

@@ -71,7 +71,7 @@ static Triple readTriple(string& line) {
 }
 
 // Builds an object made from an OBJ file, taking only geometry into account (not materials)
-bool buildObjectGeometryFromOBJ(Object &object, const char* fileName, bool smoothObject) {
+bool buildObjectGeometryFromOBJ(Object &object, const char* fileName, bool smoothObject, bool normalize) {
     ifstream file(fileName, ios_base::in);
     if (!file) {
         cout << "       Error while loading object from .obj file : " << fileName << "." << endl;
@@ -123,8 +123,8 @@ bool buildObjectGeometryFromOBJ(Object &object, const char* fileName, bool smoot
 //        reorderUvsAndNormalsIfNonSmooth(&vertices, &uvs, &normals, &indices, &uvIndices, &normalIndices);
 
 //    conformToObject(&vertices, &uvs, &normals);
-
-    builder.centerAndNormalizeMesh();
+	
+	if(normalize) builder.centerAndNormalizeMesh();
     builder.normalizeNormals();
 
     vector<unsigned int> indices;

@@ -14,6 +14,7 @@ struct Object {
     const size_t id;
 
     Object(size_t id, GLenum primitivesType = GL_TRIANGLES);
+    //Object(Object &obj);
     ~Object();
 
     void drawObject() const;
