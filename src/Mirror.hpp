@@ -1,7 +1,6 @@
 #ifndef _MIRROR_HPP_
 #define _MIRROR_HPP_
 
-#include "Player.hpp"
 #include <stein/Object.hpp>
 #include <stein/Builders.hpp>
 #include <stein/Camera.hpp>
@@ -11,11 +10,10 @@
 
 struct Mirror : public stein::Camera {
 	stein::Scene* pScene;
-	Player* pPlayer;
-	stein::Object frame;
-	stein::Object surface;
-	Mirror(stein::Scene* pS, Player* pP) : 
-		stein::Camera(), pScene(pS), pPlayer(pP),
+	stein::Object& frame;
+	stein::Object& surface;
+	Mirror(stein::Scene* pS) : 
+		stein::Camera(), pScene(pS),
 		frame(pScene->createObject(GL_TRIANGLES)), surface(pScene->createObject(GL_TRIANGLES))
 	{
 		buildSquare(frame, .6);
@@ -27,16 +25,15 @@ struct Mirror : public stein::Camera {
 	}
 	virtual ~Mirror() {}
 	
-	void mirrorView(const stein::Vector3f & sourcePos) {
-		stein::Vector3f targetPos = sourcePos - getPosition();
+	void mirrorView(const stein::Vector3f & playerPos) {
+		stein::Vector3f targetPos = playerPos - getPosition();
 		targetPos.x *= -1.; // mirror effect
 		// camera lookAt(targetPosition)
 	}
 	
 	// called at each frame
-	virtual void update() {
-		stein::Vector3f sourcePos(pPlayer->getPosition());
-		mirrorView(sourcePos);
+	virtual void update(const stein::Vector3f & playerPos) {
+		mirrorView(playerPos);
 		// show own view
 		// orient toward player->getPosition(), inversed in camera view matrix
 		// lookat new fictive position

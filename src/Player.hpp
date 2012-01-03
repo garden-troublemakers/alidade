@@ -4,6 +4,7 @@
 #include "MoveableCamera.hpp"
 #include "Geometry.hpp"
 #include "Portals.hpp"
+#include "Portal.hpp"
 #include "Obj.hpp"
 #include <stein/Color.hpp>
 #include <stein/math/Vector3f.hpp>
@@ -23,6 +24,7 @@ public :
 	bool checkCollisionPortals(const Portals& portals, const Portal& newP);
 	bool shootPortal(stein::Color color);
 	virtual void move();
+	void mirror(Portal * portal);
 	//Obj* checkCollisionWithObj(list<Obj*> lObjs, mirrors?);
 };
 

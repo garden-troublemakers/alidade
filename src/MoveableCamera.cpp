@@ -59,20 +59,12 @@ void MoveableCamera::move() {
 
 	}
 	
-	float angleForWindowWidth=M_PI;
-	float angleForWindowHeight=M_PI/2.0;
-	float angleLong = m_xMousePosition*angleForWindowWidth;
-	float angleLat = m_yMousePosition*angleForWindowHeight;
-	//std::cout<<angleLong<< " " << angleLat<<std::endl;
-
-	//Method with rotates
-
-	Matrix4f rotateAroundX = xRotation(-angleLat);
-	Matrix4f rotateAroundY = yRotation(angleLong);
+	Matrix4f rotateAroundX = xRotation(-float(m_yMousePosition * M_PI/2.));
+	Matrix4f rotateAroundY = yRotation(float(m_xMousePosition * M_PI));
 	Matrix4f translate = translation(cameraNewPos);
 
 	view.setIdentity();
-	view = view * rotateAroundX * rotateAroundY * translate	;
+	view =  view * rotateAroundX * rotateAroundY * translate	;
 
 	for(size_t iCoord=0; iCoord<3; ++iCoord)
 	{

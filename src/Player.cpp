@@ -21,7 +21,7 @@ bool Player::shootPortal(Color color) {
 	
 	for(i = lObjects.begin(); i!= lObjects.end(); ++i){
 		// foreach triangle
-		Triangle triangle(a, b, c, &i);
+		Triangle triangle(a, b, c, normal, (Obj*)i);
 		Vector3f result;
 		if(checkIntersection(ray, triangle, result)) {
 			Intersection currentIntersection(ray, triangle, result);
@@ -65,9 +65,12 @@ bool Player::shootPortal(Color color) {
 	return 0;
 }
 
-void Player::mirror(Portal& p) {
+void Player::mirror(Portal* pPortal) {
 	// Calculate the angle for getting out of a mirror
 	// Update m_nextMove in Camera
+	setPosition(pPortal->getPosition() + (getPosition() - pPortal->getPosition()));
+	// set
+	//Matrix4f rotateAroundY = yRotation(angleLong);
 }
 
 
@@ -100,14 +103,8 @@ void Player::move() {
 	}
 	
 	float angleForWindowWidth=M_PI;
-	//float angleForWindowHeight=M_PI/2.0;
 	float angleLong = m_xMousePosition*angleForWindowWidth;
-	//float angleLat = m_yMousePosition*angleForWindowHeight;
-	//std::cout<<angleLong<< " " << angleLat<<std::endl;
 
-	//Method with rotates
-
-	//Matrix4f rotateAroundX = xRotation(angleLat);
 	Matrix4f rotateAroundY = yRotation(angleLong);
 	Matrix4f translate = translation(cameraNewPos);
 

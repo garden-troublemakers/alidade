@@ -1,7 +1,6 @@
 #ifndef _PORTAL_HPP_
 #define _PORTAL_HPP_
 
-#include "Player.hpp"
 #include "Mirror.hpp"
 #include <stein/Object.hpp>
 #include <stein/Builders.hpp>
@@ -13,17 +12,18 @@
 struct Portal : public Mirror {
 	stein::Color color;
 	Portal* pSecondPortal; 
-	Portal(stein::Scene* pScene, stein::Color col, Player* pPlayr) :
-		Mirror(pScene, pPlayr), color(col), pSecondPortal(NULL)
+	Portal(stein::Scene* pScene, stein::Color col) :
+		Mirror(pScene), color(col), pSecondPortal(NULL)
 	{}
+	
 	virtual ~Portal() { delete pSecondPortal; }
 	
-	virtual void update() {
+	virtual void update(const stein::Vector3f & playerPos) {
 		// update camera fixed on mirror.
 		if(!pSecondPortal)
-			Mirror::update();
+			Mirror::update(playerPos);
 		else {
-			stein::Vector3f sourcePos(pSecondPortal->getPosition() + (pPlayer->getPosition() - getPosition()));
+			stein::Vector3f sourcePos(pSecondPortal->getPosition() + (playerPos - getPosition()));
 			pSecondPortal->mirrorView(sourcePos);
 			//pSecondPortal->update();
 			//pSecondPortal // ?

@@ -9,14 +9,14 @@ Portals::~Portals() {
 }
 
 // called at each frame
-void Portals::update() {
+void Portals::update(const stein::Vector3f & playerPos) {
 	if(pBluePortal)
-		pBluePortal->update();
+		pBluePortal->update(playerPos);
 	if(pRedPortal)
-		pRedPortal->update();
+		pRedPortal->update(playerPos);
 }
 
-void Portals::setPortal(stein::Color & color, Intersection & intersection, const Player* pPlayer, stein::Scene* pScene) {
+void Portals::setPortal(stein::Color & color, Intersection & intersection, stein::Scene* pScene) {
 	// Find the nearest portal from intersection
 	// Create the portal with the color corresponding to the type
 	// Make it a portal or not.
@@ -35,7 +35,7 @@ void Portals::setPortal(stein::Color & color, Intersection & intersection, const
 	// @TODO : IF intersection OK
 	if(true) {
 		// if Intersection ok
-		pCurrentPortal = new Portal(pScene, color, pPlayer);
+		pCurrentPortal = new Portal(pScene, color);
 		if(!!pOtherPortal) {
 			pCurrentPortal->setOtherPortal(pOtherPortal);
 			pOtherPortal->setOtherPortal(pCurrentPortal);

@@ -12,7 +12,7 @@ class GameMenu {
 		unsigned int m_type;
 		
 	public :
-		GameMenu(const unsigned int & type = NO_MENU) : 
+		GameMenu(const unsigned int & type = NO_MENU) :
 			m_type(type)
 		{
 			switch(type) {
