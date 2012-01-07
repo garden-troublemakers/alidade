@@ -6,38 +6,44 @@
 #include <stein/Object.hpp>
 
 struct Triangle {
-	stein::Vector3f a;
-	stein::Vector3f b;
-	stein::Vector3f c;
-	stein::Vector3f normal;
-	stein::Object * pObject;
-	Triangle(stein::Vector3f & aSource, stein::Vector3f & bSource, stein::Vector3f & cSource, stein::Vector3f & normalSource, stein::Object * pObjectSource) :
+	const stein::Vector3f a;
+	const stein::Vector3f b;
+	const stein::Vector3f c;
+	const stein::Vector3f normal;
+	const stein::Object * pObject;
+	Triangle(const stein::Vector3f & aSource, const stein::Vector3f & bSource, const stein::Vector3f & cSource, const stein::Vector3f & normalSource, const stein::Object * pObjectSource) :
 		a(aSource), b(bSource), c(cSource), normal(normalSource), pObject(pObjectSource)
 	{}
 	~Triangle() {}
 };
 
 struct Ray {
-	stein::Vector3f pos;
-	stein::Vector3f dir;
-	Ray(stein::Vector3f & p, stein::Vector3f & d) :
-		pos(p), dir(d) 
+	const stein::Vector3f pos;
+	const stein::Vector3f dir;
+	Ray(const stein::Vector3f & p, stein::Vector3f d) :
+		pos(p), dir(d.normalize()) 
 	{}
 	~Ray() {}
 };
 
 struct Intersection {
-	Ray ray;
-	Triangle triangle;
+	const Ray ray;
+	const Triangle triangle;
 	stein::Vector3f point;
-	Intersection(Ray r, Triangle t, stein::Vector3f p) : ray(r), triangle(t), point(p)
-	{}
+	Intersection(const Ray & r, const Triangle & t) : ray(r), triangle(t), point()
+	{
+		if(!checkIntersection(ray, triangle)) {
+			throw "No intersection";
+		}
+	}
 	~Intersection() {}
+	
 	float computeDepth(const stein::Camera & camera) {
 		// return distance between position of camera and the intersection
 		return (point - camera.getPosition()).norm();
 	}
-	bool checkIntersection(const Ray & ray, const Triangle & triangle, stein::Vector3f & result) {
+	
+	bool checkIntersection(const Ray & ray, const Triangle & triangle) {
 
 		GLfloat t = (triangle.normal.dotP(triangle.a) - triangle.normal.dotP(ray.pos)) / triangle.normal.dotP(ray.dir);
 		if (t<0.0) return false;
@@ -66,9 +72,9 @@ struct Intersection {
 		v*=denom;
 		w*=denom;
 		
-		result.x = u * triangle.a.x + v * triangle.b.x + w * triangle.c.x;
-		result.y = u * triangle.a.y + v * triangle.b.y + w * triangle.c.y;
-		result.z = u * triangle.a.z + v * triangle.b.z + w * triangle.c.z;
+		point.x = u * triangle.a.x + v * triangle.b.x + w * triangle.c.x;
+		point.y = u * triangle.a.y + v * triangle.b.y + w * triangle.c.y;
+		point.z = u * triangle.a.z + v * triangle.b.z + w * triangle.c.z;
 		
 		return true;
 	}

@@ -2,6 +2,7 @@
 #define _GAME_HPP_
 
 #include "consts.h"
+#include "Geometry.hpp"
 #include "Mirror.hpp"
 #include "Obj.hpp"
 #include "MoveableCamera.hpp"

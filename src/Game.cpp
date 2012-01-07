@@ -164,11 +164,17 @@ void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 
 void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 	if(m_bRunning && mEvent.type == SDL_MOUSEBUTTONDOWN  && mEvent.state == SDL_PRESSED) {
-		if(!m_bPause){
+		if(!m_bPause && !m_bGhostMode){
 			// Add delay between launches and getter for color ?
 			//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
 			if(mEvent.button == SDL_BUTTON_LEFT) {
 				m_player.shootPortal(Color::BLUE);
+				Vector3f forward;
+				forward.z = 1.;
+				//forward = forward * Matrix4f(m_pScene->pCamera->getView()); // @TODO get forward vector the vector directing the player's camera
+				Ray shoot(m_player.getPosition(), forward);
+				//Intersection intersection();
+				//m_portals.setPortal(Color::BLUE, intersection, m_pScene);
 				cout << " click gauche " << endl;
 				//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
 			}
