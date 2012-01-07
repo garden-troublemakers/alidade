@@ -4,8 +4,10 @@
 using namespace std;
 using namespace stein;
 
-Player::Player() : MoveableCamera(PLAYER_HEIGHT) {
+Player::Player(Scene * pScene) : MoveableCamera(PLAYER_HEIGHT), Obj(pScene, string(""), PLAYER), m_pScene(pScene) {
 	m_life = 100;
+	block = 1;
+	buildSquare(object, 1);
 }
 
 Player::~Player() {
@@ -65,15 +67,44 @@ bool Player::shootPortal(Color color) {
 	return 0;
 }
 
-void Player::mirror(Portal* pPortal) {
+void Player::teleport(Portal* pPortal) {
+	// Calculate the angle for getting out of a mirror
+	setPosition(mirrorPosition(pPortal));
+	// @TODO : ! setDirection !!
+	// setDirection(mirrorDirection(Portal* pPortal));
+	// Update m_nextMove in Camera
+	// Matrix4f rotateAroundY = yRotation(angleLong);
+}
+
+
+Vector3f Player::mirrorPosition(Portal* pPortal) {
 	// Calculate the angle for getting out of a mirror
 	// Update m_nextMove in Camera
-	setPosition(pPortal->getPosition() + (getPosition() - pPortal->getPosition()));
+	return pPortal->pSecondPortal->getPosition() + getPosition() - pPortal->getPosition();
 	// set
 	//Matrix4f rotateAroundY = yRotation(angleLong);
 }
 
 
+Vector3f Player::mirrorDirection(Portal* pPortal) {
+	return Vector3f(1., 0., 0.); //pPortal->getPosition() + (getPosition() - pPortal->getPosition()));
+}
+
+// @FIXME we need me, inherited from setDirection.
+void Player::setDirection(Vector3f rotation) {
+	// orientate camera here, will be taken from move.
+	// we can pass the angle (vector ?) of the computed rotation.
+	// This shall change update camera's landmark ...
+}
+
+
+
+/*
+ * @TODO We need to use setPosition and setRotation here
+ * those functions must inherit from MoveableCamera
+ * setRotation should be called when the mouse is moving.
+ * setPosition is called on every frame.
+ */
 void Player::move() {
 	SDL_PumpEvents();
 	int mouseRelX, mouseRelY;
@@ -94,13 +125,10 @@ void Player::move() {
 	float moveOnY = m_nextMove[1] * moveStep;
 	float moveOnZ = m_nextMove[2] * moveStep;
 	for(size_t iCoord=0; iCoord<3; ++iCoord)
-	{
 		cameraNewPos[iCoord]=position[iCoord]
 			+xAxis[iCoord]*moveOnX
 			+yAxis[iCoord]*moveOnY
 			+zAxis[iCoord]*moveOnZ;
-
-	}
 	
 	float angleForWindowWidth=M_PI;
 	float angleLong = m_xMousePosition*angleForWindowWidth;
@@ -120,6 +148,19 @@ void Player::move() {
 		//Updates the position of the camera c
 		position[iCoord] = cameraNewPos[iCoord];
 	}
+	posX = cameraNewPos[0];
+	posY = cameraNewPos[1];
+	posZ = cameraNewPos[2];
+	Matrix4f transformBody = rotateAroundY;
+	Matrix4f inverseTranslate;
+	inverseTranslate.setIdentity();
+	for(size_t iCoord=0; iCoord<3; ++iCoord)
+		inverseTranslate(3,iCoord) = -cameraNewPos[iCoord];
+	transformBody.transpose();
+	m_pScene->setDrawnObjectModel(object.id, inverseTranslate*transformBody);
+	
+	// Reinit body position and orientation
+	
 }
 
 bool Player::checkCollisionPortals(const Portals& portals, const Portal& newP) {

@@ -10,7 +10,7 @@ namespace stein {
 Camera::Camera() :
     xAxis(1, 0, 0), yAxis(0, 1, 0), zAxis(0, 0, 1), position(0, 0, 1) {
     updateView();
-    setPerspectiveProjection(-1, 1, -1, 1, 1.1, 35);
+    setPerspectiveProjection(-1, 1, -1, 1, 1.1, 100);
 }
 
 // Updates view

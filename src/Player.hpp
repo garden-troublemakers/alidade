@@ -10,21 +10,30 @@
 #include <stein/math/Vector3f.hpp>
 #include <stein/Camera.hpp>
 #include <stein/Application.hpp>
+#include <stein/Builders.hpp>
+#include <stein/Scene.hpp> 
+
 #include <list>
 
-class Player : public MoveableCamera {
+class Player : public MoveableCamera, public Obj {
 private :
 	//stein::Vector3f m_movement;
 	size_t m_life;
+	stein::Scene* m_pScene;
 public :
 	void mirror(Portal& p);
-	const static float PLAYER_HEIGHT = 0;
-	Player();
+	const static float PLAYER_HEIGHT = 2.5;
+	// const static std::string PLAYER_PATH = "./player.obj";
+	Player(stein::Scene * pScene);
 	virtual ~Player();
 	bool checkCollisionPortals(const Portals& portals, const Portal& newP);
 	bool shootPortal(stein::Color color);
+	virtual void teleport(Portal* pPortal);
+	virtual stein::Vector3f mirrorPosition(Portal* pPortal);
+	virtual stein::Vector3f mirrorDirection(Portal* pPortal);
+	// redefinition from MoveableCamera
+	virtual void setDirection(stein::Vector3f rotation);
 	virtual void move();
-	void mirror(Portal * portal);
 	//Obj* checkCollisionWithObj(list<Obj*> lObjs, mirrors?);
 };
 

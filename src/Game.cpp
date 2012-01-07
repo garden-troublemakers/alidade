@@ -5,7 +5,7 @@ using namespace std;
 using namespace stein;
 
 Game::Game(Scene* pScene):
-	m_pScene(pScene), m_ghostCamera(), m_portals(), m_player(),
+	m_pScene(pScene), m_ghostCamera(), m_portals(), m_player(pScene),
 	m_level(EASY), m_mirrors(), m_lObjects(),
 	m_bRunning(false), m_bPause(false), m_bGhostMode(false)
 {}
@@ -20,35 +20,40 @@ void Game::loadLevel() {
 	TiXmlDocument xmlDoc;
 	TiXmlElement *elem;
 	
+	cout << "loadLevel" << endl;
+	
 	//Loading xml depending on level chosen
 	if(m_level == EASY)
 		xmlDoc = TiXmlDocument("../res/maps/tuto.xml");
 	else if(m_level == HARD)
 		xmlDoc = TiXmlDocument("../res/maps/ez.xml");
 		
+		cout << "else if" << endl;
+		
 	if(!xmlDoc.LoadFile()) {
 		cerr << "loading error" << endl;
 		cerr << "error #" << xmlDoc.ErrorId() << " : " << xmlDoc.ErrorDesc() << endl;
 	}
 	else {
+		cout << "else" << endl;
 		//Parsing the xml document
 		TiXmlHandle hdl(&xmlDoc);
 		elem = hdl.FirstChildElement().FirstChildElement().Element();
 	
 		if(!elem)
 			cerr << "node to reach doesn't exist" << endl;
-		else
 			while (elem){
 				cout << "Load object from XML" << endl;
 				int tmpType;
 				elem->QueryIntAttribute("type", &tmpType);
-				Obj* obj = new Obj(m_pScene, elem->Attribute("src"), tmpType);
+				Obj* obj = new Obj(m_pScene, elem->Attribute("src"), VISIBLE_WALL);
 				elem->QueryIntAttribute("block", &(obj->block));
 				elem->QueryDoubleAttribute("posX", &(obj->posX));
 				elem->QueryDoubleAttribute("posY", &(obj->posY));
 				elem->QueryDoubleAttribute("posZ", &(obj->posZ));
 				
 				m_lObjects.push_back(obj);
+				//cout << "ajout" << endl;
 				elem = elem->NextSiblingElement();
 			}
 	}
@@ -67,6 +72,7 @@ bool Game::load() {
 void Game::start() {	// init level configuration
     // We set the actual camera to be the player's one (fps mode)
     m_pScene->pCamera = &m_player;
+    m_player.setPosition(Vector3f(37,.5,10));
     // Shader
     m_pScene->setDefaultShaderID(loadProgram("../shaders/simpleShader.glsl"));
     
@@ -83,6 +89,9 @@ void Game::start() {	// init level configuration
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
 		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
 	}
+	
+	// We add mirrors
+	
 
 	m_bRunning = true;
 }
@@ -196,6 +205,8 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 void Game::switchGhostMode() {
 	m_bGhostMode = !m_bGhostMode;
 	// @TODO : reset nextMove of camera
+	if(m_bGhostMode)
+		m_ghostCamera.setPosition(m_player.getPosition() - Vector3f(1,0,1));
 	m_pScene->pCamera = m_bGhostMode ? &m_ghostCamera : &m_player;
 	cout << (m_bGhostMode ? "GhostMode on" : "GhostMode off") << endl;
 }
