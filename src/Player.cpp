@@ -151,13 +151,14 @@ void Player::move() {
 	posX = cameraNewPos[0];
 	posY = cameraNewPos[1];
 	posZ = cameraNewPos[2];
-	Matrix4f transformBody = rotateAroundY;
+	gotoPositionRotation(cameraNewPos, rotateAroundY);
+	/*Matrix4f transformBody = rotateAroundY;
 	Matrix4f inverseTranslate;
 	inverseTranslate.setIdentity();
 	for(size_t iCoord=0; iCoord<3; ++iCoord)
 		inverseTranslate(3,iCoord) = -cameraNewPos[iCoord];
 	transformBody.transpose();
-	m_pScene->setDrawnObjectModel(object.id, inverseTranslate*transformBody);
+	m_pScene->setDrawnObjectModel(object.id, inverseTranslate*transformBody);*/
 	
 	// Reinit body position and orientation
 	
@@ -166,6 +167,15 @@ void Player::move() {
 bool Player::checkCollisionPortals(const Portals& portals, const Portal& newP) {
 	return false;
 }
+
+
+void Player::gotoPositionRotation(const stein::Vector3f & pos, stein::Matrix4f rot) {
+	//pos.y *= -1;
+	rot.transpose();
+	m_pScene->setDrawnObjectModel(object.id, translation(-pos)*rot);
+	setPosition(pos);
+}
+
 	/*Portal* checkPlayerCollisionPortal(const Portals & portals) const {
 		if(_checkCollisionWithPortal(pPlayer->getPosition(), pBluePortal)) {
 			return pRedPortal;

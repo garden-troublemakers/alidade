@@ -34,6 +34,7 @@ public :
 	// redefinition from MoveableCamera
 	virtual void setDirection(stein::Vector3f rotation);
 	virtual void move();
+	virtual void gotoPositionRotation(const stein::Vector3f & pos, stein::Matrix4f rot = stein::Matrix4f::identity());
 	//Obj* checkCollisionWithObj(list<Obj*> lObjs, mirrors?);
 };
 

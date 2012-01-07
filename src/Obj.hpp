@@ -5,9 +5,9 @@
 #include <stein/Scene.hpp>
 #include <string>
 
-	enum ObjectType {
-		PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR
-	};
+enum ObjectType {
+	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR
+};
 	
 struct Obj {
 

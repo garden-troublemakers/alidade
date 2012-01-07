@@ -77,6 +77,7 @@ void MoveableCamera::move() {
 	}
 }
 
+
 /*
 @TODO : Should replace move() when corrected
 void MoveableCamera::rotate() {

@@ -6,57 +6,69 @@ using namespace stein;
 
 Game::Game(Scene* pScene):
 	m_pScene(pScene), m_ghostCamera(), m_portals(), m_player(pScene),
-	m_level(EASY), m_mirrors(), m_lObjects(),
+	m_level(EASY), m_pMirrors(), m_lObjects(),
 	m_bRunning(false), m_bPause(false), m_bGhostMode(false)
 {}
 
 Game::~Game() {
 	//delete [] player;
 	/*list delete m_lObjects;*/
+	while(!m_pMirrors.empty()) {
+        delete m_pMirrors.back();
+        m_pMirrors.pop_back();
+    }
+    
 }
 
 void Game::loadLevel() {
 	list<Obj> objList;
-	TiXmlDocument xmlDoc;
-	TiXmlElement *elem;
+	TiXmlDocument *xmlDoc = NULL;
+	TiXmlElement *elem = NULL;
 	
 	cout << "loadLevel" << endl;
 	
 	//Loading xml depending on level chosen
 	if(m_level == EASY)
-		xmlDoc = TiXmlDocument("../res/maps/tuto.xml");
+		xmlDoc = new TiXmlDocument("../res/maps/tuto.xml");
 	else if(m_level == HARD)
-		xmlDoc = TiXmlDocument("../res/maps/ez.xml");
+		xmlDoc = new TiXmlDocument("../res/maps/ez.xml");
 		
 		cout << "else if" << endl;
 		
-	if(!xmlDoc.LoadFile()) {
+	if(!xmlDoc->LoadFile()) {
 		cerr << "loading error" << endl;
-		cerr << "error #" << xmlDoc.ErrorId() << " : " << xmlDoc.ErrorDesc() << endl;
+		cerr << "error #" << xmlDoc->ErrorId() << " : " << xmlDoc->ErrorDesc() << endl;
 	}
 	else {
 		cout << "else" << endl;
 		//Parsing the xml document
-		TiXmlHandle hdl(&xmlDoc);
+		TiXmlHandle hdl(xmlDoc);
 		elem = hdl.FirstChildElement().FirstChildElement().Element();
 	
 		if(!elem)
 			cerr << "node to reach doesn't exist" << endl;
-			while (elem){
-				cout << "Load object from XML" << endl;
-				int tmpType;
-				elem->QueryIntAttribute("type", &tmpType);
-				Obj* obj = new Obj(m_pScene, elem->Attribute("src"), VISIBLE_WALL);
-				elem->QueryIntAttribute("block", &(obj->block));
-				elem->QueryDoubleAttribute("posX", &(obj->posX));
-				elem->QueryDoubleAttribute("posY", &(obj->posY));
-				elem->QueryDoubleAttribute("posZ", &(obj->posZ));
-				
-				m_lObjects.push_back(obj);
-				//cout << "ajout" << endl;
-				elem = elem->NextSiblingElement();
-			}
+		while (elem){
+			cout << "Load object from XML" << endl;
+			int tmpType;
+			elem->QueryIntAttribute("type", &tmpType);
+			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), VISIBLE_WALL);
+			elem->QueryIntAttribute("block", &(obj->block));
+			elem->QueryDoubleAttribute("posX", &(obj->posX));
+			elem->QueryDoubleAttribute("posY", &(obj->posY));
+			elem->QueryDoubleAttribute("posZ", &(obj->posZ));
+			
+			m_lObjects.push_back(obj);
+			elem = elem->NextSiblingElement();
+		}
+		for(size_t j = 0; j < 10 ; ++j)
+			m_pMirrors.push_back(new Mirror(m_pScene));
+		for(size_t i= 0; i < m_pMirrors.size(); ++i) {
+			Matrix4f rotation = xRotation(-float(0.33*i * M_PI)) *  yRotation(float(0.33*i * M_PI));
+			m_pMirrors[i]->gotoPositionRotation(Vector3f(35, 10, 2*i), rotation);
+		}
 	}
+	delete xmlDoc;
+	delete elem;
 }
 
 bool Game::save() {
@@ -89,6 +101,11 @@ void Game::start() {	// init level configuration
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
 		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
 	}
+	
+	for(size_t i = 0; i < m_pMirrors.size(); ++i) {
+		//m_pMirrors[i]->goToPosition(Vector3f(35,1,10*(i+1)));
+	}			
+	
 	
 	// We add mirrors
 	
@@ -183,7 +200,9 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 				//forward = forward * Matrix4f(m_pScene->pCamera->getView()); // @TODO get forward vector the vector directing the player's camera
 				Ray shoot(m_player.getPosition(), forward);
 				//Intersection intersection();
-				//m_portals.setPortal(Color::BLUE, intersection, m_pScene);
+				
+				//m_portals.setPortal(Color::BLUE, m_pScene);
+				//
 				cout << " click gauche " << endl;
 				//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
 			}

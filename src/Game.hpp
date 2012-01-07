@@ -30,7 +30,7 @@ private :
 	Portals m_portals;
 	Player m_player;
 	Level m_level;
-	std::vector<Mirror> m_mirrors;
+	std::vector<Mirror*> m_pMirrors;
 	std::list<Obj*> m_lObjects;
 
 	// boolean
