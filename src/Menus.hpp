@@ -9,10 +9,10 @@ enum MenuType {MENU_PAUSE, MENU_SPLASH, MENU_START, MENU_CREDITS, NO_MENU};
 class GameMenu {
 	// attributes and methods needed by SDL
 	private :
-		unsigned int m_type;
+		MenuType m_type;
 		
 	public :
-		GameMenu(const unsigned int & type = NO_MENU) :
+		GameMenu(MenuType type = NO_MENU) :
 			m_type(type)
 		{
 			switch(type) {
@@ -33,7 +33,8 @@ class GameMenu {
 		{
 		}
 		
-		~GameMenu();
+		GameMenu::~GameMenu() {
+		}
 		
 		const unsigned int type() const {
 			return m_type;
@@ -53,6 +54,8 @@ class GameMenu {
 		
 		// where all the magic happens
 		void show() const {
-			
+			std::cout << "OK" << std::endl;
 		}
 };
+
+#endif // _MENUS_HPP_

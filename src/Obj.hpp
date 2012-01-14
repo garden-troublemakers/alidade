@@ -10,7 +10,6 @@ enum ObjectType {
 };
 	
 struct Obj {
-
 	stein::Object &object;
 	std::string path;
 	ObjectType type;
@@ -20,6 +19,13 @@ struct Obj {
 		object(pScene->createObject(GL_TRIANGLES)), path(p), type(t)
 	{
 		pScene->addObjectToDraw(object.id);
+	}
+	std::list<Triangle> getTrianglesList() {
+		ArrayBinder binder(vaoId);
+		// Draw the elements stored by the vao
+		
+		// Inspiration :
+		// glDrawElements(object.getPrimitivesType(), object.getNbIndices(), GL_UNSIGNED_INT, 0);
 	}
 };
 

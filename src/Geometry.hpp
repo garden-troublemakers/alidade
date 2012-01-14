@@ -14,6 +14,9 @@ struct Triangle {
 	Triangle(const stein::Vector3f & aSource, const stein::Vector3f & bSource, const stein::Vector3f & cSource, const stein::Vector3f & normalSource, const stein::Object * pObjectSource) :
 		a(aSource), b(bSource), c(cSource), normal(normalSource), pObject(pObjectSource)
 	{}
+	Triangle(const Triangle & b) :
+		a(b.a), b(b.b), c(b.c), normal(b.normal), pObject(b.pObject)
+	{}
 	~Triangle() {}
 };
 
@@ -22,6 +25,14 @@ struct Ray {
 	const stein::Vector3f dir;
 	Ray(const stein::Vector3f & p, stein::Vector3f d) :
 		pos(p), dir(d.normalize()) 
+	{
+		glBegin(GL_LINE);
+			glVertex3f(pos[0], pos[1], pos[2]);
+			glVertex3f(pos[0]+dir[0], pos[1]+dir[1], pos[2]+dir[2]);
+		glEnd();
+	}
+	Ray(const Ray & b) :
+		pos(b.pos), dir(b.dir)
 	{}
 	~Ray() {}
 };
@@ -30,12 +41,16 @@ struct Intersection {
 	const Ray ray;
 	const Triangle triangle;
 	stein::Vector3f point;
-	Intersection(const Ray & r, const Triangle & t) : ray(r), triangle(t), point()
+	Intersection(const Ray & r, const Triangle & t) :
+		ray(r), triangle(t), point()
 	{
 		if(!checkIntersection(ray, triangle)) {
 			throw "No intersection";
 		}
 	}
+	Intersection(const Intersection & b) :
+		ray(b.ray), triangle(b.triangle)
+	{}
 	~Intersection() {}
 	
 	float computeDepth(const stein::Camera & camera) {
@@ -44,7 +59,6 @@ struct Intersection {
 	}
 	
 	bool checkIntersection(const Ray & ray, const Triangle & triangle) {
-
 		GLfloat t = (triangle.normal.dotP(triangle.a) - triangle.normal.dotP(ray.pos)) / triangle.normal.dotP(ray.dir);
 		if (t<0.0) return false;
 	
