@@ -84,18 +84,23 @@ void Game::start() {	// init level configuration
     m_player.setPosition(Vector3f(37,.5,10));
     
     // Shader
-    GLuint shaderId = loadProgram("../shaders/lightingShader.glsl");
-    //m_pScene->setDefaultShaderID();
-	// loadTexture("../res/textures/image1.ppm");
-	// glUniform1i(glGetUniformLocation(shaderId, "textureUnit0"), 0);
-
+    vector<string> files;
+    files.push_back("../shaders/shaderTools.glsl");
+    files.push_back("../shaders/lightingShader.glsl");
+    GLuint shaderId = loadProgram(files);
+    files.pop_back();
+    //m_pScene->setDefaultShaderID(shaderId);
+    glUseProgram(shaderId);
+    GLfloat ambient[] = {1., 1., 1., 1.,};
+    GLfloat diffuse[] = {1., 1., 1., 1.,};
+    GLfloat specular[] = {1., 1., 1., 1.,};
+    GLfloat ka=0.01, kd=1.0, ks=2.0, shininess=5.0;
+    setMaterialInShader(shaderId, ambient, diffuse, specular, ka, kd, ks, shininess);
     
-	// prepare level using xml.
-	// build objects from xml
-	// add 'em to the scene
-	// ... like that
-
+	// prepare level using xml for building objects
 	loadLevel();
+	
+	// add 'em to the scene
 	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
 		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false, (*i)->builder);
 		m_pScene->addObjectToDraw((*i)->object.id);

@@ -12,10 +12,10 @@
  in vec4 vertexColor;
 
 // Varyings : data to transmit to fragments
- varying out vec3 position;
- varying out vec3 normal;
- varying out vec2 uvs;
- varying out vec4 localColor;
+ out vec4 position;
+ out vec4 normal;
+ out vec2 uvs;
+ out vec4 localColor;
 
 void main()
 {
@@ -24,7 +24,7 @@ void main()
     if (filledData[2]) uvs = vertexUvs;
     if (filledData[3]) localColor = vertexColor;
 
-    gl_Position = projection * view * model * vec4(vertexPosition,1);
+    gl_Position = projection * view * model * vec4(vertexPosition);
 }
 
 #endif
@@ -54,8 +54,8 @@ void main()
     
     // If texture
     if (filledData[2]) {
-    	diffuseColor = vec4(texture2d(textureUnitDiffuse, uvs).rgb, 1.);
-    	specularColorMix = vec4(texture2d(textureUnitSpecular, uvs).rgb, 1.);
+    	diffuseColorMix = vec4(texture2D(textureUnitDiffuse, uvs).rgb, 1.);
+    	specularColorMix = vec4(texture2D(textureUnitSpecular, uvs).rgb, 1.);
     }
     
     // If no normal
@@ -72,8 +72,8 @@ void main()
         float diffuseValue=light.power * max( dot(L, N), 0.0);
         float specularValue=light.power * pow( max(dot(R, V), 0.0), material.shininess);
         vec4 ambientContribution=vec4(ambientValue*material.ka*material.ambient.rgb, material.ambient.a);
-        vec4 diffuseContribution=vec4(diffuseValue*material.kd*diffuseColorMix.rgb, diffuseColorMix.a);
-        vec4 specularContribution=vec4(specularValue*material.ks*specularColorMix.rgb, material.specular.a);
+        vec4 diffuseContribution=vec4(diffuseValue*material.kd*material.diffuse.rgb, diffuseColorMix.a);
+        vec4 specularContribution=vec4(specularValue*material.ks*material.specular.rgb, material.specular.a);
   
         fragColor = ambientContribution + diffuseContribution + specularContribution;
     }
