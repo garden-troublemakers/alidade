@@ -4,9 +4,12 @@
 #include "Object.hpp"
 
 #include <stdexcept>
+#include <exception>
 #include <iostream>
 
 namespace stein {
+
+GLuint Scene::defaultShaderID = 0;
 
 // Default constructor
 Scene::Scene() :
@@ -16,9 +19,13 @@ Scene::Scene() :
     GLfloat lightPower = 1.0;
     setLight(lightPosition, lightPower);
     try {
-		drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects];
-		drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects];
-	} catch( ...) {
+		drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects]();
+		drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects]();
+		for (size_t i = 0; i < maxDrawnObjects; i++) {
+			drawnObjectsTexture0IDs[i] = 0;
+			drawnObjectsTexture1IDs[i] = 0;
+		}
+	} catch(...) {
 		// @TODO : Find better exception
 		std::cerr << "BUFFER OVERFLOW !!" << std::endl;
 	}
@@ -53,7 +60,6 @@ GLuint Scene::addObjectToDraw(GLuint indexStoredObject, GLuint shaderID) {
     if (size >= maxDrawnObjects)
         throw std::runtime_error("maximum number of drawn objects reached");
     drawnObjects.push_back(ObjectInstance(indexStoredObject, shaderID, defaultTransformation, defaultColor));
-    setDrawnObjectTextureID(nbDrawnObjects, 0, defaultTextureId);
     return size;
 }
 
@@ -95,14 +101,9 @@ void Scene::setDefaultModel(const Matrix4f &_defaultModel) {
         drawnObjects[i].transformation = defaultTransformation;
 }
 
-/*// Sets default shader ID
+// Sets default shader ID
 void Scene::setDefaultShaderID(GLuint id) {
     defaultShaderID = id;
-}*/
-
-// Sets default textures
-void Scene::setDefaultTextureID(GLuint defaultTextureID) {
-	defaultTextureId = defaultTextureID;
 }
 
 // Sets light data to use in shader
@@ -115,15 +116,6 @@ void Scene::setLight(GLfloat * position, GLfloat power) {
 // Decides what will elements drawn after this call will look like
 void Scene::setAppearance(const ObjectInstance &instance) {
     const size_t shaderId = instance.shaderId;
-
-    glUseProgram(shaderId);
-    GLfloat ambient[]={1.0, 1.0, 1.0, 1.0}; 
-    GLfloat diffuse[]={1.0, 1.0, 1.0, 1.0}; 
-    GLfloat specular[]={1.0, 1.0, 1.0, 1.0}; 
-    GLfloat ka=0.01, kd=1.0, ks=2.0, shininess=5.0;
-    
-    setMaterialInShader(shaderId, ambient, diffuse, specular, ka, kd, ks, shininess);
-    setTextureUnitsInShader(shaderId); 
 
     // We use the specific values of model per object
     setMatricesInShader(shaderId, instance.transformation, pCamera->getView(), pCamera->getPosition(), pCamera->getProjection());
@@ -144,6 +136,11 @@ void Scene::setAppearance(const ObjectInstance &instance) {
     //Selects our current texture for unit 1
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, drawnObjectsTexture1IDs[instance.objectId]);
+    
+    //std::cout << "Texture Id 0 : " << drawnObjectsTexture0IDs[instance.objectId] << std::endl;
+    //std::cout << "Texture Id 1 : " << drawnObjectsTexture1IDs[instance.objectId] << std::endl;
+    
+	setTextureUnitsInShader(shaderId);
     
     glCullFace(GL_BACK);
 }

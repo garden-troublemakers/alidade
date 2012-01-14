@@ -48,10 +48,13 @@ void Game::loadLevel() {
 		if(!elem)
 			cerr << "node to reach doesn't exist" << endl;
 		while (elem){
+			
+			std::cout << "TEST" << std::endl;
 			cout << "Load object from XML" << endl;
 			int tmpType;
 			elem->QueryIntAttribute("type", &tmpType);
-			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), VISIBLE_WALL);
+			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), VISIBLE_WALL, elem->Attribute("texture"));
+			
 			elem->QueryIntAttribute("block", &(obj->block));
 			elem->QueryDoubleAttribute("posX", &(obj->posX));
 			elem->QueryDoubleAttribute("posY", &(obj->posY));
@@ -83,12 +86,25 @@ bool Game::load() {
 
 void Game::start() {	// init level configuration
     // We set the actual camera to be the player's one (fps mode)
-    m_pScene->pCamera = &m_player;
+	m_pScene->pCamera = &m_player;
     m_player.setPosition(Vector3f(37,.5,10));
     
     // Shader
-    GLuint shaderId = loadProgram("../shaders/lightingShader.glsl");
-    //m_pScene->setDefaultShaderID();
+    vector<string> files;
+    files.push_back("../shaders/shaderTools.glsl");
+    files.push_back("../shaders/lightingShader.glsl");
+    GLuint shaderId = loadProgram(files);
+    files.pop_back();
+    m_pScene->setDefaultShaderID(shaderId);
+ 
+    glUseProgram(shaderId);
+    GLfloat ambient[]={1.0, 1.0, 1.0, 1.0}; 
+    GLfloat diffuse[]={1.0, 1.0, 1.0, 1.0}; 
+    GLfloat specular[]={1.0, 1.0, 1.0, 1.0}; 
+    GLfloat ka=0.01, kd=1.0, ks=2.0, shininess=5.0;
+    
+    setMaterialInShader(shaderId, ambient, diffuse, specular, ka, kd, ks, shininess);
+    
 	// cout << "fu" << endl;
 	// loadTexture("../res/textures/image1.ppm");
 	// glUniform1i(glGetUniformLocation(shaderId, "textureUnit0"), 0);
@@ -108,6 +124,7 @@ void Game::start() {	// init level configuration
 		m_pScene->setDrawnObjectTextureID((*i)->object.id, 0, (*i)->object.getTextureId());
 		m_pScene->setDrawnObjectShaderID((*i)->object.id, shaderId);
 		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
+		cout << " charge objet " << endl;
 	}
 	
 	for(size_t i = 0; i < m_pMirrors.size(); ++i) {

@@ -24,8 +24,7 @@ class Scene {
             objectId(objectId), shaderId(shaderId), transformation(transformation), color(color) {
         }
     };
-    
-	GLuint defaultTextureId;
+ 
 	GLuint* drawnObjectsTexture0IDs;
 	GLuint* drawnObjectsTexture1IDs;    
 	GLuint nbDrawnObjects;    
@@ -37,10 +36,12 @@ class Scene {
     Matrix4f defaultTransformation; // Default transformation matrix for drawn elements
     GLfloat lightPosition[4]; // Position of the light used in shader
     GLfloat lightPower; // Power of the light used in shader
+    
+    
 public:
     const static size_t maxStoredObjects = 500; // An initial limit of storable objects
-    const static size_t maxDrawnObjects = 200; // An initial limit of drawable objects
-    const static GLuint defaultShaderID = 1; // Default shaderID for drawn elements
+    const static size_t maxDrawnObjects = 200; // An initial limit of drawable objects	
+    static GLuint defaultShaderID; // Default shaderID for drawn elements
 
     Scene();
     ~Scene();
@@ -58,7 +59,6 @@ public:
     void setDefaultColor(const Color &defaultColor);
     void setDefaultModel(const Matrix4f &defaultModel);
     void setDefaultShaderID(GLuint defaultShaderID);
-    void setDefaultTextureID(GLuint defaultTextureID);
 
     void setLight(GLfloat * position, GLfloat power);
 
