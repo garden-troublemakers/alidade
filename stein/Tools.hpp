@@ -25,7 +25,7 @@ void printGlErrors();
 GLuint loadTexture(const char* fileName);
 GLuint loadProgram(const std::vector<std::string> & files);
 GLuint loadProgram(const std::string& file);
-void printShaderLog(GLint shaderId);
+void printShaderLog(GLuint shaderId);
 
 std::string * loadFile(const std::string & fileName);
 unsigned char * loadPPM(const char* filename, GLuint &width, GLuint &height);

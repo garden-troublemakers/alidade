@@ -108,6 +108,9 @@ GLuint loadTexture(const char* fileName) {
     // Loads the image from a ppm file to an unsigned char array
     unsigned char *data = loadPPM(fileName, w, h);
 
+	//Selects our current unit texture
+	glActiveTexture(GL_TEXTURE0);
+	
     // Allocates a texture id
     GLuint textureID;
     glGenTextures(1, &textureID);
@@ -145,7 +148,7 @@ string* loadFile(const string &fileName) {
 }
 
 // Prints info about potential problems which occured during compilation
-void printShaderLog(GLint shaderId) {
+void printShaderLog(GLuint shaderId) {
     GLint logLength;
     glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0) {

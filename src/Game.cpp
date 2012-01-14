@@ -7,8 +7,8 @@ using namespace stein;
 Game::Game(Scene* pScene):
 	m_pScene(pScene), m_ghostCamera(), m_portals(), m_player(pScene),
 	m_level(EASY), m_pMirrors(), m_lObjects(),
-	m_bRunning(false), m_bPause(false), m_bGhostMode(false)
-{}
+	m_bRunning(false), m_bPause(false), m_bGhostMode(false) {	
+	}
 
 Game::~Game() {
 	//delete [] player;
@@ -22,8 +22,8 @@ Game::~Game() {
 
 void Game::loadLevel() {
 	list<Obj> objList;
-	TiXmlDocument *xmlDoc = NULL;
-	TiXmlElement *elem = NULL;
+	TiXmlDocument* xmlDoc = NULL;
+	TiXmlElement* elem = NULL;
 	
 	cout << "loadLevel" << endl;
 	
@@ -85,8 +85,14 @@ void Game::start() {	// init level configuration
     // We set the actual camera to be the player's one (fps mode)
     m_pScene->pCamera = &m_player;
     m_player.setPosition(Vector3f(37,.5,10));
+    
     // Shader
-    m_pScene->setDefaultShaderID(loadProgram("../shaders/simpleShader.glsl"));
+    GLuint shaderId = loadProgram("../shaders/lightingShader.glsl");
+    //m_pScene->setDefaultShaderID();
+	// cout << "fu" << endl;
+	// loadTexture("../res/textures/image1.ppm");
+	// glUniform1i(glGetUniformLocation(shaderId, "textureUnit0"), 0);
+
     
 	// prepare level using xml.
 	// build objects from xml
@@ -99,6 +105,8 @@ void Game::start() {	// init level configuration
 		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false);
 		m_pScene->addObjectToDraw((*i)->object.id);
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
+		m_pScene->setDrawnObjectTextureID((*i)->object.id, 0, (*i)->object.getTextureId());
+		m_pScene->setDrawnObjectShaderID((*i)->object.id, shaderId);
 		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
 	}
 	
@@ -198,8 +206,10 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 				Vector3f forward;
 				forward.z = 1.;
 				//forward = forward * Matrix4f(m_pScene->pCamera->getView()); // @TODO get forward vector the vector directing the player's camera
+				
 				Ray shoot(m_player.getPosition(), forward);
-				//Intersection intersection();
+					// Triangle triangle();
+					// Intersection intersection();
 				
 				//m_portals.setPortal(Color::BLUE, m_pScene);
 				//
@@ -236,3 +246,4 @@ void Game::switchPause() {
 	m_pScene->pCamera = &m_player;
 	cout << (m_bPause ? "Pause on" : "Pause off") << endl;
 }
+

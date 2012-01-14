@@ -18,6 +18,7 @@
 #include <iostream>
 #include <string>
 #include <cstdio>
+#include <memory>
 
 enum Level {
 	EASY, HARD
