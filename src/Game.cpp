@@ -10,13 +10,14 @@ Game::Game(Scene* pScene):
 	m_bRunning(false), m_bPause(false), m_bGhostMode(false)
 {}
 
-
-
 Game::~Game() {
+	//delete [] player;
+	/*list delete m_lObjects;*/
 	while(!m_pMirrors.empty()) {
         delete m_pMirrors.back();
         m_pMirrors.pop_back();
     }
+    
 }
 
 void Game::loadLevel() {
@@ -93,7 +94,8 @@ void Game::start() {	// init level configuration
 	// ... like that
 
 	loadLevel();
-	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); i.next()) {
+
+	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
 		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false);
 		m_pScene->addObjectToDraw((*i)->object.id);
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
@@ -102,10 +104,11 @@ void Game::start() {	// init level configuration
 	
 	for(size_t i = 0; i < m_pMirrors.size(); ++i) {
 		//m_pMirrors[i]->goToPosition(Vector3f(35,1,10*(i+1)));
-	}
+	}			
 	
 	
 	// We add mirrors
+	
 
 	m_bRunning = true;
 }
@@ -189,8 +192,31 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 	if(m_bRunning && mEvent.type == SDL_MOUSEBUTTONDOWN  && mEvent.state == SDL_PRESSED) {
 		if(!m_bPause && !m_bGhostMode){
 			// Add delay between launches and getter for color ?
-			Color color = (mEvt.button == SDL_BUTTON_LEFT) ? Color::BLUE : Color::RED;
-			handleShootPortal(color);
+			//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
+			if(mEvent.button == SDL_BUTTON_LEFT) {
+				m_player.shootPortal(Color::BLUE);
+				Vector3f forward;
+				forward.z = 1.;
+				//forward = forward * Matrix4f(m_pScene->pCamera->getView()); // @TODO get forward vector the vector directing the player's camera
+				Ray shoot(m_player.getPosition(), forward);
+				//Intersection intersection();
+				
+				//m_portals.setPortal(Color::BLUE, m_pScene);
+				//
+				cout << " click gauche " << endl;
+				//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
+			}
+			else if(mEvent.button == SDL_BUTTON_RIGHT) {
+				m_player.shootPortal(Color::RED);
+				cout << " click droit " << endl;
+			}
+			if(mEvent.button == SDL_BUTTON_LEFT || mEvent.button == SDL_BUTTON_LEFT) {
+					//Intersection intersection(); // compute this
+					// if intersection.obj.type == PORTALABLE ...
+						//m_portals.setPortal(color, intersection, &m_player, m_pScene);
+			}
+			// Build intersection here.
+			//m_portals.setPortal(color, intersection, &m_player, m_pScene);
 		}
 	}
 }
@@ -209,49 +235,4 @@ void Game::switchPause() {
 	// @TODO : reset nextMove of camera if pause on
 	m_pScene->pCamera = &m_player;
 	cout << (m_bPause ? "Pause on" : "Pause off") << endl;
-}
-
-// On click, when the game is running
-void handleShootPortal(Color color) {
-	// get direction of player's camera.
-	// get color of portal
-	// get position
-	// get shoot's direction
-	// call player's shootPortal
-	// launch ray
-	// loop for intersections
-	// 	 get intersection
-	// do the job
-	//   interpret color
-	//   ...
-	// exit
-	// dir = Vector "forward" normalized
-	Ray ray(m_player.getPosition(), m_player.getView()*Vector3f(0,0,-1));
-	Intersection intersection;
-	
-	list<Obj>::iterator i = lObjects.begin();
-	// walkin' through portalable zones
-	while (i != lObjects.end()) {
-		if(i.type == PORTALABLE_ZONE) {
-			std::list<Triangle> triangles = i.getTrianglesList();
-			// loop on primitives
-			for(list<Triangle>::iterator t = triangles.begin(); t != triangles.end(); i.next()) {
-				// make triangle
-				Triangle t(a, b, c, normal, pObject);
-				// get intersection
-				Intersection tIntersection(ray, t);
-				// test intersection
-				if(tIntersection.checkIntersection()) {
-					// test its depth
-					if((intersection.point == stein::Vector3f()) || (tIntersection.computeDepth(m_player) < intersection.computeDepth(m_player))) {
-						intersection = tIntersection;
-					}
-				}
-			}
-		}
-	}
-	// complexity : NB_TRIANGLE*PORTALABLE_ZONE_NUMBER
-	if(intersection.point != stein::Vector3f()) {
-		portals.setPortal(color, intersection, m_pScene);
-	}
 }

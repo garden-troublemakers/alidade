@@ -51,8 +51,6 @@ public :
 	void handleKeyEvent(const SDL_keysym& keysym, bool down);
 	void handleMouseEvent(const SDL_MouseButtonEvent& mEvent);
 	
-	void handleShootPortal(Color color);
-	
 	inline const bool isRunning() const {
 		return m_bRunning;
 	}

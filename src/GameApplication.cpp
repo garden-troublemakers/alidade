@@ -4,7 +4,7 @@ using namespace std;
 using namespace stein;
 
 GameApplication::GameApplication() :
-	Application(WIDTH, HEIGHT), m_game(&m_Scene), m_volumes(NULL), m_pause(MENU_PAUSE) {
+	Application(WIDTH, HEIGHT), m_game(&m_Scene), m_volumes(NULL) {
 	// Init volumes at 80 percents each
 	m_volumes = new float[3]();
 	for(size_t i = 0; i < 3 ; ++i)
@@ -28,7 +28,7 @@ void GameApplication::animate() {
 		cout << "NO GAME" << endl; // show sdl game menu
 	else {
 		if (m_game.inPause())
-			m_pause.show();
+			cout << "IN PAUSE" << endl; // show sdl menu pause
 		else
 			m_game.update();
 	}

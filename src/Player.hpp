@@ -26,7 +26,8 @@ public :
 	// const static std::string PLAYER_PATH = "./player.obj";
 	Player(stein::Scene * pScene);
 	virtual ~Player();
-	void shootPortal(stein::Color color);
+	bool checkCollisionPortals(const Portals& portals, const Portal& newP);
+	bool shootPortal(stein::Color color);
 	virtual void teleport(Portal* pPortal);
 	virtual stein::Vector3f mirrorPosition(Portal* pPortal);
 	virtual stein::Vector3f mirrorDirection(Portal* pPortal);

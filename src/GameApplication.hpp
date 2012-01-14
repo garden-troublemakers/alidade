@@ -3,7 +3,6 @@
 
 // @TODO : rm !
 #include "consts.h"
-#include "GameMenu.hpp"
 #include "Game.hpp"
 #include <stein/Application.hpp>
 
@@ -11,7 +10,6 @@ class GameApplication : public stein::Application {
 private :
 	Game m_game;
 	float * m_volumes;
-	GameMenu m_pause;
 	
 public :
 	const static GLfloat GHOST_CAMERA_HEIGHT = 0.1;

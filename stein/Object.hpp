@@ -35,12 +35,6 @@ struct Object {
     GLboolean hasColors() const {
         return colorsVboId;
     }
-    GLenum getPrimitivesType() const {
-		return primitivesType;
-	}
-	GLuint getNbIndices() const {
-		return nbIndices;
-	}
 private:
     GLuint vaoId; // vertex array objet id
     GLuint verticesVboId; // vertices buffer id
