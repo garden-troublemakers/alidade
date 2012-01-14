@@ -25,7 +25,7 @@ GameApplication::~GameApplication() {
 
 void GameApplication::animate() {
 	if(!m_game.isRunning())
-		cout << "NO GAME" << endl; // show sdl game menu
+		cerr << "NO GAME" << endl; // show sdl game menu
 	else {
 		if (m_game.inPause())
 			m_pause.show();
@@ -34,16 +34,20 @@ void GameApplication::animate() {
 	}
 }
 
-// Distributes task for the "key" kind of events 
-// For example : cout when b key is pressed
+// Distributes task for the "key" kind of events
 // down is true when the key is pressed, false when released
 void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
-	if(keysym.sym == SDLK_ESCAPE)
-		Application::handleKeyEvent(keysym, down);
-	if(m_game.isRunning())
+	if(keysym.sym == SDLK_ESCAPE) {
+		cout << endl << endl << endl << endl << endl << endl << endl << endl;
+		cout << "Thank you for testing Alidade." << endl;
+		cout << "Fork this game at" << endl << "https://github.com/garden-troublemakers/alidade" << endl;
+		cout << endl << endl << endl << endl << endl << endl << endl << endl;
+		Application::handleKeyEvent(keysym, down);	
+	} 
+	if(m_game.isRunning() && keysym.sym != SDLK_f)
 		m_game.handleKeyEvent(keysym, down);
 	else
-	Application::handleKeyEvent(keysym, down);
+		Application::handleKeyEvent(keysym, down);
 }
 
 void GameApplication::handleEvent(const SDL_Event& event) {

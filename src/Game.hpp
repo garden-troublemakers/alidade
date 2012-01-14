@@ -14,9 +14,7 @@
 #include <stein/Tools.hpp>
 #include <tinyxml/tinyxml.h>
 #include <tinyxml/tinystr.h>
-#include <list>
 #include <iostream>
-#include <string>
 #include <cstdio>
 #include <memory>
 
@@ -52,7 +50,7 @@ public :
 	void handleKeyEvent(const SDL_keysym& keysym, bool down);
 	void handleMouseEvent(const SDL_MouseButtonEvent& mEvent);
 	
-	void handleShootPortal(Color color);
+	void handleShootPortal(stein::Color color);
 	
 	inline const bool isRunning() const {
 		return m_bRunning;

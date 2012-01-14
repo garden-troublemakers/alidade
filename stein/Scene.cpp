@@ -16,8 +16,8 @@ Scene::Scene() :
     GLfloat lightPower = 1.0;
     setLight(lightPosition, lightPower);
     try {
-		drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects];
-		drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects];
+		drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects]();
+		drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects]();
 	} catch( ...) {
 		// @TODO : Find better exception
 		std::cerr << "BUFFER OVERFLOW !!" << std::endl;
@@ -38,7 +38,6 @@ Scene::~Scene() {
 // Adds the object in the Objects library array, 
 // after the last added object, and only if the array is not full, returns the index
 Object& Scene::createObject(GLenum primitiveType) {
-    std::cout << "Create object in Scene" << std::endl;
 	const size_t size = storedObjects.size();
     if (size >= maxStoredObjects)
         throw std::runtime_error("maximum number of stored objects reached");
@@ -53,7 +52,6 @@ GLuint Scene::addObjectToDraw(GLuint indexStoredObject, GLuint shaderID) {
     if (size >= maxDrawnObjects)
         throw std::runtime_error("maximum number of drawn objects reached");
     drawnObjects.push_back(ObjectInstance(indexStoredObject, shaderID, defaultTransformation, defaultColor));
-    setDrawnObjectTextureID(nbDrawnObjects, 0, defaultTextureId);
     return size;
 }
 

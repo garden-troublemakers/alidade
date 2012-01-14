@@ -24,22 +24,16 @@ void Game::loadLevel() {
 	TiXmlDocument* xmlDoc = NULL;
 	TiXmlElement* elem = NULL;
 	
-	cout << "loadLevel" << endl;
-	
 	//Loading xml depending on level chosen
 	if(m_level == EASY)
 		xmlDoc = new TiXmlDocument("../res/maps/tuto.xml");
 	else if(m_level == HARD)
 		xmlDoc = new TiXmlDocument("../res/maps/ez.xml");
-		
-		cout << "else if" << endl;
-		
+
 	if(!xmlDoc->LoadFile()) {
-		cerr << "loading error" << endl;
-		cerr << "error #" << xmlDoc->ErrorId() << " : " << xmlDoc->ErrorDesc() << endl;
+		cerr << "loading error #" << xmlDoc->ErrorId() << " : " << xmlDoc->ErrorDesc() << endl;
 	}
 	else {
-		cout << "else" << endl;
 		//Parsing the xml document
 		TiXmlHandle hdl(xmlDoc);
 		elem = hdl.FirstChildElement().FirstChildElement().Element();
@@ -47,7 +41,6 @@ void Game::loadLevel() {
 		if(!elem)
 			cerr << "node to reach doesn't exist" << endl;
 		while (elem){
-			cout << "Load object from XML" << endl;
 			int tmpType;
 			elem->QueryIntAttribute("type", &tmpType);
 			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), VISIBLE_WALL);
@@ -59,15 +52,20 @@ void Game::loadLevel() {
 			m_lObjects.push_back(obj);
 			elem = elem->NextSiblingElement();
 		}
+		
 		for(size_t j = 0; j < 10 ; ++j)
 			m_pMirrors.push_back(new Mirror(m_pScene));
+		
 		for(size_t i= 0; i < m_pMirrors.size(); ++i) {
 			Matrix4f rotation = xRotation(-float(0.33*i * M_PI)) *  yRotation(float(0.33*i * M_PI));
 			m_pMirrors[i]->gotoPositionRotation(Vector3f(35, 10, 2*i), rotation);
 		}
 	}
+	
 	delete xmlDoc;
 	delete elem;
+	xmlDoc = NULL;
+	elem = NULL;
 }
 
 bool Game::save() {
@@ -88,7 +86,6 @@ void Game::start() {	// init level configuration
     // Shader
     GLuint shaderId = loadProgram("../shaders/lightingShader.glsl");
     //m_pScene->setDefaultShaderID();
-	// cout << "fu" << endl;
 	// loadTexture("../res/textures/image1.ppm");
 	// glUniform1i(glGetUniformLocation(shaderId, "textureUnit0"), 0);
 
@@ -99,19 +96,20 @@ void Game::start() {	// init level configuration
 	// ... like that
 
 	loadLevel();
-	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); i.next()) {
-		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false);
+	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
+		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false, (*i)->builder);
 		m_pScene->addObjectToDraw((*i)->object.id);
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
 		m_pScene->setDrawnObjectTextureID((*i)->object.id, 0, (*i)->object.getTextureId());
 		m_pScene->setDrawnObjectShaderID((*i)->object.id, shaderId);
-		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
+		m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
 	}
 	
 	for(size_t i = 0; i < m_pMirrors.size(); ++i) {
+		//m_pScene->setDrawnObjectColor(frame.object.id, stein::Color::WHITE);
+		//m_pScene->setDrawnObjectColor(surface.object.id, stein::Color::GRAY);
 		//m_pMirrors[i]->goToPosition(Vector3f(35,1,10*(i+1)));
 	}
-	
 	
 	// We add mirrors
 
@@ -197,7 +195,7 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 	if(m_bRunning && mEvent.type == SDL_MOUSEBUTTONDOWN  && mEvent.state == SDL_PRESSED) {
 		if(!m_bPause && !m_bGhostMode){
 			// Add delay between launches and getter for color ?
-			Color color = (mEvt.button == SDL_BUTTON_LEFT) ? Color::BLUE : Color::RED;
+			Color color = (mEvent.button == SDL_BUTTON_LEFT) ? Color::BLUE : Color::RED;
 			handleShootPortal(color);
 		}
 	}
@@ -219,9 +217,8 @@ void Game::switchPause() {
 	cout << (m_bPause ? "Pause on" : "Pause off") << endl;
 }
 
-<<<<<<< HEAD
 // On click, when the game is running
-void handleShootPortal(Color color) {
+void Game::handleShootPortal(stein::Color color) {
 	// get direction of player's camera.
 	// get color of portal
 	// get position
@@ -235,34 +232,34 @@ void handleShootPortal(Color color) {
 	//   ...
 	// exit
 	// dir = Vector "forward" normalized
-	Ray ray(m_player.getPosition(), m_player.getView()*Vector3f(0,0,-1));
-	Intersection intersection;
 	
-	list<Obj>::iterator i = lObjects.begin();
+	Matrix4f forward;
+	forward.setZero();
+	forward(3,2) = -1.;
+	forward = m_player.getView()*forward;
+	Ray ray(m_player.getPosition(), Vector3f(forward(3,0), forward(3,1), forward(3,2)));
+	Intersection* pIntersection;
+	bool bIntersect;
+	
 	// walkin' through portalable zones
-	while (i != lObjects.end()) {
-		if(i.type == PORTALABLE_ZONE) {
-			std::list<Triangle> triangles = i.getTrianglesList();
+	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i)
+		if((*i)->type == PORTALABLE_ZONE) {
+			std::list<Triangle> triangles = (*i)->getTrianglesList();
 			// loop on primitives
-			for(list<Triangle>::iterator t = triangles.begin(); t != triangles.end(); i.next()) {
-				// make triangle
-				Triangle t(a, b, c, normal, pObject);
-				// get intersection
-				Intersection tIntersection(ray, t);
-				// test intersection
-				if(tIntersection.checkIntersection()) {
-					// test its depth
-					if((intersection.point == stein::Vector3f()) || (tIntersection.computeDepth(m_player) < intersection.computeDepth(m_player))) {
-						intersection = tIntersection;
+			for(list<Triangle>::iterator t = triangles.begin(); t != triangles.end(); ++t) {
+				bIntersect = false;
+				Intersection tIntersection(ray, *t, bIntersect); // get & test intersection
+				if(bIntersect)
+					if((pIntersection->point == stein::Vector3f()) || (tIntersection.computeDepth(m_player) < pIntersection->computeDepth(m_player))) {  // test its depth
+						delete pIntersection;
+						pIntersection = &tIntersection;
 					}
-				}
 			}
 		}
-	}
 	// complexity : NB_TRIANGLE*PORTALABLE_ZONE_NUMBER
-	if(intersection.point != stein::Vector3f()) {
-		portals.setPortal(color, intersection, m_pScene);
+	if(pIntersection->point != stein::Vector3f()) {
+		m_portals.setPortal(color, *pIntersection, m_pScene);
 	}
+	delete pIntersection;
+	pIntersection = NULL;
 }
-=======
->>>>>>> be574d1c1d5a71e42d6b6777d742b8a0c10a68a4

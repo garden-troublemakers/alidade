@@ -14,18 +14,15 @@ struct Mirror : public MoveableCamera {
 	stein::Scene* pScene;
 	Obj frame;
 	Obj surface;
-	virtual ~Mirror() { std::cout << "destruct mirror" << std::endl;}
+	virtual ~Mirror() {}
 	Mirror(stein::Scene* pS) : 
 		MoveableCamera(), pScene(pS),
-		frame(pScene, std::string(), MIRROR), surface(pScene, std::string(), MIRROR)
+		frame(pScene, "", MIRROR), surface(pScene, "", MIRROR)
 	{
 		pScene->addObjectToDraw(frame.object.id);
 		pScene->addObjectToDraw(surface.object.id);
 		buildSquare(frame.object, 1);
 		buildSquare(surface.object);
-		std::cout << "Mirrors" << std::endl;	
-		pScene->setDrawnObjectColor(frame.object.id, stein::Color::WHITE);
-		pScene->setDrawnObjectColor(surface.object.id, stein::Color::GRAY);
 	}
 	
 	Mirror(const Mirror &other): pScene(other.pScene), frame(other.frame), surface(other.surface) {}

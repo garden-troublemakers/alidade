@@ -94,13 +94,10 @@ void MoveableCamera::rotate() {
 
 	m_xMousePosition += 2.0*mouseRelX/(GLfloat)GameApplication::WIDTH;
 	m_yMousePosition += -2.0*mouseRelY/(GLfloat)GameApplication::HEIGHT;
-	// std::cout<<m_m_xMousePosition<< " " << m_yMousePosition<<std::endl;
 
 	float angleLong = m_xMousePosition * M_PI;
 	//float angleLat = m_yMousePosition * M_PI/2.;
 	setRotation(yRotation(angleLong));
-	//std::cout<<angleLong<< " " << angleLat<<std::endl;
-	
 
 	// Method with rotates
 

@@ -28,7 +28,7 @@ class Scene {
 	GLuint defaultTextureId;
 	GLuint* drawnObjectsTexture0IDs;
 	GLuint* drawnObjectsTexture1IDs;    
-	GLuint nbDrawnObjects;    
+	GLuint nbDrawnObjects;
 
     std::vector<Object*> storedObjects; // Library of Objects to use from GPU
     std::vector<ObjectInstance> drawnObjects;

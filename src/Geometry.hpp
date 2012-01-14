@@ -41,12 +41,14 @@ struct Intersection {
 	const Ray ray;
 	const Triangle triangle;
 	stein::Vector3f point;
-	Intersection(const Ray & r, const Triangle & t) :
+	Intersection(const Ray & r, const Triangle & t, bool & intersect) :
 		ray(r), triangle(t), point()
 	{
-		if(!checkIntersection(ray, triangle)) {
+		if(!checkIntersection()) {
 			throw "No intersection";
-		}
+			intersect = false;
+		} else
+			intersect = true;
 	}
 	Intersection(const Intersection & b) :
 		ray(b.ray), triangle(b.triangle)
@@ -58,7 +60,7 @@ struct Intersection {
 		return (point - camera.getPosition()).norm();
 	}
 	
-	bool checkIntersection(const Ray & ray, const Triangle & triangle) {
+	bool checkIntersection() {
 		GLfloat t = (triangle.normal.dotP(triangle.a) - triangle.normal.dotP(ray.pos)) / triangle.normal.dotP(ray.dir);
 		if (t<0.0) return false;
 	
