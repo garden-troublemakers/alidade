@@ -22,6 +22,8 @@ struct Object {
     void sendNormals(const std::vector<Vector3f> &normals);
     void sendColors(const std::vector<Color> &colors);
     void sendUvs(const std::vector<std::pair<float, float> > &uvs);
+    void setTextureId(GLuint id);
+    GLuint getTextureId();
 
     GLboolean hasPrimitives() const {
         return m_bPrimitives;
@@ -49,6 +51,7 @@ private:
     GLuint colorsVboId; // normals buffer id
     GLuint indicesVboId; // indices buffer id
     GLuint nbIndices; // number of indices necessary to draw all the triangles
+    GLuint textureId; // id of the texture
     GLenum primitivesType; // GL_TRIANGLES or GL_LINES
     GLboolean m_bPrimitives; // Are the primitives filled ?
     GLboolean m_bNormals; // Are the normals filled ?

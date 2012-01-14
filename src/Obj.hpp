@@ -3,6 +3,7 @@
 
 #include <stein/Object.hpp>
 #include <stein/Scene.hpp>
+#include <stein/Tools.hpp>
 #include <string>
 
 enum ObjectType {
@@ -15,9 +16,11 @@ struct Obj {
 	ObjectType type;
 	int block;
 	double posX, posY, posZ;
-	Obj(stein::Scene * pScene, const std::string & p, const ObjectType &t) :
-		object(pScene->createObject(GL_TRIANGLES)), path(p), type(t)
+	std::string texturePath;
+	Obj(stein::Scene * pScene, const std::string & p, const ObjectType &t, const std::string &tp = "../res/textures/sand.ppm") :
+		object(pScene->createObject(GL_TRIANGLES)), path(p), type(t), texturePath(tp)
 	{
+		object.setTextureId(stein::loadTexture(texturePath.c_str()));
 		pScene->addObjectToDraw(object.id);
 	}
 	std::list<Triangle> getTrianglesList() {

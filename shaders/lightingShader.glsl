@@ -6,16 +6,16 @@
 #ifdef _VERTEX_
 
 // Attributes : per vertex data
-in vec4 vertexPosition;
-in vec3 vertexNormal;
-in vec2 vertexUvs;
-in vec4 vertexColor;
+ in vec4 vertexPosition;
+ in vec3 vertexNormal;
+ in vec2 vertexUvs;
+ in vec4 vertexColor;
 
 // Varyings : data to transmit to fragments
-smooth out vec3 position;
-smooth out vec3 normal;
-smooth out vec2 uvs;
-smooth out vec4 localColor;
+ varying out vec3 position;
+ varying out vec3 normal;
+ varying out vec2 uvs;
+ varying out vec4 localColor;
 
 void main()
 {
@@ -36,19 +36,27 @@ void main()
 
 
 // Varyings : data receved and interpolated from the vertex shaders
-smooth in vec4 position;
-smooth in vec4 normal;
-smooth in vec2 uvs;
-smooth in vec4 localColor;
+ in vec4 position;
+ in vec4 normal;
+ in vec2 uvs;
+ in vec4 localColor;
 
 // Final output
-out vec4 fragColor;
+ out vec4 fragColor;
 
 void main()
 {
     vec4 diffuseColorMix=vec4(material.diffuse);
+    vec4 specularColorMix = vec4(material.specular);
+    
     // If color
     if (filledData[3]) diffuseColorMix=mix(localColor, material.diffuse, 0.3);
+    
+    // If texture
+    if (filledData[2]) {
+    	diffuseColor = vec4(texture2d(textureUnitDiffuse, uvs).rgb, 1.);
+    	specularColorMix = vec4(texture2d(textureUnitSpecular, uvs).rgb, 1.);
+    }
     
     // If no normal
     if (!filledData[1]) fragColor = diffuseColorMix;
@@ -65,7 +73,7 @@ void main()
         float specularValue=light.power * pow( max(dot(R, V), 0.0), material.shininess);
         vec4 ambientContribution=vec4(ambientValue*material.ka*material.ambient.rgb, material.ambient.a);
         vec4 diffuseContribution=vec4(diffuseValue*material.kd*diffuseColorMix.rgb, diffuseColorMix.a);
-        vec4 specularContribution=vec4(specularValue*material.ks*material.specular.rgb, material.specular.a);
+        vec4 specularContribution=vec4(specularValue*material.ks*specularColorMix.rgb, material.specular.a);
   
         fragColor = ambientContribution + diffuseContribution + specularContribution;
     }

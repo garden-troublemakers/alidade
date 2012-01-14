@@ -39,3 +39,6 @@ uniform bvec4 filledData; // filledData[0] : true if position,
                           
 uniform sampler2D textureUnitDiffuse; // 0
 uniform sampler2D textureUnitSpecular; // 1
+uniform sampler2D textureUnitNormal; // 2
+
+

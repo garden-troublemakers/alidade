@@ -117,7 +117,8 @@ void Object::sendUvs(const vector<pair<float, float> > &values) {
     const GLenum attributeUV = 2; // Third attribute in the shader is the uv
     pushArray(attributeUV, uvsVboId, (GLfloat*) values.data(), values.size(), 2);
 
-//    cout << "UV sent " << values.size() << endl;
+// @TODO : Comment
+    cout << "UV sent " << values.size() << endl;
 
     m_bUvs = true;
 }
@@ -130,6 +131,14 @@ void Object::sendColors(const vector<Color> &values) {
     pushArray(attributeColor, colorsVboId, (GLfloat*) values.data(), values.size(), 4);
 
     m_bColors = true;
+}
+
+void Object::setTextureId(GLuint id) {
+	textureId = id;
+}
+
+GLuint Object::getTextureId() {
+	return textureId; 
 }
 
 // Draw the object with the vao
