@@ -2,10 +2,12 @@
 #define _GAME_APPLICATION_HPP_
 
 // @TODO : rm !
-#include "consts.h"
 #include "GameMenu.hpp"
 #include "Game.hpp"
 #include <stein/Application.hpp>
+#define VOLUME_SOUND 	0
+#define VOLUME_MUSIC	1
+#define VOLUME_FX		2
 
 class GameApplication : public stein::Application {
 private :

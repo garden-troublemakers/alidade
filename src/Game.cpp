@@ -7,8 +7,8 @@ using namespace stein;
 Game::Game(Scene* pScene):
 	m_pScene(pScene), m_ghostCamera(), m_portals(), m_player(pScene),
 	m_level(EASY), m_pMirrors(), m_lObjects(),
-	m_bRunning(false), m_bPause(false), m_bGhostMode(false) {	
-	}
+	m_bRunning(false), m_bPause(false), m_bGhostMode(false)
+{}
 
 
 
@@ -43,7 +43,7 @@ void Game::loadLevel() {
 		while (elem){
 			int tmpType;
 			elem->QueryIntAttribute("type", &tmpType);
-			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), VISIBLE_WALL);
+			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), (ObjectType)tmpType);
 			elem->QueryIntAttribute("block", &(obj->block));
 			elem->QueryDoubleAttribute("posX", &(obj->posX));
 			elem->QueryDoubleAttribute("posY", &(obj->posY));
@@ -126,11 +126,47 @@ void Game::exit() {
 }
 
 void Game::update() {
-	if(!m_bPause) {
 		((MoveableCamera*)m_pScene->pCamera)->move();
 		if(m_bGhostMode) {
 		} else {
-			/*Portal* newPortal;
+			//	test collision with objs
+			//  switch
+			list<Obj*> objects = m_lObjects;
+			objects.push_back(&(m_portals.pBluePortal->frame));
+			objects.push_back(&(m_portals.pBluePortal->surface));
+			objects.push_back(&(m_portals.pRedPortal->frame));
+			objects.push_back(&(m_portals.pRedPortal->surface));
+			for(std::vector<Mirror*>::iterator i = m_pMirrors.begin(); i != m_pMirrors.end(); ++i) {
+				objects.push_back(&((*i)->frame));
+				objects.push_back(&((*i)->surface));
+			}
+			
+			for(list<Obj*>::iterator i = objects.begin(); i != objects.end(); ++i) {
+				break;
+				/*Collision collision(*i);
+				if(m_player.checkCollision(collision) {
+					switch((*i)->type) {
+						case PORTAL :
+							// teleport
+							m_player.teleport(Portal portal);
+							break;
+						case ACTION_ZONE :
+							// do the dance
+							break;
+						case INVISIBLE_WALL :
+						case PORTALABLE_ZONE :
+						case VISIBLE_WALL :
+						case MIRROR :
+							// un-set movement
+						default :
+							break;
+					}
+					
+					// avoid looping on other objects
+					break;
+				}*/
+			}
+			/*
 			if(!!m_player.checkCollisionPortals(m_portals, newPortal)) { // const Portal* Portals::checkCollisionPortal(const Portals & portals) const;
 				// teleport player depending on newPortal
 				// m_player->setPosition( new position )
@@ -166,7 +202,6 @@ void Game::update() {
 			// You see what i did there ?
 		break;
 	}*/
-	}
 }
 
 void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
@@ -237,34 +272,22 @@ void Game::handleShootPortal(stein::Color color) {
 	//   ...
 	// exit
 	// dir = Vector "forward" normalized
-	
-	Matrix4f forward;
-	forward.setZero();
-	forward(3,2) = -1.;
-	forward = m_player.getView()*forward;
+	Matrix4f forward = translation(Vector3f(0,0,-1));
 	Ray ray(m_player.getPosition(), Vector3f(forward(3,0), forward(3,1), forward(3,2)));
-	Intersection* pIntersection;
-	bool bIntersect;
+	Intersection* pIntersection = NULL;
 	
 	// walkin' through portalable zones
+	cout << "nbObjects" << m_lObjects.size() << endl;
 	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i)
 		if((*i)->type == PORTALABLE_ZONE) {
-			std::list<Triangle> triangles = (*i)->getTrianglesList();
-			// loop on primitives
-			for(list<Triangle>::iterator t = triangles.begin(); t != triangles.end(); ++t) {
-				bIntersect = false;
-				Intersection tIntersection(ray, *t, bIntersect); // get & test intersection
-				if(bIntersect)
-					if((pIntersection->point == stein::Vector3f()) || (tIntersection.computeDepth(m_player) < pIntersection->computeDepth(m_player))) {  // test its depth
-						delete pIntersection;
-						pIntersection = &tIntersection;
-					}
-			}
+			intersectRayObject(ray, *i, &m_player, pIntersection);	
 		}
-	// complexity : NB_TRIANGLE*PORTALABLE_ZONE_NUMBER
-	if(pIntersection->point != stein::Vector3f()) {
+	
+	// do the right thing.			
+	if(pIntersection) {
 		m_portals.setPortal(color, *pIntersection, m_pScene);
 	}
+
 	delete pIntersection;
 	pIntersection = NULL;
 }

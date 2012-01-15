@@ -26,7 +26,6 @@ struct Portal : public Mirror {
 			stein::Vector3f sourcePos(pSecondPortal->getPosition() + (playerPos - getPosition()));
 			pSecondPortal->mirrorView(sourcePos);
 			//pSecondPortal->update();
-			//pSecondPortal // ?
 			// show second portal view
 		}
 	}

@@ -32,7 +32,6 @@ Vector3f Player::mirrorPosition(Portal* pPortal) {
 	// Calculate the angle for getting out of a mirror
 	// Update m_nextMove in Camera
 	return pPortal->pSecondPortal->getPosition() + getPosition() - pPortal->getPosition();
-	// set
 	//Matrix4f rotateAroundY = yRotation(angleLong);
 }
 

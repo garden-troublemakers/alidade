@@ -6,7 +6,6 @@
 #include <cstring>
 #include <stdexcept>
 
-
 namespace stein {
 
 struct Vector3f {

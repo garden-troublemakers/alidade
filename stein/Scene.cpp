@@ -15,13 +15,8 @@ Scene::Scene() :
     GLfloat lightPosition[] = { 0.0, 5.0, 0.0, 1.0 };
     GLfloat lightPower = 1.0;
     setLight(lightPosition, lightPower);
-    try {
-		drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects]();
-		drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects]();
-	} catch( ...) {
-		// @TODO : Find better exception
-		std::cerr << "BUFFER OVERFLOW !!" << std::endl;
-	}
+	drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects]();
+	drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects]();
     glEnable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

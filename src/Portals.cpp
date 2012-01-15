@@ -23,7 +23,7 @@ void Portals::setPortal(Color & color, Intersection & intersection, Scene* pScen
 	// Create the portal with the color corresponding to the type
 	// Make it a portal or not.
 	if(color != Color::RED && color != Color::BLUE) {
-		throw "Invalid Portal color";
+		std::cerr << "Invalid Portal color" << std::endl;
 		exit(1);
 	}
 	Portal* pCurrentPortal = (color == Color::BLUE) ? pBluePortal : pRedPortal;
@@ -50,7 +50,6 @@ void Portals::setPortal(Color & color, Intersection & intersection, Scene* pScen
 
 /*
 void Portals::setPortal(Color color, Intersection intersection) {
-		// @TODO : move
 			// We are attempting to create a portal on a non-PortalSurface so we delete it.
 		if(surfaceIsPortalSurface) {
 			if(!portals[type])

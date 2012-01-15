@@ -1,7 +1,7 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 #define TIXML_USE_STL 1
-#include "consts.h"
+
 #include "Geometry.hpp"
 #include "Mirror.hpp"
 #include "Obj.hpp"
