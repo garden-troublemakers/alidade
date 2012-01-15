@@ -6,7 +6,7 @@ using namespace stein;
 
 Game::Game(Scene* pScene):
 	m_pScene(pScene), m_ghostCamera(), m_portals(),
-	m_level(EASY), m_pMirrors(), m_lObjects(),
+	m_level(HARD), m_pMirrors(), m_lObjects(),
 	m_bRunning(false), m_bPause(false), m_bGhostMode(false), m_pPlayer(NULL) {	
 		// Shader
 		vector<string> files;
