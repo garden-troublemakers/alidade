@@ -37,7 +37,7 @@ void Portals::setPortal(Color & color, Intersection & intersection, Scene* pScen
 	// @TODO : IF intersection OK
 	if(true) {
 		// if Intersection ok
-		pCurrentPortal = new Portal(pScene, color);
+		pCurrentPortal = new Portal(pScene, pScene->defaultShaderID, color);
 		if(!!pOtherPortal) {
 			pCurrentPortal->setOtherPortal(pOtherPortal);
 			pOtherPortal->setOtherPortal(pCurrentPortal);

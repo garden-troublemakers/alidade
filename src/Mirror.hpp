@@ -12,12 +12,13 @@
 
 struct Mirror : public MoveableCamera {
 	stein::Scene* pScene;
+	const GLuint shaderId;
 	Obj frame;
 	Obj surface;
 	virtual ~Mirror() { std::cout << "destruct mirror" << std::endl;}
-	Mirror(stein::Scene* pS) : 
-		MoveableCamera(), pScene(pS),
-		frame(pScene, std::string(), MIRROR), surface(pScene, std::string(), MIRROR)
+	Mirror(stein::Scene* pS, const GLuint& sId) : 
+		MoveableCamera(), pScene(pS), shaderId(sId),
+		frame(pScene, shaderId, std::string(), MIRROR), surface(pScene, shaderId, std::string(), MIRROR)
 	{
 		pScene->addObjectToDraw(frame.object.id);
 		pScene->addObjectToDraw(surface.object.id);
@@ -28,7 +29,8 @@ struct Mirror : public MoveableCamera {
 		pScene->setDrawnObjectColor(surface.object.id, stein::Color::GRAY);
 	}
 	
-	Mirror(const Mirror &other): pScene(other.pScene), frame(other.frame), surface(other.surface) {}
+	Mirror(const Mirror &other) :
+		pScene(other.pScene), shaderId(other.shaderId), frame(pScene, shaderId, std::string(), MIRROR), surface(pScene, shaderId, std::string(), MIRROR) {}
 	
 	void mirrorView(const stein::Vector3f & playerPos) {
 		stein::Vector3f targetPos = playerPos - getPosition();

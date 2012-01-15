@@ -12,8 +12,8 @@
 struct Portal : public Mirror {
 	stein::Color color;
 	Portal* pSecondPortal; 
-	Portal(stein::Scene* pScene, stein::Color col) :
-		Mirror(pScene), color(col), pSecondPortal(NULL)
+	Portal(stein::Scene* pScene, const GLuint& sId, stein::Color col) :
+		Mirror(pScene, sId), color(col), pSecondPortal(NULL)
 	{}
 	
 	virtual ~Portal() { delete pSecondPortal; }

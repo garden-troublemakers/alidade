@@ -29,7 +29,6 @@ private :
 	stein::Scene* m_pScene;
 	MoveableCamera m_ghostCamera;
 	Portals m_portals;
-	Player m_player;
 	Level m_level;
 	std::vector<Mirror*> m_pMirrors;
 	std::list<Obj*> m_lObjects;
@@ -38,6 +37,10 @@ private :
 	bool m_bRunning;
 	bool m_bPause;
 	bool m_bGhostMode;
+	
+	Player* m_pPlayer;
+	
+	GLuint shaderId;
 	
 public :
 	Game(stein::Scene* pScene);
