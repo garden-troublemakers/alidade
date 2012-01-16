@@ -14,7 +14,7 @@ struct Portals {
 	~Portals();
 	
 	void update(const stein::Vector3f & playerPos);
-	void setPortal(const bool & bRed, const Intersection * const pIntersection, stein::Scene* pScene);
+	void setPortal(const bool & bRed, Intersection * pIntersection, stein::Scene* pScene);
 };
 
 #endif // _PORTALS_HPP_
