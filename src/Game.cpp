@@ -283,21 +283,21 @@ void Game::handleShootPortal(const bool & bRed) {
 	// dir = Vector "forward" normalized
 	Matrix4f forward = m_pPlayer->getViewInv()*translation(Vector3f(0,0,-1));
 	Vector3f vec(forward(3,0), forward(3,1), forward(3,2));
-	cout << '[' << vec.x << " / " << vec.y << " / " << vec.z << ']' << endl;
 	Ray ray(m_pPlayer->getPosition(), vec);
 	Intersection* pIntersection = NULL;
 	
 	// walkin' through portalable zones
 	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
-		if((*i)->type == PORTALABLE_ZONE) {
+		//if((*i)->type == PORTALABLE_ZONE) {
 			if(intersectRayObject(ray, *i, m_pPlayer, pIntersection)) {
-				Vector3f & v = pIntersection->point;
+				Vector3f v(pIntersection->point);
 				cout << '[' << v.x << " / " << v.y << " / " << v.z << ']' << endl;
 			}
-		}
+		//}
 	}
 	// do the right thing.
-	m_portals.setPortal(bRed, pIntersection, m_pScene);
+	std::cout << "Setting " << (!!bRed ? "red":"blue") << " portal : " << (!!pIntersection ? "portal" : "mirror") << std::endl;
+	//m_portals.setPortal(bRed, pIntersection, m_pScene);
 	delete pIntersection;
 	pIntersection = NULL;
 }
