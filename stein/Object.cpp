@@ -19,7 +19,8 @@ private:
 
 // Default constructor
 Object::Object(size_t id, GLenum primitivesType) :
-    id(id), nbIndices(0), primitivesType(primitivesType), m_bPrimitives(GL_FALSE), m_bNormals(GL_FALSE), m_bUvs(GL_FALSE), m_bColors(GL_FALSE) {
+    id(id), nbIndices(0), textureId(0), primitivesType(primitivesType), m_bPrimitives(GL_FALSE),
+    m_bNormals(GL_FALSE), m_bUvs(GL_FALSE), m_bColors(GL_FALSE) {
     // Creation of ids for the buffers on GPU.
     // We store them in the structure for clarity
     // Creates a VAO id to handle the vao for objectTr
@@ -117,7 +118,8 @@ void Object::sendUvs(const vector<pair<float, float> > &values) {
     const GLenum attributeUV = 2; // Third attribute in the shader is the uv
     pushArray(attributeUV, uvsVboId, (GLfloat*) values.data(), values.size(), 2);
 
-//    cout << "UV sent " << values.size() << endl;
+// @TODO : Comment
+    cout << "UV sent " << values.size() << endl;
 
     m_bUvs = true;
 }
@@ -130,6 +132,16 @@ void Object::sendColors(const vector<Color> &values) {
     pushArray(attributeColor, colorsVboId, (GLfloat*) values.data(), values.size(), 4);
 
     m_bColors = true;
+}
+
+void Object::setTextureId(GLuint ID) {
+	cout << " setTextureId " << endl;
+	textureId = ID;
+}
+
+GLuint Object::getTextureId() {
+	cout << textureId << endl;
+	return textureId; 
 }
 
 // Draw the object with the vao

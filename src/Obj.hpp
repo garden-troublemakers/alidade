@@ -5,26 +5,30 @@
 #include <src/Geometry.hpp>
 #include <stein/Scene.hpp>
 #include <stein/MeshBuilder.h>
+#include <stein/Tools.hpp>
 #include <string>
 #include <list>
 
 enum ObjectType {
-	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR
+	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, PORTAL, DECOR
 };
 	
 struct Obj {
 	stein::Object &object;
+	const GLuint shaderId;
 	std::string path;
 	ObjectType type;
 	int block;
 	double posX, posY, posZ;
 	stein::MeshBuilder builder;
 	std::string texturePath;
-
-	Obj(stein::Scene * pScene, const std::string & p, const ObjectType &t, const std::string &tp = "../res/textures/sand.ppm") :
-		object(pScene->createObject(GL_TRIANGLES)), path(p), type(t), texturePath(tp)
+	
+	Obj(stein::Scene * pScene, const GLuint& sId, const std::string & p, const ObjectType &t, const std::string &tp = "../res/textures/sand.ppm") :
+		object(pScene->createObject(GL_TRIANGLES)), shaderId(sId), path(p), type(t), texturePath(tp)
 	{
-		//object.setTextureId(stein::loadTexture(texturePath.c_str()));
+		if(texturePath != "") {
+			object.setTextureId(stein::loadTexture(texturePath.c_str()));
+		}
 		pScene->addObjectToDraw(object.id);
 	}
 

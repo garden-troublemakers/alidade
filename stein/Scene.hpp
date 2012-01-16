@@ -24,18 +24,24 @@ class Scene {
             objectId(objectId), shaderId(shaderId), transformation(transformation), color(color) {
         }
     };
+ 
+	GLuint* drawnObjectsTexture0IDs;
+	GLuint* drawnObjectsTexture1IDs;    
+	GLuint nbDrawnObjects;    
 
     std::vector<Object*> storedObjects; // Library of Objects to use from GPU
     std::vector<ObjectInstance> drawnObjects;
 
     Color defaultColor; // Default color for drawn elements
     Matrix4f defaultTransformation; // Default transformation matrix for drawn elements
-    GLuint defaultShaderID; // Default shaderID for drawn elements
     GLfloat lightPosition[4]; // Position of the light used in shader
     GLfloat lightPower; // Power of the light used in shader
+    
+    
 public:
     const static size_t maxStoredObjects = 500; // An initial limit of storable objects
-    const static size_t maxDrawnObjects = 200; // An initial limit of drawable objects
+    const static size_t maxDrawnObjects = 200; // An initial limit of drawable objects	
+    static GLuint defaultShaderID; // Default shaderID for drawn elements
 
     Scene();
     ~Scene();
@@ -43,11 +49,12 @@ public:
     Camera* pCamera; // Camera used to watch the scene
 
     Object& createObject(GLenum primitiveType);
-    GLuint addObjectToDraw(GLuint indexStoredObject);
+    GLuint addObjectToDraw(GLuint indexStoredObject, GLuint shaderID = defaultShaderID);
 
     void setDrawnObjectColor(GLuint indexDrawnObject, const Color &color);
     void setDrawnObjectModel(GLuint indexDrawnObject, const Matrix4f &model);
     void setDrawnObjectShaderID(GLuint indexDrawnObject, GLuint shaderID);
+    void setDrawnObjectTextureID(GLuint indexDrawnObject, GLuint textureUnit, GLuint textureID);
 
     void setDefaultColor(const Color &defaultColor);
     void setDefaultModel(const Matrix4f &defaultModel);

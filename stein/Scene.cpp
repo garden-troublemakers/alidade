@@ -4,22 +4,45 @@
 #include "Object.hpp"
 
 #include <stdexcept>
+#include <exception>
 #include <iostream>
 
 namespace stein {
 
+GLuint Scene::defaultShaderID = 0;
+
 // Default constructor
 Scene::Scene() :
-    defaultColor(Color::WHITE), defaultTransformation(Matrix4f::identity()), defaultShaderID(1), pCamera(NULL) {
+    defaultColor(Color::WHITE), defaultTransformation(Matrix4f::identity()), pCamera(NULL) {
     // Light creation
     GLfloat lightPosition[] = { 0.0, 5.0, -5.0, 1.0 };
     GLfloat lightPower = 1.0;
     setLight(lightPosition, lightPower);
+    try {
+		drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects]();
+		drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects]();
+		for (size_t i = 0; i < maxDrawnObjects; i++) {
+			drawnObjectsTexture0IDs[i] = 0;
+			drawnObjectsTexture1IDs[i] = 0;
+		}
+	} catch(...) {
+		// @TODO : Find better exception
+		std::cerr << "BUFFER OVERFLOW !!" << std::endl;
+	}
+    glEnable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_POLYGON_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_BLEND);
 }
 
 Scene::~Scene() {
     for (size_t i = 0; i < storedObjects.size(); ++i)
         delete storedObjects[i];
+	delete [] drawnObjectsTexture0IDs;
+	delete [] drawnObjectsTexture1IDs;
 }
 
 // Adds the object in the Objects library array, 
@@ -35,11 +58,11 @@ Object& Scene::createObject(GLenum primitiveType) {
 
 // Adds the index of stored object to draw in the drawnObjects array, 
 // after the last added, and only if the array is not full
-GLuint Scene::addObjectToDraw(GLuint indexStoredObject) {
+GLuint Scene::addObjectToDraw(GLuint indexStoredObject, GLuint shaderID) {
     const size_t size = drawnObjects.size();
     if (size >= maxDrawnObjects)
         throw std::runtime_error("maximum number of drawn objects reached");
-    drawnObjects.push_back(ObjectInstance(indexStoredObject, defaultShaderID, defaultTransformation, defaultColor));
+    drawnObjects.push_back(ObjectInstance(indexStoredObject, shaderID, defaultTransformation, defaultColor));
     return size;
 }
 
@@ -59,6 +82,12 @@ void Scene::setDrawnObjectModel(GLuint indexDrawnObject, const Matrix4f &model) 
 void Scene::setDrawnObjectShaderID(GLuint indexDrawnObject, GLuint shaderID) {
     assert(indexDrawnObject<drawnObjects.size());
     drawnObjects[indexDrawnObject].shaderId = shaderID;
+}
+
+//Sets the ID of the texture to use on the drawn object of index indexDrawnObject
+void Scene::setDrawnObjectTextureID(GLuint indexDrawnObject, GLuint textureUnit, GLuint textureID) {
+	if (textureUnit == 0) drawnObjectsTexture0IDs[indexDrawnObject] = textureID;
+	if (textureUnit == 1) drawnObjectsTexture1IDs[indexDrawnObject] = textureID;
 }
 
 // Sets the light
@@ -91,8 +120,6 @@ void Scene::setLight(GLfloat * position, GLfloat power) {
 void Scene::setAppearance(const ObjectInstance &instance) {
     const size_t shaderId = instance.shaderId;
 
-    glUseProgram(shaderId); // From now on, this shader will be used.
-
     // We use the specific values of model per object
     setMatricesInShader(shaderId, instance.transformation, pCamera->getView(), pCamera->getPosition(), pCamera->getProjection());
     glUniform4fv(glGetUniformLocation(shaderId, "color"), 1, instance.color);
@@ -104,15 +131,30 @@ void Scene::setAppearance(const ObjectInstance &instance) {
     
     // Sets the light in the current shader
     setLightInShader(shaderId, lightPosition, lightPower);
+    
+    //Selects our current texture for unit 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, drawnObjectsTexture0IDs[instance.objectId]);
+    
+    //Selects our current texture for unit 1
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, drawnObjectsTexture1IDs[instance.objectId]);
+    
+    //std::cout << "Texture Id 0 : " << drawnObjectsTexture0IDs[instance.objectId] << std::endl;
+    //std::cout << "Texture Id 1 : " << drawnObjectsTexture1IDs[instance.objectId] << std::endl;
+    
+	setTextureUnitsInShader(shaderId);
+    
+    glCullFace(GL_BACK);
 }
 
 // Draw all Objects
-void Scene::drawObjectsOfScene() {
-    for (size_t i = 0; i < drawnObjects.size(); ++i) {
-        const ObjectInstance &instance = drawnObjects[i];
-        setAppearance(instance);
-        storedObjects[instance.objectId]->drawObject();
-    }
-}
+	void Scene::drawObjectsOfScene() {
+		for (size_t i = 0; i < drawnObjects.size(); ++i) {
+			const ObjectInstance &instance = drawnObjects[i];
+			setAppearance(instance);
+			storedObjects[instance.objectId]->drawObject();
+		}
+	}
 
 } // namespace stein

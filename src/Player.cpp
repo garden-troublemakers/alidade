@@ -4,9 +4,17 @@
 using namespace std;
 using namespace stein;
 
-Player::Player(Scene * pScene) : MoveableCamera(PLAYER_HEIGHT), Obj(pScene, string(""), PLAYER), m_pScene(pScene) {
+Player::Player(Scene * pScene, const GLuint& sId) :
+	MoveableCamera(PLAYER_HEIGHT), Obj(pScene, sId, string(""), PLAYER), m_pScene(pScene), shaderId(sId) {
 	m_life = 100;
 	block = 1;
+	buildSquare(object, 1);
+}
+
+Player::Player(const Player &player) : 
+	MoveableCamera(PLAYER_HEIGHT), Obj(player.m_pScene, player.shaderId, string(""), PLAYER),
+	m_life(player.m_life), m_pScene(player.m_pScene), shaderId(player.shaderId), block(player.block)
+{
 	buildSquare(object, 1);
 }
 
