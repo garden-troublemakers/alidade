@@ -2,10 +2,10 @@
 <ez>
 
 	<object src="../res/objs/maps/ez/visibleWalls1.obj" texture="../res/textures/sand.ppm" type="1" block="1" posX="0" posY="0" posZ="0" />
-	<object src="../res/objs/maps/ez/visibleWalls2.obj" texture="../res/textures/sand.ppm" type="1" block="1" posX="0" posY="0" posZ="0" />
+	<object src="../res/objs/maps/ez/visibleWalls2.obj" texture="../res/textures/sand3.ppm" type="1" block="1" posX="0" posY="0" posZ="0" />
 	<object src="../res/objs/maps/ez/invisibleWalls.obj" texture=""type="2" block="1" posX="0" posY="0" posZ="0" />
 	<object src="../res/objs/maps/ez/portalableZones.obj" texture="../res/textures/sand2.ppm"type="3" block="1" posX="0" posY="0" posZ="0" />
-	<object src="../res/objs/maps/ez/actionZones.obj" texture="../res/textures/sand3.ppm"type="4" block="1" posX="0" posY="0" posZ="0" />
+	<object src="../res/objs/maps/ez/actionZones.obj" texture="../res/textures/sand4.ppm"type="4" block="1" posX="0" posY="0" posZ="0" />
 	<!--<object src="../objs/mirrors/greyMirror.obj" texture="../res/textures/sand4.ppm"type="Mirror" block="1" posX="-312" posY="186" posZ="0" />-->
 	<object src="../res/objs/lamp.obj" texture="../res/textures/gold.ppm" type="6" block="1" posX="0" posY="0" posZ="0" />
 
