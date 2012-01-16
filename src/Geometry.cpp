@@ -33,7 +33,6 @@ bool intersectRayTriangle(const Ray & ray, const Triangle & triangle, Intersecti
 	pIntersection->point.x = u * triangle.a.x + v * triangle.b.x + w * triangle.c.x;
 	pIntersection->point.y = u * triangle.a.y + v * triangle.b.y + w * triangle.c.y;
 	pIntersection->point.z = u * triangle.a.z + v * triangle.b.z + w * triangle.c.z;
-	
 	return true;
 }
 
@@ -55,7 +54,6 @@ bool intersectRayObject(const Ray & ray, Obj * pObject, stein::Camera * pRefCam,
 	std::list<Triangle> triangles = pObject->getTrianglesList();
 	for(std::list<Triangle>::iterator t = triangles.begin(); t != triangles.end(); ++t) { // get & test intersection
 		if(intersectRayTriangle(ray, *t, pTriangleIntersection)) {
-			std::cout << "intersection" << std::endl;
 			if(!pIntersection || (pTriangleIntersection->computeDepth(*pRefCam) < pIntersection->computeDepth(*pRefCam))) {  // test its depth
 				delete pIntersection;
 				pIntersection = pTriangleIntersection;
@@ -68,5 +66,5 @@ bool intersectRayObject(const Ray & ray, Obj * pObject, stein::Camera * pRefCam,
 			pTriangleIntersection = NULL;
 		}
 	}
-	return !!pTriangleIntersection;
+	return !!pIntersection;
 }

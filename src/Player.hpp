@@ -27,7 +27,7 @@ private :
 	
 public :
 	void mirror(Portal& p);
-	const static float PLAYER_HEIGHT = 2.5;
+	const static float PLAYER_HEIGHT = 0.5;
 	// const static std::string PLAYER_PATH = "./player.obj";
 	
 	Player(stein::Scene * pScene, const GLuint&);

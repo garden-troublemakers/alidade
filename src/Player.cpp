@@ -5,7 +5,6 @@ using namespace std;
 using namespace stein;
 
 Player::Player(Scene * pScene, const GLuint& sId) :
-
 	MoveableCamera(PLAYER_HEIGHT), Obj(pScene, sId, string(""), PLAYER, "../res/textures/gold.ppm" ), m_pScene(pScene), shaderId(sId), m_corners() {
 	vector<unsigned int> indices;
 	vector<stein::Vector3f> vertices;
@@ -18,7 +17,6 @@ Player::Player(Scene * pScene, const GLuint& sId) :
 	m_pScene->setDrawnObjectColor(object.id, Color(frand(), frand(), frand()));
 	m_pScene->setDrawnObjectTextureID(object.id, 0, object.getTextureId());
 	m_pScene->setDrawnObjectShaderID(object.id, shaderId);
-	cout << " charge Player " << endl;
 	
 	m_builder.unpack(indices, vertices, normals, uvs);
 	
@@ -30,7 +28,7 @@ Player::Player(Scene * pScene, const GLuint& sId) :
 		Vector3f vertex(vertices[v0].x, vertices[v1].y, vertices[v2].z);
 		
 		// Bring the vertex to the same altitude as the position vertex
-		//vertex.y = position.y;
+		vertex.y = position.y;
 		
 		// Distance of the vertex from the position
 		float dist = sqrt((vertex.x - position.x) * (vertex.x - position.x)
@@ -78,6 +76,7 @@ void Player::teleport(Portal* pPortal) {
 	Matrix4f viewInvPortal(pPortal->getViewInv());
 	Matrix4f viewSecondPortal(pPortal->pSecondPortal->getView());
 	Matrix4f viewInvSecondPortal(pPortal->pSecondPortal->getViewInv());
+	// @FIXME : compute rotation, transform Player.
 	
 }
 

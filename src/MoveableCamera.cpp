@@ -14,9 +14,7 @@ MoveableCamera::~MoveableCamera()
 {}
 
 void MoveableCamera::cancelMovement() {
-	m_nextMove.x = 0;//(Vector3f(0., 0., 0.)); 
-	m_nextMove.y = 0;//(Vector3f(0., 0., 0.)); 
-	m_nextMove.z = 0;//(Vector3f(0., 0., 0.)); 
+	m_nextMove = Vector3f(0., 0., 0.);
 }
 
 // will be called when a key is pushed (add = true) and When the key is released (add = false)

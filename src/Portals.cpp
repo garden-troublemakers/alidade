@@ -20,7 +20,6 @@ void Portals::update(const Vector3f & playerPos) {
 }
 
 void Portals::setPortal(const bool & bRed, Intersection * pIntersection, Scene* pScene) {
-	std::cout << "setPortal" << std::endl;
 	// Create the portal with the color corresponding to the type
 	// Make it a portal or not.
 	Color color = (bRed) ? Color::RED : Color::BLUE;
@@ -34,7 +33,7 @@ void Portals::setPortal(const bool & bRed, Intersection * pIntersection, Scene* 
 	}
 
 	// intersection = new portal
-	if(pIntersection) {
+	if(!!pIntersection) {
 		pCurrentPortal = new Portal(pScene, pScene->defaultShaderID, color);
 		pCurrentPortal->gotoPositionRotation(pIntersection->point);
 		std::cout << "Here i portalize" << std::endl;

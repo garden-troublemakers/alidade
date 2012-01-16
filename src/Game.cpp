@@ -81,14 +81,6 @@ void Game::loadLevel() {
 			m_lObjects.push_back(obj);
 			elem = elem->NextSiblingElement();
 		}
-		
-		for(size_t j = 0; j < 10 ; ++j)
-			m_pMirrors.push_back(new Mirror(m_pScene, shaderId));
-			
-		for(size_t i= 0; i < m_pMirrors.size(); ++i) {
-			Matrix4f rotation = xRotation(-float(0.33*i * M_PI)) *  yRotation(float(0.33*i * M_PI));
-			m_pMirrors[i]->gotoPositionRotation(Vector3f(35, 10, 2*i), rotation);
-		}
 	}
 	
 	delete xmlDoc;
@@ -122,13 +114,11 @@ void Game::start() {	// init level configuration
 
 	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
 		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false, (*i)->builder);
-		m_pScene->addObjectToDraw((*i)->object.id);
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
 		m_pScene->setDrawnObjectTextureID((*i)->object.id, 0, (*i)->object.getTextureId());
 
 		if((*i)->type == INVISIBLE_WALL) {
 			glUseProgram(invisibleShaderId);
-			cout << "INVISIBLE WALL ------------------" << endl;
 			m_pScene->setDrawnObjectShaderID((*i)->object.id, invisibleShaderId);
 		} else {
 			glUseProgram(shaderId);
@@ -136,19 +126,23 @@ void Game::start() {	// init level configuration
 		}
 
 		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
-		cout << " charge objet " << endl;
 
 		m_pScene->setDrawnObjectShaderID((*i)->object.id, (*i)->shaderId);
-		m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
 
 	}
 	
-	// We add mirrors
-	for(size_t i = 0; i < m_pMirrors.size(); ++i) {
-		//m_pScene->setDrawnObjectColor(frame.object.id, stein::Color::WHITE);
-		//m_pScene->setDrawnObjectColor(surface.object.id, stein::Color::GRAY);
-		//m_pMirrors[i]->goToPosition(Vector3f(35,1,10*(i+1)));
-	}
+	/*
+	// Randomly add mirrors for tests
+	for(size_t j = 0; j < 10 ; ++j)
+		m_pMirrors.push_back(new Mirror(m_pScene, shaderId));
+		
+	for(size_t i= 0; i < m_pMirrors.size(); ++i) {
+		Matrix4f rotation = xRotation(-float(0.33*i * M_PI)) *  yRotation(float(0.33*i * M_PI));
+		m_pMirrors[i]->gotoPositionRotation(Vector3f(35, 10, 2*i), rotation);
+		m_pScene->setDrawnObjectColor(m_pMirrors[i]->frame.object.id, stein::Color::WHITE);
+		m_pScene->setDrawnObjectColor(m_pMirrors[i]->surface.object.id, stein::Color::GRAY);
+		m_pMirrors[i]->goToPosition(Vector3f(35,1,10*(i+1)));
+	}*/
 
 	m_bRunning = true;
 }
@@ -162,7 +156,7 @@ void Game::update() {
 	if(m_bGhostMode) {
 	} else {
 		//	test collision with objs
-		/*list<Obj*> objects = m_lObjects;
+		list<Obj*> objects; //  = m_lObjects;
 		
 		if(!!m_portals.pBluePortal) {
 			objects.push_back(&(m_portals.pBluePortal->frame));
@@ -178,7 +172,7 @@ void Game::update() {
 		}
 		
 		Collision *pCollision = NULL;
-		for(list<Obj*>::iterator i = objects.begin(); i != objects.end(); ++i) {
+		for(list<Obj*>::iterator i = objects.begin(); i != objects.end(); ++i)
 			if(m_pPlayer->checkCollision(*i)) {
 				cout << "Collision !" << endl;
 				delete pCollision;
@@ -187,17 +181,12 @@ void Game::update() {
 				if ((*i)->type == PORTAL)
 					break;
 			}
-			else if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
-				((MoveableCamera*)m_pScene->pCamera)->move();
-			}
-
-		}
 		
 		if (!!pCollision) {
 			switch(pCollision->type()) {
 				case PORTAL :
 					// teleport
-					//m_player.teleport(Portal portal);
+					m_pPlayer->teleport((Portal*)pCollision->obj);
 					break;
 				case ACTION_ZONE :
 
@@ -212,7 +201,7 @@ void Game::update() {
 					break;
 			}
 			delete pCollision;
-		}*/
+		}
 	}
 	m_portals.update(m_pPlayer->getPosition());
 }
@@ -285,20 +274,19 @@ void Game::handleShootPortal(const bool & bRed) {
 	// exit
 	// dir = Vector "forward" normalized
 	Matrix4f forward = m_pPlayer->getViewInv()*translation(Vector3f(0,0,-1));
-	Vector3f vec(forward(0,3), forward(1,3), forward(2,3));
+	Vector3f vec(forward(3,0), forward(3,1), forward(3,2));
 	cout << '[' << vec.x << " / " << vec.y << " / " << vec.z << ']' << endl;
 	Ray ray(m_pPlayer->getPosition(), vec);
 	Intersection* pIntersection = NULL;
 	
 	// walkin' through portalable zones
 	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
-		if(intersectRayObject(ray, *i, m_pPlayer, pIntersection)) {
-			Vector3f & v = pIntersection->point;
-			cout << '[' << v.x << " / " << v.y << " / " << v.z << ']' << endl;
+		if((*i)->type == PORTALABLE_ZONE) {
+			if(intersectRayObject(ray, *i, m_pPlayer, pIntersection)) {
+				Vector3f & v = pIntersection->point;
+				cout << '[' << v.x << " / " << v.y << " / " << v.z << ']' << endl;
+			}
 		}
-		/*if((*i)->type == PORTALABLE_ZONE) {
-			intersectRayObject(ray, *i, &m_player, pIntersection);	
-		}*/
 	}
 	// do the right thing.
 	m_portals.setPortal(bRed, pIntersection, m_pScene);
