@@ -24,10 +24,10 @@ public:
 protected:
     Scene m_Scene;
 
-    void resize(size_t w, size_t h);
     void setBackgroundColor(const Color &color);
     void printFPS();
 
+    virtual void resize(size_t w, size_t h);
     virtual void renderFrame();
     virtual void animate();
 
