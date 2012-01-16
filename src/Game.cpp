@@ -1,5 +1,7 @@
 #include "Obj.hpp"
 #include "Game.hpp"
+#include <stein/math/StreamUtils.h>
+#include <memory>
 
 using namespace std;
 using namespace stein;
@@ -34,12 +36,14 @@ Game::Game(Scene* pScene):
 
 Game::~Game() {
 	delete m_pPlayer;
-	/*list delete m_lObjects;*/
 	while(!m_pMirrors.empty()) {
         delete m_pMirrors.back();
         m_pMirrors.pop_back();
     }
-    
+	while(!m_lObjects.empty()) {
+        delete m_lObjects.back();
+        m_lObjects.pop_back();
+    }
 }
 
 void Game::loadLevel() {
@@ -47,22 +51,16 @@ void Game::loadLevel() {
 	TiXmlDocument* xmlDoc = NULL;
 	TiXmlElement* elem = NULL;
 	
-	cout << "loadLevel" << endl;
-	
 	//Loading xml depending on level chosen
 	if(m_level == EASY)
 		xmlDoc = new TiXmlDocument("../res/maps/tuto.xml");
 	else if(m_level == HARD)
 		xmlDoc = new TiXmlDocument("../res/maps/ez.xml");
-		
-		cout << "else if" << endl;
-		
+
 	if(!xmlDoc->LoadFile()) {
-		cerr << "loading error" << endl;
-		cerr << "error #" << xmlDoc->ErrorId() << " : " << xmlDoc->ErrorDesc() << endl;
+		cerr << "loading error #" << xmlDoc->ErrorId() << " : " << xmlDoc->ErrorDesc() << endl;
 	}
 	else {
-		cout << "else" << endl;
 		//Parsing the xml document
 		TiXmlHandle hdl(xmlDoc);
 		elem = hdl.FirstChildElement().FirstChildElement().Element();
@@ -70,11 +68,9 @@ void Game::loadLevel() {
 		if(!elem)
 			cerr << "node to reach doesn't exist" << endl;
 		while (elem){
-			std::cout << "TEST" << std::endl;
-			cout << "Load object from XML" << endl;
 			int tmpType;
 			elem->QueryIntAttribute("type", &tmpType);
-			
+
 			Obj* obj = new Obj(m_pScene, m_pScene->defaultShaderID, elem->Attribute("src"), getObjectTypeFromInt(tmpType), elem->Attribute("texture"));
 			
 			elem->QueryIntAttribute("block", &(obj->block));
@@ -85,15 +81,20 @@ void Game::loadLevel() {
 			m_lObjects.push_back(obj);
 			elem = elem->NextSiblingElement();
 		}
+		
 		for(size_t j = 0; j < 10 ; ++j)
 			m_pMirrors.push_back(new Mirror(m_pScene, shaderId));
+			
 		for(size_t i= 0; i < m_pMirrors.size(); ++i) {
 			Matrix4f rotation = xRotation(-float(0.33*i * M_PI)) *  yRotation(float(0.33*i * M_PI));
 			m_pMirrors[i]->gotoPositionRotation(Vector3f(35, 10, 2*i), rotation);
 		}
 	}
+	
 	delete xmlDoc;
 	delete elem;
+	xmlDoc = NULL;
+	elem = NULL;
 }
 
 bool Game::save() {
@@ -109,27 +110,22 @@ bool Game::load() {
 void Game::start() {	// init level configuration
     // We set the actual camera to be the player's one (fps mode)
 	m_pScene->pCamera = m_pPlayer;
-    m_pPlayer->setPosition(Vector3f(37,.5,10));
+    m_pPlayer->setPosition(Vector3f(37,.6,10));
    
 	// make sure we use the default shader
 	//glUseProgram(m_pScene->defaultShaderID);
-	// cout << "fu" << endl;
 	// loadTexture("../res/textures/image1.ppm");
 	// glUniform1i(glGetUniformLocation(shaderId, "textureUnit0"), 0);
-
     
-	// prepare level using xml.
-	// build objects from xml
-	// add 'em to the scene
-	// ... like that
-
+	// prepare level using xml for building objects
 	loadLevel();
 
 	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
-		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false);
+		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false, (*i)->builder);
 		m_pScene->addObjectToDraw((*i)->object.id);
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
 		m_pScene->setDrawnObjectTextureID((*i)->object.id, 0, (*i)->object.getTextureId());
+
 		if((*i)->type == INVISIBLE_WALL) {
 			glUseProgram(invisibleShaderId);
 			cout << "INVISIBLE WALL ------------------" << endl;
@@ -141,13 +137,18 @@ void Game::start() {	// init level configuration
 
 		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
 		cout << " charge objet " << endl;
+
+		m_pScene->setDrawnObjectShaderID((*i)->object.id, (*i)->shaderId);
+		m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
+
 	}
 	
-	for(size_t i = 0; i < m_pMirrors.size(); ++i) {
-		//m_pMirrors[i]->goToPosition(Vector3f(35,1,10*(i+1)));
-	}			
-
 	// We add mirrors
+	for(size_t i = 0; i < m_pMirrors.size(); ++i) {
+		//m_pScene->setDrawnObjectColor(frame.object.id, stein::Color::WHITE);
+		//m_pScene->setDrawnObjectColor(surface.object.id, stein::Color::GRAY);
+		//m_pMirrors[i]->goToPosition(Vector3f(35,1,10*(i+1)));
+	}
 
 	m_bRunning = true;
 }
@@ -157,45 +158,63 @@ void Game::exit() {
 }
 
 void Game::update() {
-		((MoveableCamera*)m_pScene->pCamera)->move();
-		if(m_bGhostMode) {
-		} else {
-			/*Portal* newPortal;
-			if(!!m_pPlayer->checkCollisionPortals(m_portals, newPortal)) { // const Portal* Portals::checkCollisionPortal(const Portals & portals) const;
-				// teleport player depending on newPortal
-				// m_pPlayer->setPosition( new position )
-				// m_pPlayer->nextMove( ... ) // Inverse the vector for rotating camera when the player crosses a portal
+	((MoveableCamera*)m_pScene->pCamera)->move();
+	if(m_bGhostMode) {
+	} else {
+		//	test collision with objs
+		/*list<Obj*> objects = m_lObjects;
+		
+		if(!!m_portals.pBluePortal) {
+			objects.push_back(&(m_portals.pBluePortal->frame));
+			objects.push_back(&(m_portals.pBluePortal->surface));
+		}
+		if(!!m_portals.pRedPortal) {
+			objects.push_back(&(m_portals.pRedPortal->frame));
+			objects.push_back(&(m_portals.pRedPortal->surface));
+		}
+		for(std::vector<Mirror*>::iterator i = m_pMirrors.begin(); i != m_pMirrors.end(); ++i) {
+			objects.push_back(&((*i)->frame));
+			objects.push_back(&((*i)->surface));
+		}
+		
+		Collision *pCollision = NULL;
+		for(list<Obj*>::iterator i = objects.begin(); i != objects.end(); ++i) {
+			if(m_pPlayer->checkCollision(*i)) {
+				cout << "Collision !" << endl;
+				delete pCollision;
+				pCollision = new Collision(*i);
+				
+				if ((*i)->type == PORTAL)
+					break;
 			}
 			else if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
 				((MoveableCamera*)m_pScene->pCamera)->move();
-			}*/
-		}
-		m_portals.update(m_pPlayer->getPosition());
-
-	/*
-	// @FIXME : Check this harder (no levelStatus but getPosition())
-	switch(levelStatus) {
-		case LEVEL_FINISHED :
-			if(m_game.player.level != LEVEL_MAX) {
-				++(m_game.player.level);
-			} else {
-				// GAME OVER ! // EXIT APP
 			}
-		case LEVEL_FAILED :
-			m_bRunning = false;
-		break;
-		default :
-			// @TODO : write end level conditions
-			if(m_game.player.getLife() == 0)
-				return LEVEL_FAILED;
-			//else if(m_game.player.pos == m_conf.endPos) // something like that
-			//	return LEVEL_FINISHED;
-			// else
-			m_game.player.move();
-			return LEVEL_PLAYING;
-			// You see what i did there ?
-		break;
-	}*/
+
+		}
+		
+		if (!!pCollision) {
+			switch(pCollision->type()) {
+				case PORTAL :
+					// teleport
+					//m_player.teleport(Portal portal);
+					break;
+				case ACTION_ZONE :
+
+					break;
+				case INVISIBLE_WALL :
+				case PORTALABLE_ZONE :
+				case VISIBLE_WALL :
+				case MIRROR :
+					((MoveableCamera*)m_pScene->pCamera)->cancelMovement();
+					break;
+				default :
+					break;
+			}
+			delete pCollision;
+		}*/
+	}
+	m_portals.update(m_pPlayer->getPosition());
 }
 
 void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
@@ -226,37 +245,11 @@ void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 }
 
 void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
-	if(m_bRunning && mEvent.type == SDL_MOUSEBUTTONDOWN  && mEvent.state == SDL_PRESSED) {
-		if(!m_bPause && !m_bGhostMode){
-			// Add delay between launches and getter for color ?
-			//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
-			if(mEvent.button == SDL_BUTTON_LEFT) {
-				m_pPlayer->shootPortal(Color::BLUE);
-				Vector3f forward;
-				forward.z = 1.;
-				//forward = forward * Matrix4f(m_pScene->pCamera->getView()); // @TODO get forward vector the vector directing the player's camera
-				
-				Ray shoot(m_pPlayer->getPosition(), forward);
-					// Triangle triangle();
-					// Intersection intersection();
-				
-				//m_portals.setPortal(Color::BLUE, m_pScene);
-				//
-				cout << " click gauche " << endl;
-				//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
-			}
-			else if(mEvent.button == SDL_BUTTON_RIGHT) {
-				m_pPlayer->shootPortal(Color::RED);
-				cout << " click droit " << endl;
-			}
-			if(mEvent.button == SDL_BUTTON_LEFT || mEvent.button == SDL_BUTTON_LEFT) {
-					//Intersection intersection(); // compute this
-					// if intersection.obj.type == PORTALABLE ...
-						//m_portals.setPortal(color, intersection, &m_pPlayer, m_pScene);
-			}
-			// Build intersection here.
-			//m_portals.setPortal(color, intersection, &m_pPlayer, m_pScene);
-		}
+	if(m_bRunning && mEvent.type == SDL_MOUSEBUTTONDOWN  && mEvent.state == SDL_PRESSED && !m_bPause && !m_bGhostMode)
+	{
+		// @TODO : Add delay between launches ?
+		bool bRed = mEvent.button != SDL_BUTTON_LEFT;
+		handleShootPortal(bRed);
 	}
 }
 
@@ -276,3 +269,39 @@ void Game::switchPause() {
 	cout << (m_bPause ? "Pause on" : "Pause off") << endl;
 }
 
+// On click, when the game is running
+void Game::handleShootPortal(const bool & bRed) {
+	// get direction of player's camera.
+	// get color of portal
+	// get position
+	// get shoot's direction
+	// call player's shootPortal
+	// launch ray
+	// loop for intersections
+	// 	 get intersection
+	// do the job
+	//   interpret color
+	//   ...
+	// exit
+	// dir = Vector "forward" normalized
+	Matrix4f forward = m_pPlayer->getViewInv()*translation(Vector3f(0,0,-1));
+	Vector3f vec(forward(0,3), forward(1,3), forward(2,3));
+	cout << '[' << vec.x << " / " << vec.y << " / " << vec.z << ']' << endl;
+	Ray ray(m_pPlayer->getPosition(), vec);
+	Intersection* pIntersection = NULL;
+	
+	// walkin' through portalable zones
+	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
+		if(intersectRayObject(ray, *i, m_pPlayer, pIntersection)) {
+			Vector3f & v = pIntersection->point;
+			cout << '[' << v.x << " / " << v.y << " / " << v.z << ']' << endl;
+		}
+		/*if((*i)->type == PORTALABLE_ZONE) {
+			intersectRayObject(ray, *i, &m_player, pIntersection);	
+		}*/
+	}
+	// do the right thing.
+	m_portals.setPortal(bRed, pIntersection, m_pScene);
+	delete pIntersection;
+	pIntersection = NULL;
+}

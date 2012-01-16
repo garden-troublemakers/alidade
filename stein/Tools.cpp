@@ -84,19 +84,19 @@ void printGlErrors() {
     // The glGetError function returns one error at a time, and then unstacks it.
     // Here we call it until all the errors are shown.
     while (error != GL_NO_ERROR) {
-        cout << "!! GL Error : ";
+        cerr << "!! GL Error : ";
         if (error == GL_INVALID_ENUM)
-            cout << "GL_INVALID_ENUM" << endl;
+            cerr << "GL_INVALID_ENUM" << endl;
         if (error == GL_INVALID_VALUE)
-            cout << "GL_INVALID_VALUE" << endl;
+            cerr << "GL_INVALID_VALUE" << endl;
         if (error == GL_INVALID_OPERATION)
-            cout << "GL_INVALID_OPERATION" << endl;
+            cerr << "GL_INVALID_OPERATION" << endl;
         if (error == GL_OUT_OF_MEMORY)
-            cout << "GL_OUT_OF_MEMORY" << endl;
+            cerr << "GL_OUT_OF_MEMORY" << endl;
 
         error = glGetError();
 
-        cout << endl;
+        cerr << endl;
         //exit(1);
     }
 }
@@ -189,7 +189,6 @@ GLuint loadProgram(const vector<string> &files) {
     GLint n = files.size();
     string **strs = new string*[n];
     const char** lines = new const char*[n + 1];
-    //cout << "      Loading program " << files[n - 1] << "..." << endl;
     
     bool geo = false;
     for (int i = 0; i < n; ++i) /// For every file :

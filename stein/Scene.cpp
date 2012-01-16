@@ -18,6 +18,7 @@ Scene::Scene() :
     GLfloat lightPosition[] = { 0.0, 5.0, -5.0, 1.0 };
     GLfloat lightPower = 1.0;
     setLight(lightPosition, lightPower);
+    
     try {
 		drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects]();
 		drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects]();
@@ -29,13 +30,17 @@ Scene::Scene() :
 		// @TODO : Find better exception
 		std::cerr << "BUFFER OVERFLOW !!" << std::endl;
 	}
+
 	glEnable(GL_CULL_FACE);
+
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_ALPHA_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-   
+    glEnable(GL_POLYGON_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glShadeModel(GL_SMOOTH);
+
 }
 
 Scene::~Scene() {
@@ -48,7 +53,6 @@ Scene::~Scene() {
 // Adds the object in the Objects library array, 
 // after the last added object, and only if the array is not full, returns the index
 Object& Scene::createObject(GLenum primitiveType) {
-    std::cout << "Create object in Scene" << std::endl;
 	const size_t size = storedObjects.size();
     if (size >= maxStoredObjects)
         throw std::runtime_error("maximum number of stored objects reached");
@@ -139,9 +143,6 @@ void Scene::setAppearance(const ObjectInstance &instance) {
     //Selects our current texture for unit 1
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, drawnObjectsTexture1IDs[instance.objectId]);
-    
-    //std::cout << "Texture Id 0 : " << drawnObjectsTexture0IDs[instance.objectId] << std::endl;
-    //std::cout << "Texture Id 1 : " << drawnObjectsTexture1IDs[instance.objectId] << std::endl;
     
 	setTextureUnitsInShader(shaderId);
     

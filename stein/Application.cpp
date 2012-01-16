@@ -67,7 +67,7 @@ void Application::initSDLOpenGL() {
     // Initialize timer, audio, video, CD_ROM, and joystick.
     int sdlError = SDL_Init(SDL_INIT_EVERYTHING);
     if (sdlError < 0)
-        cout << "Unable to init SDL : " << SDL_GetError() << endl;
+        cerr << "Unable to init SDL : " << SDL_GetError() << endl;
     
     // Sets openGL parameters before opening the draw context
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // Double buffering
@@ -106,7 +106,7 @@ void Application::customizeStates() {
     // Glew initialisation : to register all available extentions
     GLenum glewError = glewInit();
     if (glewError != GLEW_OK)
-        cout << "GLEW Error : " << glewGetErrorString(glewError) << endl;
+        cerr << "GLEW Error : " << glewGetErrorString(glewError) << endl;
 
     // Mouse motion will not generate events
     // Instead we will check the position ourselves when we need them
@@ -146,8 +146,6 @@ void Application::initTimers() {
 // Adapts the drawing to the new size of the window
 // resize doesn't work on Mac os (Windows ?)
 void Application::resize(size_t w, size_t h) {
-    cout << "Window resize  : [" << w << "," << h << "]" << endl;
-
     m_width = w;
     m_height = h;
     

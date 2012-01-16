@@ -19,25 +19,25 @@ struct Mirror : public MoveableCamera {
 	GLuint depthBufferID;
 	GLuint textureID;
 	GLenum fboBuffs;
+	stein::MeshBuilder surfaceBuilder;
+	stein::MeshBuilder frameBuilder;
 
-	virtual ~Mirror() { std::cout << "destruct mirror" << std::endl;}
+	virtual ~Mirror() {}
 	Mirror(stein::Scene* pS, const GLuint& sId) : 
 		MoveableCamera(), pScene(pS), shaderId(sId),
-		frame(pScene, shaderId, std::string(), MIRROR), surface(pScene, shaderId, std::string(), MIRROR)
+		frame(pScene, shaderId, "", MIRROR), surface(pScene, shaderId, "", MIRROR)
 	{
 		glGenFramebuffers(1, &(fboID));
 		glGenRenderbuffers(1, &(depthBufferID));
 		glGenTextures(1, &(textureID));
-		fboBuffs=GL COLOR ATTACHMENT0;
+		fboBuffs=GL_COLOR_ATTACHMENT0;
 		
 		pScene->addObjectToDraw(frame.object.id);
 		pScene->addObjectToDraw(surface.object.id);
-		buildSquare(frame.object, 1);
-		buildSquare(surface.object);
-		std::cout << "Mirrors" << std::endl;	
+		buildSquare(frame.object, 1, surfaceBuilder);
+		buildSquare(surface.object, 0.5, surfaceBuilder);
 		pScene->setDrawnObjectColor(frame.object.id, stein::Color::WHITE);
 		pScene->setDrawnObjectColor(surface.object.id, stein::Color::GRAY);
-		
 	}
 	
 	Mirror(const Mirror &other) :
@@ -66,7 +66,7 @@ struct Mirror : public MoveableCamera {
 		setPosition(pos);
 		setRotation(rot);
 	}
-	void Portal::prepareFBO(int width, int height)
+	void prepareFBO(int width, int height)
 	{
 		// Binds the FBO
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
@@ -83,10 +83,10 @@ struct Mirror : public MoveableCamera {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		// Attaches texture to the shader color output and the RBO to the depth
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, portalTextureID, 0);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferID);
 		//getFBOErrors();
-		glBindFramebuffer(GL DRAW FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 
 	

@@ -13,6 +13,12 @@ MoveableCamera::MoveableCamera(float height) :
 MoveableCamera::~MoveableCamera()
 {}
 
+void MoveableCamera::cancelMovement() {
+	m_nextMove.x = 0;//(Vector3f(0., 0., 0.)); 
+	m_nextMove.y = 0;//(Vector3f(0., 0., 0.)); 
+	m_nextMove.z = 0;//(Vector3f(0., 0., 0.)); 
+}
+
 // will be called when a key is pushed (add = true) and When the key is released (add = false)
 void MoveableCamera::setMovement(Direction to, bool add) {
 	size_t axis;
@@ -94,13 +100,10 @@ void MoveableCamera::rotate() {
 
 	m_xMousePosition += 2.0*mouseRelX/(GLfloat)GameApplication::WIDTH;
 	m_yMousePosition += -2.0*mouseRelY/(GLfloat)GameApplication::HEIGHT;
-	// std::cout<<m_m_xMousePosition<< " " << m_yMousePosition<<std::endl;
 
 	float angleLong = m_xMousePosition * M_PI;
 	//float angleLat = m_yMousePosition * M_PI/2.;
 	setRotation(yRotation(angleLong));
-	//std::cout<<angleLong<< " " << angleLat<<std::endl;
-	
 
 	// Method with rotates
 
