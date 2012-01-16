@@ -127,12 +127,10 @@ void Object::sendColors(const vector<Color> &values) {
 }
 
 void Object::setTextureId(GLuint ID) {
-	cout << " setTextureId " << endl;
 	textureId = ID;
 }
 
 GLuint Object::getTextureId() {
-	cout << textureId << endl;
 	return textureId; 
 }
 

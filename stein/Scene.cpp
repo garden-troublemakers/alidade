@@ -141,9 +141,6 @@ void Scene::setAppearance(const ObjectInstance &instance) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, drawnObjectsTexture1IDs[instance.objectId]);
     
-    //std::cout << "Texture Id 0 : " << drawnObjectsTexture0IDs[instance.objectId] << std::endl;
-    //std::cout << "Texture Id 1 : " << drawnObjectsTexture1IDs[instance.objectId] << std::endl;
-    
 	setTextureUnitsInShader(shaderId);
     
     glCullFace(GL_BACK);

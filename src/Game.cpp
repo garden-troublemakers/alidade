@@ -110,7 +110,6 @@ void Game::start() {	// init level configuration
    
 	// make sure we use the default shader
 	//glUseProgram(m_pScene->defaultShaderID);
-	// cout << "fu" << endl;
 	// loadTexture("../res/textures/image1.ppm");
 	// glUniform1i(glGetUniformLocation(shaderId, "textureUnit0"), 0);
     
@@ -162,8 +161,8 @@ void Game::update() {
 		
 		Collision *pCollision = NULL;
 		for(list<Obj*>::iterator i = objects.begin(); i != objects.end(); ++i) {
-			if(m_player.checkCollision(*i)) {
-				//cout << "Collision !" << endl;
+			if(m_pPlayer->checkCollision(*i)) {
+				cout << "Collision !" << endl;
 				delete pCollision;
 				pCollision = new Collision(*i);
 				
@@ -264,12 +263,12 @@ void Game::handleShootPortal(const bool & bRed) {
 	// exit
 	// dir = Vector "forward" normalized
 	Matrix4f forward = translation(Vector3f(0,0,-1));
-	Ray ray(m_player.getPosition(), Vector3f(forward(3,0), forward(3,1), forward(3,2)));
+	Ray ray(m_pPlayer->getPosition(), Vector3f(forward(3,0), forward(3,1), forward(3,2)));
 	Intersection* pIntersection = NULL;
 	
 	// walkin' through portalable zones
 	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
-			intersectRayObject(ray, *i, &m_player, pIntersection);	
+			intersectRayObject(ray, *i, m_pPlayer, pIntersection);	
 		/*if((*i)->type == PORTALABLE_ZONE) {
 			intersectRayObject(ray, *i, &m_player, pIntersection);	
 		}*/
