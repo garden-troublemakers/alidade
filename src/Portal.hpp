@@ -19,7 +19,7 @@ struct Portal : public Mirror {
 		Mirror(pScene, sId), color(col), pSecondPortal(NULL)
 	{}
 	
-	virtual ~Portal() { delete pSecondPortal; }
+	virtual ~Portal() {}
 	
 	virtual void update(const stein::Vector3f & playerPos) {
 		// update camera fixed on mirror.
