@@ -1,30 +1,33 @@
 The Garden Troublemakers
 ---
-Décembre 2011
+December 2011 / January 2012
 ---
 Guillaume ALBESPY
 Guillaume BREDA
 Tom GAY
 Alexandre MAHE
 ---
-Ecole d'Ingénieurs IMAC, promo 2013
+IMAC Engineering School, prom 2013
 ---
 
 @TODO :
- -
- -
- -
+ - collisions' tests
+ - intersections' tests
+ - teleportation
+ - alpha blending textures
+ - frameBuffer object
  
 ---
 
 HOW TO COMPILE
-Type 'make fresh' to clean the directory
-Type 'make' to make
-Then launch the binary with './alidade'
+Type './build.sh' to compile the files
+Then launch the binary ./alidade inside the directory bin.
 
 ---
 
 HOW TO PLAY
-// @TODO : Tuto
+For now, you can move the player or a ghost camera in the scene.
+The collisions' tests are triggered but the result seems invalid or unable to be received.
+The intersections are computed too but there is an error somewhere. 
 
 --

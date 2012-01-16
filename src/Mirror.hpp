@@ -32,9 +32,7 @@ struct Mirror : public MoveableCamera {
 		glGenTextures(1, &(textureID));
 		fboBuffs=GL_COLOR_ATTACHMENT0;
 		
-		pScene->addObjectToDraw(frame.object.id);
-		pScene->addObjectToDraw(surface.object.id);
-		buildSquare(frame.object, 1, surfaceBuilder);
+		buildSquare(frame.object, 1, frameBuilder);
 		buildSquare(surface.object, 0.5, surfaceBuilder);
 		pScene->setDrawnObjectColor(frame.object.id, stein::Color::WHITE);
 		pScene->setDrawnObjectColor(surface.object.id, stein::Color::GRAY);
