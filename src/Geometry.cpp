@@ -28,7 +28,9 @@ bool intersectRayTriangle(const Ray & ray, const Triangle & triangle, Intersecti
 	u*=denom;
 	v*=denom;
 	w*=denom;
-	
+
+	pIntersection = new Intersection(ray, triangle);
+
 	pIntersection->point.x = u * triangle.a.x + v * triangle.b.x + w * triangle.c.x;
 	pIntersection->point.y = u * triangle.a.y + v * triangle.b.y + w * triangle.c.y;
 	pIntersection->point.z = u * triangle.a.z + v * triangle.b.z + w * triangle.c.z;
@@ -57,7 +59,6 @@ bool intersectRayObject(const Ray & ray, Obj * pObject, stein::Camera * pRefCam,
 			if(!pIntersection || (pTriangleIntersection->computeDepth(*pRefCam) < pIntersection->computeDepth(*pRefCam))) {  // test its depth
 				delete pIntersection;
 				pIntersection = pTriangleIntersection;
-				std::cout << "create a portal" << std::endl;
 			} else {
 				delete pTriangleIntersection;
 				pTriangleIntersection = NULL;

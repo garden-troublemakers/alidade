@@ -40,8 +40,8 @@ struct Ray {
 		glEnd();
 	}
 	Ray(const Ray & b) :
-		pos(b.pos), dir(b.dir)
-	{}
+		pos(b.pos), dir(b.dir) {
+	}
 	~Ray() {}
 };
 
@@ -54,7 +54,7 @@ struct Intersection {
 	{}
 	
 	Intersection(const Intersection & b) :
-		ray(b.ray), triangle(b.triangle)
+		ray(b.ray), triangle(b.triangle), point(b.point)
 	{}
 	
 	~Intersection() {}
@@ -64,6 +64,8 @@ struct Intersection {
 		return (point - camera.getPosition()).norm();
 	}
 };
+
+
 
 bool intersectRayTriangle(const Ray & ray, const Triangle & triangle, Intersection * pIntersection);
 bool intersectRayBox(const Ray & ray, const Box & box, stein::Camera * refCam);

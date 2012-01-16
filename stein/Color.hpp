@@ -1,6 +1,7 @@
 #ifndef COLOR_HPP_
 #define COLOR_HPP_
 
+#include <iostream>
 #include <cassert>
 #include <cmath>
 
@@ -17,6 +18,9 @@ struct Color {
     }
     Color(float r, float g, float b, float a) :
         r(r), g(g), b(b), a(a) {
+    }
+    Color(const Color& c) :
+        r(c.r), g(c.g), b(c.b), a(c.a) {
     }
 
     operator const float*() const {

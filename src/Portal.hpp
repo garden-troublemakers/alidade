@@ -2,6 +2,7 @@
 #define _PORTAL_HPP_
 
 #include "Mirror.hpp"
+#include "Obj.hpp"
 #include <stein/Object.hpp>
 #include <stein/Builders.hpp>
 #include <stein/Camera.hpp>
@@ -11,7 +12,9 @@
 
 struct Portal : public Mirror {
 	stein::Color color;
-	Portal* pSecondPortal; 
+	Portal* pSecondPortal;
+	ObjectType type;
+	
 	Portal(stein::Scene* pScene, stein::Color col) :
 		Mirror(pScene), color(col), pSecondPortal(NULL)
 	{}

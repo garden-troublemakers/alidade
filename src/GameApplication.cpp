@@ -43,7 +43,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 		cout << "Fork this game at" << endl << "https://github.com/garden-troublemakers/alidade" << endl;
 		cout << endl << endl << endl << endl << endl << endl << endl << endl;
 		Application::handleKeyEvent(keysym, down);	
-	} 
+	}
 	if(m_game.isRunning() && keysym.sym != SDLK_f)
 		m_game.handleKeyEvent(keysym, down);
 	else
@@ -56,7 +56,7 @@ void GameApplication::handleEvent(const SDL_Event& event) {
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
 			handleMouseEvent(event.button);
-            break;
+           break;
         default:
 			Application::handleEvent(event);
             break;

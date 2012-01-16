@@ -20,6 +20,7 @@ private :
 	//stein::Vector3f m_movement;
 	size_t m_life;
 	stein::Scene* m_pScene;
+	std::vector<stein::Vector3f> m_corners;
 public :
 	void mirror(Portal& p);
 	const static float PLAYER_HEIGHT = 2.5;
@@ -34,7 +35,7 @@ public :
 	virtual void setDirection(stein::Vector3f rotation);
 	virtual void move();
 	virtual void gotoPositionRotation(const stein::Vector3f & pos, stein::Matrix4f rot = stein::Matrix4f::identity());
-	//Obj* checkCollisionWithObj(list<Obj*> lObjs, mirrors?);
+	bool checkCollision(const Obj* obj);
 };
 
 #endif // _PLAYER_H_

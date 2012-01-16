@@ -43,7 +43,7 @@ void Game::loadLevel() {
 		while (elem){
 			int tmpType;
 			elem->QueryIntAttribute("type", &tmpType);
-			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), (ObjectType)tmpType);
+			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), getObjectTypeFromInt(tmpType));
 			elem->QueryIntAttribute("block", &(obj->block));
 			elem->QueryDoubleAttribute("posX", &(obj->posX));
 			elem->QueryDoubleAttribute("posY", &(obj->posY));
@@ -126,6 +126,7 @@ void Game::exit() {
 }
 
 void Game::update() {
+
 		((MoveableCamera*)m_pScene->pCamera)->move();
 		if(m_bGhostMode) {
 		} else {
@@ -141,38 +142,44 @@ void Game::update() {
 				objects.push_back(&((*i)->surface));
 			}
 			
+			Collision *pCollision = NULL;
+			//Collision *pObjectCollision = NULL;
 			for(list<Obj*>::iterator i = objects.begin(); i != objects.end(); ++i) {
-				break;
-				/*Collision collision(*i);
-				if(m_player.checkCollision(collision) {
-					switch((*i)->type) {
-						case PORTAL :
-							// teleport
-							m_player.teleport(Portal portal);
-							break;
-						case ACTION_ZONE :
-							// do the dance
-							break;
-						case INVISIBLE_WALL :
-						case PORTALABLE_ZONE :
-						case VISIBLE_WALL :
-						case MIRROR :
-							// un-set movement
-						default :
-							break;
-					}
+				if(m_player.checkCollision(*i)) {
+					delete pCollision;
+					pCollision = new Collision(*i);
 					
-					// avoid looping on other objects
-					break;
-				}*/
+					if ((*i)->type == PORTAL)
+						break;
+				}
 			}
-			/*
-			if(!!m_player.checkCollisionPortals(m_portals, newPortal)) { // const Portal* Portals::checkCollisionPortal(const Portals & portals) const;
+			
+			if (!!pCollision) {
+				switch(pCollision->type()) {
+					case PORTAL :
+						// teleport
+						//m_player.teleport(Portal portal);
+						break;
+					case ACTION_ZONE :
+
+						break;
+					case INVISIBLE_WALL :
+					case PORTALABLE_ZONE :
+					case VISIBLE_WALL :
+					case MIRROR :
+						((MoveableCamera*)m_pScene->pCamera)->cancelMovement();
+						break;
+					default :
+						break;
+				}
+				delete pCollision;
+			}
+						
+			/*if(!!m_player.checkCollisionPortals(m_portals, newPortal)) { // const Portal* Portals::checkCollisionPortal(const Portals & portals) const;
 				// teleport player depending on newPortal
 				// m_player->setPosition( new position )
 				// m_player.nextMove( ... ) // Inverse the vector for rotating camera when the player crosses a portal
-			}
-			if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
+			} else if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
 				((MoveableCamera*)m_pScene->pCamera)->move();
 			}*/
 		}
@@ -236,6 +243,8 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 		if(!m_bPause && !m_bGhostMode){
 			// Add delay between launches and getter for color ?
 			Color color = (mEvent.button == SDL_BUTTON_LEFT) ? Color::BLUE : Color::RED;
+			cout << "Color  set" << endl;
+			cout << "Color : " << color << " handleMouseEvent" << endl;
 			handleShootPortal(color);
 		}
 	}
@@ -258,7 +267,7 @@ void Game::switchPause() {
 }
 
 // On click, when the game is running
-void Game::handleShootPortal(stein::Color color) {
+void Game::handleShootPortal(const stein::Color & color) {
 	// get direction of player's camera.
 	// get color of portal
 	// get position
@@ -277,17 +286,15 @@ void Game::handleShootPortal(stein::Color color) {
 	Intersection* pIntersection = NULL;
 	
 	// walkin' through portalable zones
-	cout << "nbObjects" << m_lObjects.size() << endl;
-	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i)
-		if((*i)->type == PORTALABLE_ZONE) {
+	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
 			intersectRayObject(ray, *i, &m_player, pIntersection);	
-		}
-	
-	// do the right thing.			
-	if(pIntersection) {
-		m_portals.setPortal(color, *pIntersection, m_pScene);
+		/*if((*i)->type == PORTALABLE_ZONE) {
+			intersectRayObject(ray, *i, &m_player, pIntersection);	
+		}*/
 	}
-
+	// do the right thing.
+	cout << "Color : " << color << " handleShootPortal" << endl;
+	m_portals.setPortal(color, pIntersection, m_pScene);
 	delete pIntersection;
 	pIntersection = NULL;
 }

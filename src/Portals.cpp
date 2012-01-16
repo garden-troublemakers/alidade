@@ -18,8 +18,7 @@ void Portals::update(const Vector3f & playerPos) {
 		pRedPortal->update(playerPos);
 }
 
-void Portals::setPortal(Color & color, Intersection & intersection, Scene* pScene) {
-	// Find the nearest portal from intersection
+void Portals::setPortal(const Color & color, const Intersection * const pIntersection, Scene* pScene) {
 	// Create the portal with the color corresponding to the type
 	// Make it a portal or not.
 	if(color != Color::RED && color != Color::BLUE) {
@@ -29,50 +28,23 @@ void Portals::setPortal(Color & color, Intersection & intersection, Scene* pScen
 	Portal* pCurrentPortal = (color == Color::BLUE) ? pBluePortal : pRedPortal;
 	Portal* pOtherPortal = (color == Color::RED) ? pBluePortal : pRedPortal;
 	
+	// If current portal, delete it gracefuly
 	if(!!pCurrentPortal) {
-		delete pRedPortal;
-		if(!!pOtherPortal)
-			pOtherPortal->setOtherPortal(NULL);
-	}
-	// @TODO : IF intersection OK
-	if(true) {
-		// if Intersection ok
-		pCurrentPortal = new Portal(pScene, color);
-		if(!!pOtherPortal) {
-			pCurrentPortal->setOtherPortal(pOtherPortal);
-			pOtherPortal->setOtherPortal(pCurrentPortal);
-		}
-	}
-}
-
-/*void Portals::setBluePortal(Color color, Intersection intersection) {
-}*/
-
-/*
-void Portals::setPortal(Color color, Intersection intersection) {
-			// We are attempting to create a portal on a non-PortalSurface so we delete it.
-		if(surfaceIsPortalSurface) {
-			if(!portals[type])
-				portals[type] = Portal(type, isMirror, surface);
-			else
-				portals[type].setPortal(surface, collisionPoint);
-				// change position
-			if(!isMirror)
-				portals[1-type].setPortal()//setMirror(false);
-		}
-	pPortal
-	if(portal.color == BLUE) {
-		if(!bluePortal) {
-			portal.
-			pBluePortal = &portal;
-		}
-			delete pBluePortal;
-		}
-	} else if(portal.color == RED) {
-		if(!!redPortal) {
-			delete redPortal;
-		}
-		redPortal = &portal;
+		delete pCurrentPortal;
+		pCurrentPortal = NULL;
 	}
 	
-}*/
+	// intersection = new portal
+	if(pIntersection) {
+		pCurrentPortal = new Portal(pScene, color);
+		
+		// @TODO : Translation and rotate portal here
+		std::cout << "Here i portalize" << std::endl;
+	}
+	
+	// set other portals' accessors
+	if(!!pCurrentPortal)
+		pCurrentPortal->setOtherPortal(pOtherPortal);
+	if(!!pOtherPortal)
+		pOtherPortal->setOtherPortal(pCurrentPortal);
+}

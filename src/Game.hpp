@@ -50,7 +50,7 @@ public :
 	void handleKeyEvent(const SDL_keysym& keysym, bool down);
 	void handleMouseEvent(const SDL_MouseButtonEvent& mEvent);
 	
-	void handleShootPortal(stein::Color color);
+	void handleShootPortal(const stein::Color & color);
 	
 	inline const bool isRunning() const {
 		return m_bRunning;

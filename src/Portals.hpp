@@ -15,7 +15,7 @@ struct Portals {
 	~Portals();
 	
 	void update(const stein::Vector3f & playerPos);
-	void setPortal(stein::Color & color, Intersection & intersection, stein::Scene* pScene);
+	void setPortal(const stein::Color & color, const Intersection * const pIntersection, stein::Scene* pScene);
 };
 
 #endif // _PORTALS_HPP_

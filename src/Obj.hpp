@@ -11,9 +11,9 @@
 #include <list>
 
 enum ObjectType {
-	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR
+	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR, PORTAL
 };
-	
+
 struct Obj {
 	stein::Object &object;
 	std::string path;
@@ -40,11 +40,38 @@ struct Obj {
 		stein::Vector3f triangleNormal;
 		builder.unpack(indices, vertices, normals, uvs);
 		for(size_t i = 0; i < indices.size() ; i+=3) {
-			triangleNormal = (normals[i] + normals[i+1] + normals[i+2]).normalize();
-			triangles.push_back(Triangle(vertices[indices[i]], vertices[indices[i+1]], vertices[i+2], triangleNormal, &object));
+			triangleNormal = (normals[indices[i]] + normals[indices[i+1]] + normals[indices[i+2]]).normalize();
+			triangles.push_back(Triangle(vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]], triangleNormal, &object));
 		}
 		return triangles;
 	}
 };
+
+struct Collision {
+	const Obj* obj;
+	Collision(const Obj* o) : obj(o)
+	{}
+	
+	Collision(const Collision & other) : obj(other.obj)
+	{}
+	
+	~Collision() {}
+	
+	ObjectType type() const {
+		return obj->type;
+	}
+};
+
+static inline ObjectType getObjectTypeFromInt(int type) {
+	switch(type) {
+		case 0 : return PLAYER;
+		case 1 : return VISIBLE_WALL;
+		case 3 : return PORTALABLE_ZONE;
+		case 4 : return ACTION_ZONE;
+		case 5 : return MIRROR;
+		case 6 : return DECOR;
+		default : return INVISIBLE_WALL;
+	}
+}
 
 #endif // _OBJ_HPP_
