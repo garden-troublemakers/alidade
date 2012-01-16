@@ -28,6 +28,7 @@ public :
 	MoveableCamera(float height = 0.8);
 	virtual ~MoveableCamera();
 	void setMovement(Direction to, bool add);
+	void cancelMovement();
 	virtual void move();
 	/*
 	virtual void translate();

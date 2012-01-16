@@ -4,11 +4,44 @@
 using namespace std;
 using namespace stein;
 
-Player::Player(Scene * pScene, const GLuint& sId) :
-	MoveableCamera(PLAYER_HEIGHT), Obj(pScene, sId, string(""), PLAYER), m_pScene(pScene), shaderId(sId) {
+Player::Player(Scene * pScene) :
+	MoveableCamera(PLAYER_HEIGHT), Obj(pScene, sId, "", PLAYER), m_pScene(pScene), shaderId(sId), m_corners() 
+{
+	vector<unsigned int> indices;
+	vector<stein::Vector3f> vertices;
+	vector<stein::Vector3f> normals;
+	vector<stein::UV> uvs;
+	float distMax = 0;
 	m_life = 100;
 	block = 1;
-	buildSquare(object, 1);
+	
+	buildSquare(object, 1, m_builder);
+	m_builder.unpack(indices, vertices, normals, uvs);
+	
+	for(size_t i = 0; i < indices.size() ; i+=3) {
+		const unsigned int & v0 = indices[i];
+		const unsigned int & v1 = indices[i+1];
+		const unsigned int & v2 = indices[i+2];
+		
+		Vector3f vertex(vertices[v0].x, vertices[v1].y, vertices[v2].z);
+		
+		// Bring the vertex to the same altitude as the position vertex
+		//vertex.y = position.y;
+		
+		// Distance of the vertex from the position
+		float dist = sqrt((vertex.x - position.x) * (vertex.x - position.x)
+						+ (vertex.y - position.y) * (vertex.y - position.y)
+						+ (vertex.z - position.z) * (vertex.z - position.z));
+		if (dist > distMax)
+			distMax = dist;
+		++distMax;
+		// So distMax give the size of the bounding box
+		m_corners.push_back(Vector3f(position.x + distMax, 0, position.z + distMax));
+		m_corners.push_back(Vector3f(position.x - distMax, 0, position.z + distMax));
+		m_corners.push_back(Vector3f(position.x - distMax, 0, position.z - distMax));
+		m_corners.push_back(Vector3f(position.x + distMax, 0, position.z - distMax));
+		m_corners.push_back(Vector3f(position.x - distMax, position.y + distMax , position.z - distMax));
+	}
 }
 
 Player::Player(const Player &player) : 
@@ -23,56 +56,17 @@ Player::~Player() {
 }
 
 bool Player::shootPortal(Color color) {
-	// dir = Vector "forward" normalized
-	/*Ray ray(getPosition, dir);
-	Intersection intersection;
+	return true;
+}
+
+bool Player::checkCollision(const Obj* obj) {
+	list<Triangle> triangles = obj->getTrianglesList();
 	
-	list<Obj>::iterator i;
-	
-	for(i = lObjects.begin(); i!= lObjects.end(); ++i){
-		// foreach triangle
-		Triangle triangle(a, b, c, normal, (Obj*)i);
-		Vector3f result;
-		if(checkIntersection(ray, triangle, result)) {
-			Intersection currentIntersection(ray, triangle, result);
-			if(intersection.computeDepth() > currentIntersection.computeDepth)
-				intersection = currentIntersection;
-		}
-	}
-	------------------------------------
-	if(((Obj*)intersection.triangle.pObject)->type == PORTALABLE_ZONE) {
-	
-		if(portal
-			if(!portals[type])
-				portals[type] = Portal(type, isMirror, surface);
-			else
-				portals[type].setPortal(surface, collisionPoint);
-				// change position
-			if(!isMirror)
-				portals[1-type].setPortal() // setMirror(false);
-				
-		if(!!game.portals.redPortal) {
-			if(game.portals.redPortal.getPosition() - intersection.point) {
-			
-			}
-		if(color == BLUE) {
-			if(!!game.portals.pRedPortal)
-				if((game.portals.pRedPortal.getPosition() - intersection.point).norm() > Portal::WIDTH/2.) {
-					game.portals.setPortal(newPortal);
-				}
-			}
-			if(game.portals.redPortal == NULL) {
-				game.portals.setPortal
-			}
-		} 
-		if(game.portals.redPortal == NULL) {
-			
-		}
-		game.portals.setPortal();
-	}
-=======
-	MoveableCamera::move();*/
-	return 0;
+	for (list<Triangle>::iterator triangle = triangles.begin(); triangle != triangles.end(); ++triangle)
+		for (vector<Vector3f>::iterator corner = m_corners.begin(); corner != m_corners.end(); ++corner)
+			if ((triangle->a - *corner).dotP(triangle->normal) < 0)
+				return true;
+	return false;
 }
 
 void Player::teleport(Portal* pPortal) {
@@ -95,7 +89,6 @@ Vector3f Player::mirrorPosition(Portal* pPortal) {
 	// Calculate the angle for getting out of a mirror
 	// Update m_nextMove in Camera
 	return pPortal->pSecondPortal->getPosition() + getPosition() - pPortal->getPosition();
-	// set
 	//Matrix4f rotateAroundY = yRotation(angleLong);
 }
 

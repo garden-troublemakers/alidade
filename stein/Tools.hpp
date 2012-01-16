@@ -40,6 +40,10 @@ void changeMaterialColorInShader(GLuint shaderID, GLfloat * color);
 
 uint64_t getTime();
 
+static inline float frand() {
+    return float(rand()) / RAND_MAX;
+}
+
 } // namespace stein
 
 #endif //  __TOOLS_HPP__

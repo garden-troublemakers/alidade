@@ -1,7 +1,7 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 #define TIXML_USE_STL 1
-#include "consts.h"
+
 #include "Geometry.hpp"
 #include "Mirror.hpp"
 #include "Obj.hpp"
@@ -14,9 +14,7 @@
 #include <stein/Tools.hpp>
 #include <tinyxml/tinyxml.h>
 #include <tinyxml/tinystr.h>
-#include <list>
 #include <iostream>
-#include <string>
 #include <cstdio>
 #include <memory>
 
@@ -54,6 +52,7 @@ public :
 	
 	void handleKeyEvent(const SDL_keysym& keysym, bool down);
 	void handleMouseEvent(const SDL_MouseButtonEvent& mEvent);
+	void handleShootPortal(const bool & bRed);
 	
 	inline const bool isRunning() const {
 		return m_bRunning;

@@ -87,14 +87,11 @@ void Object::sendPrimitives(const vector<Vector3f> &vertices, const vector<GLuin
     const GLenum attributePosition = 0; // First attribute in the shader is position
     pushArray(attributePosition, verticesVboId, (GLfloat*) vertices.data(), vertices.size(), 3);
 
-//    cout << "vertices sent " << vertices.size() << endl;
-
     // Binds the other vbo
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesVboId);
     // Loads up the indices of the vertices
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
-
-//    cout << "face     sent " << indices.size() << endl;
+    
     nbIndices = indices.size();
     m_bPrimitives = true;
 }
@@ -106,8 +103,6 @@ void Object::sendNormals(const vector<Vector3f> &values) {
     const GLenum attributeNormal = 1; // Second attribute in the shader is the normal
     pushArray(attributeNormal, normalsVboId, (GLfloat*) values.data(), values.size(), 3);
 
-//    cout << "normal sent " << values.size() << endl;
-
     m_bNormals = true;
 }
 
@@ -117,9 +112,6 @@ void Object::sendUvs(const vector<pair<float, float> > &values) {
 
     const GLenum attributeUV = 2; // Third attribute in the shader is the uv
     pushArray(attributeUV, uvsVboId, (GLfloat*) values.data(), values.size(), 2);
-
-// @TODO : Comment
-    cout << "UV sent " << values.size() << endl;
 
     m_bUvs = true;
 }

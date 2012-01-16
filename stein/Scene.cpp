@@ -18,6 +18,7 @@ Scene::Scene() :
     GLfloat lightPosition[] = { 0.0, 5.0, -5.0, 1.0 };
     GLfloat lightPower = 1.0;
     setLight(lightPosition, lightPower);
+    
     try {
 		drawnObjectsTexture0IDs = new GLuint[maxDrawnObjects]();
 		drawnObjectsTexture1IDs = new GLuint[maxDrawnObjects]();
@@ -29,6 +30,7 @@ Scene::Scene() :
 		// @TODO : Find better exception
 		std::cerr << "BUFFER OVERFLOW !!" << std::endl;
 	}
+	
     glEnable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -48,7 +50,6 @@ Scene::~Scene() {
 // Adds the object in the Objects library array, 
 // after the last added object, and only if the array is not full, returns the index
 Object& Scene::createObject(GLenum primitiveType) {
-    std::cout << "Create object in Scene" << std::endl;
 	const size_t size = storedObjects.size();
     if (size >= maxStoredObjects)
         throw std::runtime_error("maximum number of stored objects reached");

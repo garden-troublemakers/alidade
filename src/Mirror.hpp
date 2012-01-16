@@ -19,11 +19,13 @@ struct Mirror : public MoveableCamera {
 	GLuint depthBufferID;
 	GLuint textureID;
 	GLenum fboBuffs;
+	stein::MeshBuilder surfaceBuilder;
+	stein::MeshBuilder frameBuilder;
 
-	virtual ~Mirror() { std::cout << "destruct mirror" << std::endl;}
+	virtual ~Mirror() {}
 	Mirror(stein::Scene* pS, const GLuint& sId) : 
 		MoveableCamera(), pScene(pS), shaderId(sId),
-		frame(pScene, shaderId, std::string(), MIRROR), surface(pScene, shaderId, std::string(), MIRROR)
+		frame(pScene, shaderId, "", MIRROR), surface(pScene, shaderId, "", MIRROR)
 	{
 		glGenFramebuffers(1, &(fboID));
 		glGenRenderbuffers(1, &(depthBufferID));
@@ -32,12 +34,10 @@ struct Mirror : public MoveableCamera {
 		
 		pScene->addObjectToDraw(frame.object.id);
 		pScene->addObjectToDraw(surface.object.id);
-		buildSquare(frame.object, 1);
-		buildSquare(surface.object);
-		std::cout << "Mirrors" << std::endl;	
+		buildSquare(frame.object, 1, surfaceBuilder);
+		buildSquare(surface.object, 0.5, surfaceBuilder);
 		pScene->setDrawnObjectColor(frame.object.id, stein::Color::WHITE);
 		pScene->setDrawnObjectColor(surface.object.id, stein::Color::GRAY);
-		
 	}
 	
 	Mirror(const Mirror &other) :

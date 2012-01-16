@@ -17,8 +17,7 @@ using namespace std;
 namespace stein {
 
 // Builds one triangle
-void buildTriangle(Object &object) {
-    MeshBuilder builder;
+void buildTriangle(Object &object, MeshBuilder & builder) {
     builder.addVertex(-0.2, 0, 0);
     builder.addVertex(0.2, 0, 0);
     builder.addVertex(0, 1, 0);
@@ -37,8 +36,7 @@ void buildTriangle(Object &object) {
 }
 
 // Builds one square
-void buildSquare(Object &object, const GLfloat side) {
-    MeshBuilder builder;
+void buildSquare(Object &object, const GLfloat side, MeshBuilder & builder) {
     builder.addVertex(-side, -side, 0); // bottom left
     builder.addVertex(side, -side, 0); // bottom right
     builder.addVertex(-side, side, 0); // top left
@@ -71,15 +69,13 @@ static Triple readTriple(string& line) {
 }
 
 // Builds an object made from an OBJ file, taking only geometry into account (not materials)
-bool buildObjectGeometryFromOBJ(Object &object, const char* fileName, bool smoothObject, bool normalize) {
+bool buildObjectGeometryFromOBJ(Object &object, const char* fileName, bool smoothObject, bool normalize, MeshBuilder & builder) {
     ifstream file(fileName, ios_base::in);
     if (!file) {
-        cout << "       Error while loading object from .obj file : " << fileName << "." << endl;
+        cerr << "       Error while loading object from .obj file : " << fileName << "." << endl;
         return false;
     }
-    cout << "       Loading object from .obj file : " << fileName << "." << endl;
 
-    MeshBuilder builder;
     bool hasVt = false;
     bool hasVn = false;
     string buf, key, name, MTLFileName;
@@ -113,15 +109,11 @@ bool buildObjectGeometryFromOBJ(Object &object, const char* fileName, bool smoot
         } else if (key == "mltlib")
             line >> MTLFileName;
     }
-
-    cout << "       Obj mesh " << name << " loading..." << endl;
-    cout << "       Obj meshes should only be made of triangles (for this loader), make sure this is correct in file." << endl;
-
-    //    if (smoothObject)
+    
+//    if (smoothObject)
 //        reorderUvsAndNormalsIfSmooth(&vertices, &uvs, &normals, &indices, &uvIndices, &normalIndices);
 //    else
 //        reorderUvsAndNormalsIfNonSmooth(&vertices, &uvs, &normals, &indices, &uvIndices, &normalIndices);
-
 //    conformToObject(&vertices, &uvs, &normals);
 	
 	if(normalize) builder.centerAndNormalizeMesh();
@@ -138,21 +130,17 @@ bool buildObjectGeometryFromOBJ(Object &object, const char* fileName, bool smoot
 
     if (hasVn) {
         const bool oneNormalPerTriangle = (normals.size() == indices.size());
-        if (oneNormalPerTriangle) {
-            cout << "       Obj file " << name << " was not smoothed in modeler." << endl;
+        if (oneNormalPerTriangle)
             if (smoothObject)
-                cout << "       WARNING : smoothObject==true. Normals will be wrong : change it to false." << endl;
-        }
+                cerr << "       WARNING : smoothObject==true. Normals will be wrong : change it to false." << endl;
         object.sendNormals(normals);
     } else
-        cout << "       WARNING : Obj file " << name << " has no normals, add some in modeler." << endl;
+        cerr << "       WARNING : Obj file " << name << " has no normals, add some in modeler." << endl;
 
     if (hasVt)
         object.sendUvs(uvs);
     else
-        cout << "       WARNING : Obj file " << name << " has no texture coordinates, add some in modeler." << endl;
-
-    cout << "       Material files are not taken into account by this loader." << endl;
+        cerr << "       WARNING : Obj file " << name << " has no texture coordinates, add some in modeler." << endl;
 
     return true;
 }
