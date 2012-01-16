@@ -1,4 +1,5 @@
 #include "Portals.hpp"
+#include <stein/Color.hpp>
 
 using namespace stein;
 
@@ -18,15 +19,12 @@ void Portals::update(const Vector3f & playerPos) {
 		pRedPortal->update(playerPos);
 }
 
-void Portals::setPortal(const Color & color, const Intersection * const pIntersection, Scene* pScene) {
+void Portals::setPortal(const bool & bRed, const Intersection * const pIntersection, Scene* pScene) {
 	// Create the portal with the color corresponding to the type
 	// Make it a portal or not.
-	if(color != Color::RED && color != Color::BLUE) {
-		std::cerr << "Invalid Portal color" << std::endl;
-		exit(1);
-	}
-	Portal* pCurrentPortal = (color == Color::BLUE) ? pBluePortal : pRedPortal;
-	Portal* pOtherPortal = (color == Color::RED) ? pBluePortal : pRedPortal;
+	Color color = (bRed) ? Color::RED : Color::BLUE;
+	Portal* pCurrentPortal = bRed ? pRedPortal : pBluePortal;
+	Portal* pOtherPortal = bRed ? pBluePortal : pRedPortal;
 	
 	// If current portal, delete it gracefuly
 	if(!!pCurrentPortal) {

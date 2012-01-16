@@ -4,39 +4,41 @@
 using namespace std;
 using namespace stein;
 
-Player::Player(Scene * pScene) : MoveableCamera(PLAYER_HEIGHT), Obj(pScene, string(""), PLAYER), m_pScene(pScene) {
+Player::Player(Scene * pScene) : MoveableCamera(PLAYER_HEIGHT), Obj(pScene, string(""), PLAYER), m_pScene(pScene), m_corners() {
+	vector<unsigned int> indices;
+	vector<stein::Vector3f> vertices;
+	vector<stein::Vector3f> normals;
+	vector<stein::UV> uvs;
+	float distMax = 0;
 	m_life = 100;
 	block = 1;
-	buildSquare(object, 1);
 	
-	list<Triangle> triangles = getTrianglesList();
-	list<Triangle>::iterator triangle;
+	buildSquare(object, 1, m_builder);
+	m_builder.unpack(indices, vertices, normals, uvs);
 	
-	
-	std::vector<unsigned int> indices;
-	std::vector<stein::Vector3f> vertices;
-	std::vector<stein::Vector3f> normals;
-	std::vector<stein::UV> uvs;
-	float distMax = 0;
-	builder.unpack(indices, vertices, normals, uvs);
-	
-	for(size_t i = 0; i < indices.size() ; ++i) {
-	
-		Vector3f vertex(vertices[indices[i]][0], vertices[indices[i+1]][1], vertices[indices[i+2]][2]);
+	for(size_t i = 0; i < indices.size() ; i+=3) {
+		const unsigned int & v0 = indices[i];
+		const unsigned int & v1 = indices[i+1];
+		const unsigned int & v2 = indices[i+2];
+		
+		Vector3f vertex(vertices[v0].x, vertices[v1].y, vertices[v2].z);
+		
 		// Bring the vertex to the same altitude as the position vertex
-		vertex.y = position.y;
-		// Distance of the vertex frome the position
+		//vertex.y = position.y;
+		
+		// Distance of the vertex from the position
 		float dist = sqrt((vertex.x - position.x) * (vertex.x - position.x)
 						+ (vertex.y - position.y) * (vertex.y - position.y)
 						+ (vertex.z - position.z) * (vertex.z - position.z));
 		if (dist > distMax)
 			distMax = dist;
-		distMax++;
+		++distMax;
 		// So distMax give the size of the bounding box
 		m_corners.push_back(Vector3f(position.x + distMax, 0, position.z + distMax));
 		m_corners.push_back(Vector3f(position.x - distMax, 0, position.z + distMax));
 		m_corners.push_back(Vector3f(position.x - distMax, 0, position.z - distMax));
 		m_corners.push_back(Vector3f(position.x + distMax, 0, position.z - distMax));
+		m_corners.push_back(Vector3f(position.x - distMax, position.y + distMax , position.z - distMax));
 	}
 }
 
@@ -51,17 +53,10 @@ void Player::shootPortal(Color color) {
 bool Player::checkCollision(const Obj* obj) {
 	list<Triangle> triangles = obj->getTrianglesList();
 	
-	list<Triangle>::iterator triangle;
-	for (triangle = triangles.begin(); triangle != triangles.end(); ++triangle) {
-				
-		vector<Vector3f>::iterator corner;
-		for (corner = m_corners.begin(); corner != m_corners.end(); ++corner) {
-			Vector3f dist = triangle->a - *corner;
-			if (dist.dotP(triangle->normal) < 0) {
+	for (list<Triangle>::iterator triangle = triangles.begin(); triangle != triangles.end(); ++triangle)
+		for (vector<Vector3f>::iterator corner = m_corners.begin(); corner != m_corners.end(); ++corner)
+			if ((triangle->a - *corner).dotP(triangle->normal) < 0)
 				return true;
-			}
-		}
-	}
 	return false;
 }
 

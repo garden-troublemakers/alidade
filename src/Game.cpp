@@ -1,5 +1,6 @@
 #include "Obj.hpp"
 #include "Game.hpp"
+#include <memory>
 
 using namespace std;
 using namespace stein;
@@ -16,6 +17,10 @@ Game::~Game() {
 	while(!m_pMirrors.empty()) {
         delete m_pMirrors.back();
         m_pMirrors.pop_back();
+    }
+	while(!m_lObjects.empty()) {
+        delete m_lObjects.back();
+        m_lObjects.pop_back();
     }
 }
 
@@ -131,21 +136,25 @@ void Game::update() {
 		if(m_bGhostMode) {
 		} else {
 			//	test collision with objs
-			//  switch
 			list<Obj*> objects = m_lObjects;
-			objects.push_back(&(m_portals.pBluePortal->frame));
-			objects.push_back(&(m_portals.pBluePortal->surface));
-			objects.push_back(&(m_portals.pRedPortal->frame));
-			objects.push_back(&(m_portals.pRedPortal->surface));
+			
+			if(!!m_portals.pBluePortal) {
+				objects.push_back(&(m_portals.pBluePortal->frame));
+				objects.push_back(&(m_portals.pBluePortal->surface));
+			}
+			if(!!m_portals.pRedPortal) {
+				objects.push_back(&(m_portals.pRedPortal->frame));
+				objects.push_back(&(m_portals.pRedPortal->surface));
+			}
 			for(std::vector<Mirror*>::iterator i = m_pMirrors.begin(); i != m_pMirrors.end(); ++i) {
 				objects.push_back(&((*i)->frame));
 				objects.push_back(&((*i)->surface));
 			}
 			
 			Collision *pCollision = NULL;
-			//Collision *pObjectCollision = NULL;
 			for(list<Obj*>::iterator i = objects.begin(); i != objects.end(); ++i) {
 				if(m_player.checkCollision(*i)) {
+					//cout << "Collision !" << endl;
 					delete pCollision;
 					pCollision = new Collision(*i);
 					
@@ -242,10 +251,8 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 	if(m_bRunning && mEvent.type == SDL_MOUSEBUTTONDOWN  && mEvent.state == SDL_PRESSED) {
 		if(!m_bPause && !m_bGhostMode){
 			// Add delay between launches and getter for color ?
-			Color color = (mEvent.button == SDL_BUTTON_LEFT) ? Color::BLUE : Color::RED;
-			cout << "Color  set" << endl;
-			cout << "Color : " << color << " handleMouseEvent" << endl;
-			handleShootPortal(color);
+			bool bRed = mEvent.button != SDL_BUTTON_LEFT;
+			handleShootPortal(bRed);
 		}
 	}
 }
@@ -267,7 +274,7 @@ void Game::switchPause() {
 }
 
 // On click, when the game is running
-void Game::handleShootPortal(const stein::Color & color) {
+void Game::handleShootPortal(const bool & bRed) {
 	// get direction of player's camera.
 	// get color of portal
 	// get position
@@ -293,8 +300,7 @@ void Game::handleShootPortal(const stein::Color & color) {
 		}*/
 	}
 	// do the right thing.
-	cout << "Color : " << color << " handleShootPortal" << endl;
-	m_portals.setPortal(color, pIntersection, m_pScene);
+	m_portals.setPortal(bRed, pIntersection, m_pScene);
 	delete pIntersection;
 	pIntersection = NULL;
 }

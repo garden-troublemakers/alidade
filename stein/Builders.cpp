@@ -17,8 +17,7 @@ using namespace std;
 namespace stein {
 
 // Builds one triangle
-void buildTriangle(Object &object) {
-    MeshBuilder builder;
+void buildTriangle(Object &object, MeshBuilder & builder) {
     builder.addVertex(-0.2, 0, 0);
     builder.addVertex(0.2, 0, 0);
     builder.addVertex(0, 1, 0);
@@ -37,8 +36,7 @@ void buildTriangle(Object &object) {
 }
 
 // Builds one square
-void buildSquare(Object &object, const GLfloat side) {
-    MeshBuilder builder;
+void buildSquare(Object &object, const GLfloat side, MeshBuilder & builder) {
     builder.addVertex(-side, -side, 0); // bottom left
     builder.addVertex(side, -side, 0); // bottom right
     builder.addVertex(-side, side, 0); // top left

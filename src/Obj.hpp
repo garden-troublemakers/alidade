@@ -40,8 +40,11 @@ struct Obj {
 		stein::Vector3f triangleNormal;
 		builder.unpack(indices, vertices, normals, uvs);
 		for(size_t i = 0; i < indices.size() ; i+=3) {
-			triangleNormal = (normals[indices[i]] + normals[indices[i+1]] + normals[indices[i+2]]).normalize();
-			triangles.push_back(Triangle(vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]], triangleNormal, &object));
+			const unsigned int & i0 = indices[i];
+			const unsigned int & i1 = indices[i+1];
+			const unsigned int & i2 = indices[i+2];
+			triangleNormal = (normals[i0] + normals[i1] + normals[i2]).normalize();
+			triangles.push_back(Triangle(vertices[i0], vertices[i1], vertices[i2], triangleNormal, &object));
 		}
 		return triangles;
 	}

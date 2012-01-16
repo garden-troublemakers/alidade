@@ -14,6 +14,8 @@ struct Mirror : public MoveableCamera {
 	stein::Scene* pScene;
 	Obj frame;
 	Obj surface;
+	stein::MeshBuilder surfaceBuilder;
+	stein::MeshBuilder frameBuilder;
 	virtual ~Mirror() {}
 	Mirror(stein::Scene* pS) : 
 		MoveableCamera(), pScene(pS),
@@ -21,8 +23,8 @@ struct Mirror : public MoveableCamera {
 	{
 		pScene->addObjectToDraw(frame.object.id);
 		pScene->addObjectToDraw(surface.object.id);
-		buildSquare(frame.object, 1);
-		buildSquare(surface.object);
+		buildSquare(frame.object, 1, surfaceBuilder);
+		buildSquare(surface.object, 0.5, surfaceBuilder);
 	}
 	
 	Mirror(const Mirror &other): pScene(other.pScene), frame(other.frame), surface(other.surface) {}

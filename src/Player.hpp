@@ -21,11 +21,13 @@ private :
 	size_t m_life;
 	stein::Scene* m_pScene;
 	std::vector<stein::Vector3f> m_corners;
+	stein::MeshBuilder m_builder;
 public :
 	void mirror(Portal& p);
 	const static float PLAYER_HEIGHT = 2.5;
 	// const static std::string PLAYER_PATH = "./player.obj";
 	Player(stein::Scene * pScene);
+	Player(const Player & p);
 	virtual ~Player();
 	void shootPortal(stein::Color color);
 	virtual void teleport(Portal* pPortal);
