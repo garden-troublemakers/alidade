@@ -18,7 +18,6 @@ bool intersectRayTriangle(const Ray & ray, const Triangle & triangle, Intersecti
 	
 	float w = ray.dir.scalarTriple(pb, pa);
 	if (w<0.0) return false;
-
 	// @TODO : since we are using float, we need to test value using epsilon
 	if(u+v+w == 0.)
 		return false;
@@ -56,6 +55,7 @@ bool intersectRayObject(const Ray & ray, Obj * pObject, stein::Camera * pRefCam,
 	std::list<Triangle> triangles = pObject->getTrianglesList();
 	for(std::list<Triangle>::iterator t = triangles.begin(); t != triangles.end(); ++t) { // get & test intersection
 		if(intersectRayTriangle(ray, *t, pTriangleIntersection)) {
+			std::cout << "intersection" << std::endl;
 			if(!pIntersection || (pTriangleIntersection->computeDepth(*pRefCam) < pIntersection->computeDepth(*pRefCam))) {  // test its depth
 				delete pIntersection;
 				pIntersection = pTriangleIntersection;

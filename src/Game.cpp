@@ -1,5 +1,6 @@
 #include "Obj.hpp"
 #include "Game.hpp"
+#include <stein/math/StreamUtils.h>
 #include <memory>
 
 using namespace std;
@@ -144,7 +145,7 @@ void Game::update() {
 	if(m_bGhostMode) {
 	} else {
 		//	test collision with objs
-		list<Obj*> objects = m_lObjects;
+		/*list<Obj*> objects = m_lObjects;
 		
 		if(!!m_portals.pBluePortal) {
 			objects.push_back(&(m_portals.pBluePortal->frame));
@@ -190,7 +191,7 @@ void Game::update() {
 					break;
 			}
 			delete pCollision;
-		}
+		}*/
 	}
 	m_portals.update(m_pPlayer->getPosition());
 }
@@ -262,13 +263,18 @@ void Game::handleShootPortal(const bool & bRed) {
 	//   ...
 	// exit
 	// dir = Vector "forward" normalized
-	Matrix4f forward = translation(Vector3f(0,0,-1));
-	Ray ray(m_pPlayer->getPosition(), Vector3f(forward(3,0), forward(3,1), forward(3,2)));
+	Matrix4f forward = m_pPlayer->getViewInv()*translation(Vector3f(0,0,-1));
+	Vector3f vec(forward(0,3), forward(1,3), forward(2,3));
+	cout << '[' << vec.x << " / " << vec.y << " / " << vec.z << ']' << endl;
+	Ray ray(m_pPlayer->getPosition(), vec);
 	Intersection* pIntersection = NULL;
 	
 	// walkin' through portalable zones
 	for(list<Obj*>::iterator i = m_lObjects.begin(); i != m_lObjects.end(); ++i) {
-			intersectRayObject(ray, *i, m_pPlayer, pIntersection);	
+		if(intersectRayObject(ray, *i, m_pPlayer, pIntersection)) {
+			Vector3f & v = pIntersection->point;
+			cout << '[' << v.x << " / " << v.y << " / " << v.z << ']' << endl;
+		}
 		/*if((*i)->type == PORTALABLE_ZONE) {
 			intersectRayObject(ray, *i, &m_player, pIntersection);	
 		}*/

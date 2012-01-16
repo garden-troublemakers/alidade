@@ -30,12 +30,7 @@ struct Ray {
 	const stein::Vector3f dir;
 	Ray(const stein::Vector3f & p, stein::Vector3f d) :
 		pos(p), dir(d.normalize())
-	{
-		glBegin(GL_LINE);
-			glVertex3f(pos[0], pos[1], pos[2]);
-			glVertex3f(pos[0]+dir[0], pos[1]+dir[1], pos[2]-dir[2]);
-		glEnd();
-	}
+	{}
 	Ray(const Ray & b) :
 		pos(b.pos), dir(b.dir) {
 	}

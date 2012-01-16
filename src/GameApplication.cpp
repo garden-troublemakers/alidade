@@ -52,7 +52,7 @@ void GameApplication::handleKeyEvent(const SDL_keysym& keysym, bool down) {
 
 void GameApplication::handleEvent(const SDL_Event& event) {
     switch (event.type) {
-        // User events
+		// User events
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
 			handleMouseEvent(event.button);
