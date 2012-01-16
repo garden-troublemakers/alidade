@@ -29,10 +29,13 @@ Scene::Scene() :
 		// @TODO : Find better exception
 		std::cerr << "BUFFER OVERFLOW !!" << std::endl;
 	}
-    glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
+	
+   
 }
 
 Scene::~Scene() {

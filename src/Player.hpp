@@ -27,7 +27,7 @@ public :
 	const static float PLAYER_HEIGHT = 2.5;
 	// const static std::string PLAYER_PATH = "./player.obj";
 	Player(stein::Scene * pScene, const GLuint&);
-	Player(const Player &player);
+	//Player(const Player &player);
 	virtual ~Player();
 	bool checkCollisionPortals(const Portals& portals, const Portal& newP);
 	bool shootPortal(stein::Color color);

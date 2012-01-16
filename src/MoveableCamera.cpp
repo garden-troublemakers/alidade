@@ -22,7 +22,7 @@ void MoveableCamera::setMovement(Direction to, bool add) {
 		axis = RIGHT;
 	else
 		axis = UP;
-	float moveValue = (to == axis) ? 1. : -1.;
+	float moveValue = (to == axis) ? 3. : -3.;
 	
 	if(add)
 		m_nextMove[axis] = moveValue; 

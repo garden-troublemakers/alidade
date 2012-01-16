@@ -12,8 +12,13 @@ Game::Game(Scene* pScene):
 		vector<string> files;
 		files.push_back("../shaders/shaderTools.glsl");
 		files.push_back("../shaders/lightingShader.glsl");
-		GLuint shaderId = loadProgram(files);
+		shaderId = loadProgram(files);
 		files.pop_back();
+		
+		files.push_back("../shaders/invisibleShader.glsl");
+		invisibleShaderId = loadProgram(files);
+		files.pop_back();
+		
 		m_pScene->setDefaultShaderID(shaderId);
 		
 		glUseProgram(shaderId);
@@ -24,7 +29,6 @@ Game::Game(Scene* pScene):
 		
 		setMaterialInShader(shaderId, ambient, diffuse, specular, ka, kd, ks, shininess);
 		
-		glUseProgram(shaderId);
 		m_pPlayer = new Player(m_pScene, shaderId);
 	}
 
@@ -70,7 +74,8 @@ void Game::loadLevel() {
 			cout << "Load object from XML" << endl;
 			int tmpType;
 			elem->QueryIntAttribute("type", &tmpType);
-			Obj* obj = new Obj(m_pScene, m_pScene->defaultShaderID, elem->Attribute("src"), VISIBLE_WALL, elem->Attribute("texture"));
+			
+			Obj* obj = new Obj(m_pScene, m_pScene->defaultShaderID, elem->Attribute("src"), getObjectTypeFromInt(tmpType), elem->Attribute("texture"));
 			
 			elem->QueryIntAttribute("block", &(obj->block));
 			elem->QueryDoubleAttribute("posX", &(obj->posX));
@@ -125,7 +130,15 @@ void Game::start() {	// init level configuration
 		m_pScene->addObjectToDraw((*i)->object.id);
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
 		m_pScene->setDrawnObjectTextureID((*i)->object.id, 0, (*i)->object.getTextureId());
-		m_pScene->setDrawnObjectShaderID((*i)->object.id, (*i)->shaderId);
+		if((*i)->type == INVISIBLE_WALL) {
+			glUseProgram(invisibleShaderId);
+			cout << "INVISIBLE WALL ------------------" << endl;
+			m_pScene->setDrawnObjectShaderID((*i)->object.id, invisibleShaderId);
+		} else {
+			glUseProgram(shaderId);
+			m_pScene->setDrawnObjectShaderID((*i)->object.id, (*i)->shaderId);
+		}
+
 		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
 		cout << " charge objet " << endl;
 	}
