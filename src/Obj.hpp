@@ -2,8 +2,11 @@
 #define _OBJ_HPP_
 
 #include <stein/Object.hpp>
+#include <src/Geometry.hpp>
 #include <stein/Scene.hpp>
+#include <stein/MeshBuilder.h>
 #include <string>
+#include <list>
 
 enum ObjectType {
 	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR
@@ -40,5 +43,6 @@ struct Obj {
 		}
 		return triangles;
 	}
+};
 
 #endif // _OBJ_HPP_

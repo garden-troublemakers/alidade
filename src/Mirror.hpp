@@ -27,7 +27,7 @@ struct Mirror : public MoveableCamera {
 		glGenFramebuffers(1, &(fboID));
 		glGenRenderbuffers(1, &(depthBufferID));
 		glGenTextures(1, &(textureID));
-		fboBuffs=GL COLOR ATTACHMENT0;
+		fboBuffs=GL_COLOR_ATTACHMENT0;
 		
 		pScene->addObjectToDraw(frame.object.id);
 		pScene->addObjectToDraw(surface.object.id);
@@ -64,7 +64,7 @@ struct Mirror : public MoveableCamera {
 		setPosition(pos);
 		setRotation(rot);
 	}
-	void Portal::prepareFBO(int width, int height)
+	void prepareFBO(int width, int height)
 	{
 		// Binds the FBO
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
@@ -81,10 +81,10 @@ struct Mirror : public MoveableCamera {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		// Attaches texture to the shader color output and the RBO to the depth
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, portalTextureID, 0);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferID);
 		//getFBOErrors();
-		glBindFramebuffer(GL DRAW FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 
 	

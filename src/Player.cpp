@@ -78,7 +78,7 @@ void Player::teleport(Portal* pPortal) {
 	Matrix4f viewPortal(pPortal->getView());
 	Matrix4f viewInvPortal(pPortal->getViewInv());
 	Matrix4f viewSecondPortal(pPortal->pSecondPortal->getView());
-	Matrix4f viewInvSecondPortal(pPortal->pSecondPortal->getViewInv();
+	Matrix4f viewInvSecondPortal(pPortal->pSecondPortal->getViewInv());
 	
 }
 
