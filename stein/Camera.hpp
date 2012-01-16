@@ -17,6 +17,7 @@ struct Camera {
 
     const Vector3f& getPosition() const;
     const Matrix4f& getView() const;
+    const Matrix4f& getViewInv() const
     const Matrix4f& getProjection() const;
 protected:
     void updateView();
@@ -27,6 +28,7 @@ protected:
 
     Vector3f position; // Camera position
     Matrix4f view; // View matrix
+    Matrix4f viewInv;
     Matrix4f rotation; // View matrix
     Matrix4f projection; // Projection matrix
 };

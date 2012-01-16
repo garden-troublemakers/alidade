@@ -69,11 +69,17 @@ bool Player::shootPortal(Color color) {
 
 void Player::teleport(Portal* pPortal) {
 	// Calculate the angle for getting out of a mirror
-	setPosition(mirrorPosition(pPortal));
+	// setPosition(mirrorPosition(pPortal));
 	// @TODO : ! setDirection !!
 	// setDirection(mirrorDirection(Portal* pPortal));
 	// Update m_nextMove in Camera
 	// Matrix4f rotateAroundY = yRotation(angleLong);
+
+	Matrix4f viewPortal(pPortal->getView());
+	Matrix4f viewInvPortal(pPortal->getViewInv());
+	Matrix4f viewSecondPortal(pPortal->pSecondPortal->getView());
+	Matrix4f viewInvSecondPortal(pPortal->pSecondPortal->getViewInv();
+	
 }
 
 
@@ -170,7 +176,6 @@ bool Player::checkCollisionPortals(const Portals& portals, const Portal& newP) {
 
 
 void Player::gotoPositionRotation(const stein::Vector3f & pos, stein::Matrix4f rot) {
-	//pos.y *= -1;
 	rot.transpose();
 	m_pScene->setDrawnObjectModel(object.id, translation(-pos)*rot);
 	setPosition(pos);

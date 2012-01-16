@@ -12,7 +12,7 @@ namespace stein {
 Scene::Scene() :
     defaultColor(Color::WHITE), defaultTransformation(Matrix4f::identity()), defaultShaderID(1), pCamera(NULL) {
     // Light creation
-    GLfloat lightPosition[] = { 0.0, 5.0, 0.0, 1.0 };
+    GLfloat lightPosition[] = { 0.0, 5.0, -5.0, 1.0 };
     GLfloat lightPower = 1.0;
     setLight(lightPosition, lightPower);
 }

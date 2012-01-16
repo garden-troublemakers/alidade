@@ -11,6 +11,7 @@
 
 struct Portal : public Mirror {
 	stein::Color color;
+	
 	Portal* pSecondPortal; 
 	Portal(stein::Scene* pScene, stein::Color col) :
 		Mirror(pScene), color(col), pSecondPortal(NULL)

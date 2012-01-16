@@ -128,7 +128,7 @@ void Game::update() {
 				// m_player->setPosition( new position )
 				// m_player.nextMove( ... ) // Inverse the vector for rotating camera when the player crosses a portal
 			}
-			if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
+			else if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
 				((MoveableCamera*)m_pScene->pCamera)->move();
 			}*/
 		}

@@ -59,6 +59,21 @@ const Matrix4f& Camera::getView() const {
     return view;
 }
 
+const Matrix4f& Camera::getViewInv() const {
+    Matrix4f Rc(xAxis.x, yAxis.x, zAxis.x, 0, xAxis.y, yAxis.y, zAxis.y, 0, xAxis.z, yAxis.z, zAxis.z, 0, 0, 0, 0, 1);
+    Rc.transpose();
+    
+    Matrix4f rotationInv = rotation;
+    rotationInv.transpose();
+
+    // Translation to be at the right distance from the scene
+    Matrix4f Tc(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, position.x, position.y, position.z, 1);
+
+    // Initializes
+    viewInv = Tc * rotationInv * Rc;
+    return viewInv;
+}
+
 const Matrix4f& Camera::getProjection() const {
     return projection;
 }
