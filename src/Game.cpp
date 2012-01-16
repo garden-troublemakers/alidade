@@ -5,13 +5,35 @@ using namespace std;
 using namespace stein;
 
 Game::Game(Scene* pScene):
-	m_pScene(pScene), m_ghostCamera(), m_portals(), m_player(pScene),
-	m_level(EASY), m_pMirrors(), m_lObjects(),
-	m_bRunning(false), m_bPause(false), m_bGhostMode(false)
-{}
+	m_pScene(pScene), m_ghostCamera(), m_portals(),
+	m_level(HARD), m_pMirrors(), m_lObjects(),
+	m_bRunning(false), m_bPause(false), m_bGhostMode(false), m_pPlayer(NULL) {	
+		// Shader
+		vector<string> files;
+		files.push_back("../shaders/shaderTools.glsl");
+		files.push_back("../shaders/lightingShader.glsl");
+		shaderId = loadProgram(files);
+		files.pop_back();
+		
+		files.push_back("../shaders/invisibleShader.glsl");
+		invisibleShaderId = loadProgram(files);
+		files.pop_back();
+		
+		m_pScene->setDefaultShaderID(shaderId);
+		
+		glUseProgram(shaderId);
+		GLfloat ambient[]={1.0, 1.0, 1.0, 1.0}; 
+		GLfloat diffuse[]={1.0, 1.0, 1.0, 1.0}; 
+		GLfloat specular[]={1.0, 1.0, 1.0, 1.0}; 
+		GLfloat ka=0.01, kd=1.0, ks=2.0, shininess=5.0;
+		
+		setMaterialInShader(shaderId, ambient, diffuse, specular, ka, kd, ks, shininess);
+		
+		m_pPlayer = new Player(m_pScene, shaderId);
+	}
 
 Game::~Game() {
-	//delete [] player;
+	delete m_pPlayer;
 	/*list delete m_lObjects;*/
 	while(!m_pMirrors.empty()) {
         delete m_pMirrors.back();
@@ -22,8 +44,8 @@ Game::~Game() {
 
 void Game::loadLevel() {
 	list<Obj> objList;
-	TiXmlDocument *xmlDoc = NULL;
-	TiXmlElement *elem = NULL;
+	TiXmlDocument* xmlDoc = NULL;
+	TiXmlElement* elem = NULL;
 	
 	cout << "loadLevel" << endl;
 	
@@ -48,10 +70,13 @@ void Game::loadLevel() {
 		if(!elem)
 			cerr << "node to reach doesn't exist" << endl;
 		while (elem){
+			std::cout << "TEST" << std::endl;
 			cout << "Load object from XML" << endl;
 			int tmpType;
 			elem->QueryIntAttribute("type", &tmpType);
-			Obj* obj = new Obj(m_pScene, elem->Attribute("src"), VISIBLE_WALL);
+			
+			Obj* obj = new Obj(m_pScene, m_pScene->defaultShaderID, elem->Attribute("src"), getObjectTypeFromInt(tmpType), elem->Attribute("texture"));
+			
 			elem->QueryIntAttribute("block", &(obj->block));
 			elem->QueryDoubleAttribute("posX", &(obj->posX));
 			elem->QueryDoubleAttribute("posY", &(obj->posY));
@@ -61,7 +86,7 @@ void Game::loadLevel() {
 			elem = elem->NextSiblingElement();
 		}
 		for(size_t j = 0; j < 10 ; ++j)
-			m_pMirrors.push_back(new Mirror(m_pScene));
+			m_pMirrors.push_back(new Mirror(m_pScene, shaderId));
 		for(size_t i= 0; i < m_pMirrors.size(); ++i) {
 			Matrix4f rotation = xRotation(-float(0.33*i * M_PI)) *  yRotation(float(0.33*i * M_PI));
 			m_pMirrors[i]->gotoPositionRotation(Vector3f(35, 10, 2*i), rotation);
@@ -83,10 +108,15 @@ bool Game::load() {
 
 void Game::start() {	// init level configuration
     // We set the actual camera to be the player's one (fps mode)
-    m_pScene->pCamera = &m_player;
-    m_player.setPosition(Vector3f(37,.5,10));
-    // Shader
-    m_pScene->setDefaultShaderID(loadProgram("../shaders/simpleShader.glsl"));
+	m_pScene->pCamera = m_pPlayer;
+    m_pPlayer->setPosition(Vector3f(37,.5,10));
+   
+	// make sure we use the default shader
+	//glUseProgram(m_pScene->defaultShaderID);
+	// cout << "fu" << endl;
+	// loadTexture("../res/textures/image1.ppm");
+	// glUniform1i(glGetUniformLocation(shaderId, "textureUnit0"), 0);
+
     
 	// prepare level using xml.
 	// build objects from xml
@@ -99,16 +129,25 @@ void Game::start() {	// init level configuration
 		buildObjectGeometryFromOBJ((*i)->object, (*i)->path.c_str(), false, false);
 		m_pScene->addObjectToDraw((*i)->object.id);
 		m_pScene->setDrawnObjectColor((*i)->object.id, Color(frand(), frand(), frand()));
+		m_pScene->setDrawnObjectTextureID((*i)->object.id, 0, (*i)->object.getTextureId());
+		if((*i)->type == INVISIBLE_WALL) {
+			glUseProgram(invisibleShaderId);
+			cout << "INVISIBLE WALL ------------------" << endl;
+			m_pScene->setDrawnObjectShaderID((*i)->object.id, invisibleShaderId);
+		} else {
+			glUseProgram(shaderId);
+			m_pScene->setDrawnObjectShaderID((*i)->object.id, (*i)->shaderId);
+		}
+
 		//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
+		cout << " charge objet " << endl;
 	}
 	
 	for(size_t i = 0; i < m_pMirrors.size(); ++i) {
 		//m_pMirrors[i]->goToPosition(Vector3f(35,1,10*(i+1)));
 	}			
-	
-	
+
 	// We add mirrors
-	
 
 	m_bRunning = true;
 }
@@ -118,21 +157,20 @@ void Game::exit() {
 }
 
 void Game::update() {
-	if(!m_bPause) {
 		((MoveableCamera*)m_pScene->pCamera)->move();
 		if(m_bGhostMode) {
 		} else {
 			/*Portal* newPortal;
-			if(!!m_player.checkCollisionPortals(m_portals, newPortal)) { // const Portal* Portals::checkCollisionPortal(const Portals & portals) const;
+			if(!!m_pPlayer->checkCollisionPortals(m_portals, newPortal)) { // const Portal* Portals::checkCollisionPortal(const Portals & portals) const;
 				// teleport player depending on newPortal
-				// m_player->setPosition( new position )
-				// m_player.nextMove( ... ) // Inverse the vector for rotating camera when the player crosses a portal
+				// m_pPlayer->setPosition( new position )
+				// m_pPlayer->nextMove( ... ) // Inverse the vector for rotating camera when the player crosses a portal
 			}
 			else if(!m_player.checkCollisions(m_lObjects)) { // bool Portals::checkCollisionPortal(std::list<Obj*>) const;
 				((MoveableCamera*)m_pScene->pCamera)->move();
 			}*/
 		}
-		m_portals.update(m_player.getPosition());
+		m_portals.update(m_pPlayer->getPosition());
 
 	/*
 	// @FIXME : Check this harder (no levelStatus but getPosition())
@@ -158,7 +196,6 @@ void Game::update() {
 			// You see what i did there ?
 		break;
 	}*/
-	}
 }
 
 void Game::handleKeyEvent(const SDL_keysym& keysym, bool down) {
@@ -194,12 +231,14 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 			// Add delay between launches and getter for color ?
 			//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
 			if(mEvent.button == SDL_BUTTON_LEFT) {
-				m_player.shootPortal(Color::BLUE);
+				m_pPlayer->shootPortal(Color::BLUE);
 				Vector3f forward;
 				forward.z = 1.;
 				//forward = forward * Matrix4f(m_pScene->pCamera->getView()); // @TODO get forward vector the vector directing the player's camera
-				Ray shoot(m_player.getPosition(), forward);
-				//Intersection intersection();
+				
+				Ray shoot(m_pPlayer->getPosition(), forward);
+					// Triangle triangle();
+					// Intersection intersection();
 				
 				//m_portals.setPortal(Color::BLUE, m_pScene);
 				//
@@ -207,16 +246,16 @@ void Game::handleMouseEvent(const SDL_MouseButtonEvent& mEvent) {
 				//Color color = (click.LEFT) ? Color.BLUE : Color.RED;
 			}
 			else if(mEvent.button == SDL_BUTTON_RIGHT) {
-				m_player.shootPortal(Color::RED);
+				m_pPlayer->shootPortal(Color::RED);
 				cout << " click droit " << endl;
 			}
 			if(mEvent.button == SDL_BUTTON_LEFT || mEvent.button == SDL_BUTTON_LEFT) {
 					//Intersection intersection(); // compute this
 					// if intersection.obj.type == PORTALABLE ...
-						//m_portals.setPortal(color, intersection, &m_player, m_pScene);
+						//m_portals.setPortal(color, intersection, &m_pPlayer, m_pScene);
 			}
 			// Build intersection here.
-			//m_portals.setPortal(color, intersection, &m_player, m_pScene);
+			//m_portals.setPortal(color, intersection, &m_pPlayer, m_pScene);
 		}
 	}
 }
@@ -225,14 +264,15 @@ void Game::switchGhostMode() {
 	m_bGhostMode = !m_bGhostMode;
 	// @TODO : reset nextMove of camera
 	if(m_bGhostMode)
-		m_ghostCamera.setPosition(m_player.getPosition() - Vector3f(1,0,1));
-	m_pScene->pCamera = m_bGhostMode ? &m_ghostCamera : &m_player;
+		m_ghostCamera.setPosition(m_pPlayer->getPosition() - Vector3f(1,0,1));
+	m_pScene->pCamera = m_bGhostMode ? &m_ghostCamera : m_pPlayer;
 	cout << (m_bGhostMode ? "GhostMode on" : "GhostMode off") << endl;
 }
 
 void Game::switchPause() {
 	m_bPause = !m_bPause;
 	// @TODO : reset nextMove of camera if pause on
-	m_pScene->pCamera = &m_player;
+	m_pScene->pCamera = m_pPlayer;
 	cout << (m_bPause ? "Pause on" : "Pause off") << endl;
 }
+

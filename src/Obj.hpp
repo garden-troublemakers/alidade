@@ -3,10 +3,11 @@
 
 #include <stein/Object.hpp>
 #include <stein/Scene.hpp>
+#include <stein/Tools.hpp>
 #include <string>
 
 enum ObjectType {
-	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, DECOR
+	PLAYER, VISIBLE_WALL, INVISIBLE_WALL, PORTALABLE_ZONE, ACTION_ZONE, MIRROR, PORTAL, DECOR
 };
 	
 struct Obj {
@@ -40,5 +41,6 @@ struct Obj {
 		}
 		return triangles;
 	}
+
 
 #endif // _OBJ_HPP_

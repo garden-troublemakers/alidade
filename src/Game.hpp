@@ -18,6 +18,7 @@
 #include <iostream>
 #include <string>
 #include <cstdio>
+#include <memory>
 
 enum Level {
 	EASY, HARD
@@ -28,15 +29,20 @@ private :
 	stein::Scene* m_pScene;
 	MoveableCamera m_ghostCamera;
 	Portals m_portals;
-	Player m_player;
 	Level m_level;
 	std::vector<Mirror*> m_pMirrors;
 	std::list<Obj*> m_lObjects;
+	std::vector<std::string> files;
 
 	// boolean
 	bool m_bRunning;
 	bool m_bPause;
 	bool m_bGhostMode;
+	
+	Player* m_pPlayer;
+	
+	GLuint shaderId;
+	GLuint invisibleShaderId;
 	
 public :
 	Game(stein::Scene* pScene);

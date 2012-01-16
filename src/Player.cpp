@@ -4,11 +4,29 @@
 using namespace std;
 using namespace stein;
 
-Player::Player(Scene * pScene) : MoveableCamera(PLAYER_HEIGHT), Obj(pScene, string(""), PLAYER), m_pScene(pScene) {
+Player::Player(Scene * pScene, const GLuint& sId) :
+	MoveableCamera(PLAYER_HEIGHT), Obj(pScene, sId, string(""), PLAYER, "../res/textures/gold.ppm" ), m_pScene(pScene), shaderId(sId) {
 	m_life = 100;
 	block = 1;
-	buildSquare(object, 1);
+	buildObjectGeometryFromOBJ(object, "../res/objs/aladdin.obj", false, false);
+	m_pScene->setDrawnObjectColor(object.id, Color(frand(), frand(), frand()));
+	m_pScene->setDrawnObjectTextureID(object.id, 0, object.getTextureId());
+	m_pScene->setDrawnObjectShaderID(object.id, shaderId);
+	cout << " charge Player " << endl;
 }
+
+/*Player::Player(const Player &player) : 
+	MoveableCamera(PLAYER_HEIGHT), Obj(player.m_pScene, player.shaderId, string(""), PLAYER),
+	m_life(player.m_life), m_pScene(player.m_pScene), shaderId(player.shaderId), block(player.block)
+{
+	buildObjectGeometryFromOBJ(object, "../res/objs/aladdin.obj", false, false);
+	m_pScene->addObjectToDraw(object.id);
+	m_pScene->setDrawnObjectColor(object.id, Color(frand(), frand(), frand()));
+	m_pScene->setDrawnObjectTextureID(object.id, 0, object.getTextureId());
+	m_pScene->setDrawnObjectShaderID(object.id, shaderId);
+	//m_pScene->setDrawnObjectModel((*i)->object.id, scale(Vector3f(10, 10, 10)));
+	cout << " charge objet " << endl;
+}*/
 
 Player::~Player() {
 

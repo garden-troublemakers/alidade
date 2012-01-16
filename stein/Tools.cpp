@@ -105,21 +105,31 @@ void printGlErrors() {
 GLuint loadTexture(const char* fileName) {
     GLuint w;
     GLuint h;
-    // Loads the image from a ppm file to an unsigned char array
-    unsigned char *data = loadPPM(fileName, w, h);
-
+    unsigned char *data;
+    
+    try {
+		// Loads the image from a ppm file to an unsigned char array
+		data = loadPPM(fileName, w, h);
+	 }
+	 catch (...) {
+		 return 0;
+	}
+	//Selects our current unit texture
+	glActiveTexture(GL_TEXTURE0);
+	
     // Allocates a texture id
-    GLuint textureID;
+    GLuint textureID = 0;
     glGenTextures(1, &textureID);
     // Selects our current texture
     glBindTexture(GL_TEXTURE_2D, textureID);
+    
 
     // How to handle not normalised uvs
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // How to handle interpolation from texels to fragments
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Specifies which image will be used for this texture objet
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -145,7 +155,7 @@ string* loadFile(const string &fileName) {
 }
 
 // Prints info about potential problems which occured during compilation
-void printShaderLog(GLint shaderId) {
+void printShaderLog(GLuint shaderId) {
     GLint logLength;
     glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0) {
@@ -262,9 +272,9 @@ void setFilledDataInShader(GLuint shaderID, GLboolean positions, GLboolean norma
 }
 
 // Sets the units of the textures to use for diffuse and specular as a uniform samplers in shader
-void setTextureUnitsInShader(GLuint shaderID) {
-    glUniform1i(glGetUniformLocation(shaderID, "textureUnitDiffuse"), 0);
-    glUniform1i(glGetUniformLocation(shaderID, "textureUnitSpecular"), 1);
+void setTextureUnitsInShader(GLuint shaderId) {
+    glUniform1i(glGetUniformLocation(shaderId, "textureUnitDiffuse"), 0);
+    glUniform1i(glGetUniformLocation(shaderId, "textureUnitSpecular"), 1);
 }
 
 //______________________________________________________________________________

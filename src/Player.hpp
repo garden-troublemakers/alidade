@@ -20,11 +20,14 @@ private :
 	//stein::Vector3f m_movement;
 	size_t m_life;
 	stein::Scene* m_pScene;
+	const GLuint shaderId;
+	GLuint block;
 public :
 	void mirror(Portal& p);
 	const static float PLAYER_HEIGHT = 2.5;
 	// const static std::string PLAYER_PATH = "./player.obj";
-	Player(stein::Scene * pScene);
+	Player(stein::Scene * pScene, const GLuint&);
+	//Player(const Player &player);
 	virtual ~Player();
 	bool checkCollisionPortals(const Portals& portals, const Portal& newP);
 	bool shootPortal(stein::Color color);
@@ -35,6 +38,9 @@ public :
 	virtual void setDirection(stein::Vector3f rotation);
 	virtual void move();
 	virtual void gotoPositionRotation(const stein::Vector3f & pos, stein::Matrix4f rot = stein::Matrix4f::identity());
+	inline size_t getLife() { 
+		return m_life;
+	}
 	//Obj* checkCollisionWithObj(list<Obj*> lObjs, mirrors?);
 };
 
