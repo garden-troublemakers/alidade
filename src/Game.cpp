@@ -32,7 +32,15 @@ Game::Game(Scene* pScene):
 		setMaterialInShader(shaderId, ambient, diffuse, specular, ka, kd, ks, shininess);
 		
 		m_pPlayer = new Player(m_pScene, shaderId);
-	}
+		
+		m_portals.pBluePortal = new Portal(m_pScene, shaderId, Color::RED);
+		m_portals.pRedPortal = new Portal(m_pScene, shaderId, Color::BLUE);
+		m_portals.pBluePortal->setOtherPortal(m_portals.pRedPortal);
+		m_portals.pRedPortal->setOtherPortal(m_portals.pBluePortal);
+		
+		m_portals.pBluePortal->gotoPositionRotation(Vector3f(4, 0, 5), yRotation(80));
+		m_portals.pRedPortal->gotoPositionRotation(Vector3f(0, 0, 10), yRotation(10));
+}
 
 Game::~Game() {
 	delete m_pPlayer;
